@@ -14,3 +14,7 @@
 pip install iris_sdk
 ```
 
+## Testing
+```console
+python -m unittest discover
+```

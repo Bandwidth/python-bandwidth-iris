@@ -3,17 +3,7 @@
 from iris_sdk.utils.config import Config
 from iris_sdk.utils.rest import RestClient, HTTP_OK
 
-class Singleton(type):
-
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(
-                *args, **kwargs)
-        return cls._instances[cls]
-
-class Client(metaclass=Singleton):
+class Client():
 
     """Data fetching"""
 
@@ -22,21 +12,24 @@ class Client(metaclass=Singleton):
             filename=None):
 
         self._config = Config(url, account_id, username, password, filename)
-        self._rest = RestClient(
-            (self._config.username, self._config.password))
+        self._rest = RestClient()
 
     @property
     def config(self):
         return self._config
 
-    def delete(self, section=None, params=None, data=None):
-        res = (self._rest.request("DELETE", self.get_uri(section), params).\
-            status_code == HTTP_OK)
+    def delete(self, section=None, params=None):
+        res = (self._rest.request(
+                    "DELETE", self.get_uri(section),
+                    (self.config.username, self.config.password), params
+                ).status_code == HTTP_OK)
         return res
 
     def get(self, section=None, params=None):
-        return self._rest.request("GET", self.get_uri(section), params). \
-            content.decode(encoding="UTF-8")
+        return self._rest.request(
+                    "GET", self.get_uri(section),
+                    (self.config.username, self.config.password), params
+                ).content.decode(encoding="UTF-8")
 
     def get_uri(self, section=None):
         # http://foo/bar/// + ///bar/// -> http://foo/bar
@@ -47,8 +40,10 @@ class Client(metaclass=Singleton):
             _section
 
     def post(self, section=None, params=None, data=None):
-        location = self._rest.request("POST", self.get_uri(section),
-            params, data).headers["location"]
+        location = self._rest.request(
+                    "POST", self.get_uri(section),
+                    (self.config.username,self.config.password), params, data
+                ).headers["location"]
         res = ""
         if (location is not None):
             pos = location.rfind("/")
@@ -56,6 +51,8 @@ class Client(metaclass=Singleton):
         return res
 
     def put(self, section=None, params=None, data=None):
-        res = (self._rest.request("PUT", self.get_uri(section),
-            params, data).status_code == HTTP_OK)
+        res = (self._rest.request(
+                    "PUT", self.get_uri(section),
+                    (self.config.username, self.config.password), params, data
+                ).status_code == HTTP_OK)
         return res

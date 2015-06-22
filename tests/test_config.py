@@ -60,7 +60,7 @@ class ClassInitializationTest (TestCase) :
     """Test class initialization."""
 
     def setUp(self):
-        patcher = patch('iris_sdk.utils.config.Config.load_from_file')
+        patcher = patch("iris_sdk.utils.config.Config.load_from_file")
         self._patch = patcher.start()
         self.addCleanup(patch.stopall)
 
@@ -85,8 +85,8 @@ class ClassLoadConfigTest (TestCase) :
     """Test file loading."""
 
     def setUp(self):
-        patcher_isfile = patch('os.path.isfile')
-        patcher_getsize = patch('os.path.getsize')
+        patcher_isfile = patch("os.path.isfile")
+        patcher_getsize = patch("os.path.getsize")
         self._isfile = patcher_isfile.start()
         self._getsize = patcher_getsize.start()
         self.addCleanup(patch.stopall)
@@ -108,11 +108,11 @@ class ClassLoadConfigTest (TestCase) :
         m.return_value = StringIO(FILE_TEST_CFG)
         self._isfile.return_value = True
         self._getsize.return_value = 0
-        with patch.object(config, 'open', m, create=True):
+        with patch.object(config, "open", m, create=True):
             self._config = Config(filename="whatever")
             self.assertEqual(self._config.account_id, "\u28F1 foo")
             self.assertEqual(self._config.username, "baz")
             self.assertEqual(self._config.password, "")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
