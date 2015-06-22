@@ -5,6 +5,10 @@
     - Python 3.x
     - pip
 
+## Imports
+
+    - requests
+
 ## Installation
 ```console
 pip install iris_sdk

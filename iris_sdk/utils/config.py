@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
 import os
-import os.path
 
-import configparser
+from configparser import ConfigParser
 
 MAX_FILE_SIZE = 1048576
 SECTION_ACCOUNT = "account"
+SECTION_SRV = "rest"
 VALUE_ACCOUNT_ID = "account_id"
 VALUE_PASSWORD = "password"
+VALUE_URL = "url"
 VALUE_USERNAME = "username"
 
 class Config:
@@ -16,17 +17,19 @@ class Config:
     """Reads config settings."""
 
     def __init__(
-            self, account_id=None, username=None, password=None,
+            self, url=None, account_id=None, username=None, password=None,
             filename=None):
 
         if (filename is None):
-            self.account_id = account_id
-            self.password = password
-            self.username = username
+            self._account_id = account_id
+            self._password = password
+            self._url = url
+            self._username = username
         else:
-            self.account_id = None
-            self.password = None
-            self.username = None
+            self._account_id = None
+            self._password = None
+            self._url = None
+            self._username = None
             self.load_from_file(filename)
 
     @property
@@ -44,6 +47,14 @@ class Config:
     @password.setter
     def password(self, password):
         self._password = password
+
+    @property
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, url):
+        self._url = url
 
     @property
     def username(self):
@@ -75,8 +86,8 @@ class Config:
       if os.path.getsize(filename) > MAX_FILE_SIZE:
           raise ValueError("Config too large")
 
-      with open(filename, encoding = "UTF-8") as fp:
-          self._parser = configparser.ConfigParser(allow_no_value = True)
+      with open(filename, encoding="UTF-8") as fp:
+          self._parser = ConfigParser(allow_no_value = True)
           self._parser.read_file(fp)
 
       self._account_id = self._parser.get(
@@ -89,3 +100,6 @@ class Config:
 
       self._password = self._parser.get(SECTION_ACCOUNT, VALUE_PASSWORD)
       self._password = self._password.strip()
+
+      self._url = self._parser.get(SECTION_SRV, VALUE_URL)
+      self._url = self._url.strip()

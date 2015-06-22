@@ -1,24 +1,23 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 
 import os
-import os.path
 import sys
 
-import unittest
-from unittest.mock import patch
+from unittest import TestCase, main
+from unittest.mock import Mock, patch, PropertyMock
 
 if (__package__ == None):
-  sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from iris_sdk.client import Client
 
-class ClassClientInitTest(unittest.TestCase):
+class ClassClientInitTest(TestCase):
 
     """Test class initialization."""
 
     @classmethod
     def setUpClass(cls):
-        with unittest.mock.patch('iris_sdk.config.Config'):
+        with patch('iris_sdk.utils.config.Config'):
             cls._client = Client()
 
     @classmethod
@@ -33,14 +32,18 @@ class ClassClientInitTest(unittest.TestCase):
         self._client._config = "foo"
         self.assertEqual(self._client._config, self._client.config)
 
-class ClassClientConfigTest(unittest.TestCase):
+class ClassClientConfigTest(TestCase):
 
     """Test config."""
 
-    @patch('iris_sdk.config.Config.__init__', return_value=None)
-    def test_client_config_params(self, mock_method):
-        self._client = Client("foo", "bar", "baz", "qux")
-        mock_method.assert_called_once_with("foo", "bar", "baz", "qux")
+    @patch('iris_sdk.utils.config.Config.username')
+    @patch('iris_sdk.utils.config.Config.password')
+    @patch('iris_sdk.utils.rest.RestClient.__init__', return_value=None)
+    @patch('iris_sdk.utils.config.Config.__init__', return_value=None)
+    def test_client_config_params(self, mock1, mock2, mock3, mock4):
+        self._client = Client("foo", "bar", "baz", "qux", "quux")
+        mock1.assert_called_once_with("foo", "bar", "baz", "qux", "quux")
+        mock2.assert_called_once_with((mock4, mock3))
 
 if __name__ == '__main__':
-    unittest.main()
+    main()

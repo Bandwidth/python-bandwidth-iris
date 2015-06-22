@@ -1,1 +1,1 @@
-from client import *
+from iris_sdk.client import Client

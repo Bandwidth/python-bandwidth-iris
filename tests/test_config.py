@@ -1,26 +1,29 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 
+from io import StringIO
 import os
-import os.path
 import sys
 
-import unittest
-from unittest.mock import patch
+from unittest import TestCase, main
+from unittest.mock import patch, mock_open
 
+# For coverage
 if (__package__ == None):
-  sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
-from iris_sdk.config import *
+from iris_sdk.utils.config import *
 
 # A valid config.
 FILE_TEST_CFG =(
-    "\n[" + SECTION_ACCOUNT + "]" + "\n" +
+    "[" + SECTION_ACCOUNT + "]\n" +
     VALUE_ACCOUNT_ID + " = \u28F1 foo \n" + # U+10481, Ba
     VALUE_USERNAME + " =  baz " + "\n" + # Leading and trailing ws
-    VALUE_PASSWORD + " = \nbar " + "\n" # Supposed to be empty
+    VALUE_PASSWORD + " = \nbar " + "\n" + # Supposed to be empty
+    "[" + SECTION_SRV + "]\n" +
+    VALUE_URL + " = qux"
 )
 
-class ClassPropsTest(unittest.TestCase):
+class ClassPropsTest(TestCase):
 
     """Test class properties."""
 
@@ -33,66 +36,83 @@ class ClassPropsTest(unittest.TestCase):
         del cls._config
 
     def test_config_prop_account_id(self):
-        self._config._account_id = "foo"
+        self._config.account_id = "foo"
         self.assertEqual(self._config._account_id, "foo")
         self.assertEqual(self._config._account_id, self._config.account_id)
 
     def test_config_prop_password(self):
-        self._config._password = "bar"
+        self._config.password = "bar"
         self.assertEqual(self._config._password, "bar")
         self.assertEqual(self._config._password, self._config.password)
 
-    def test_config_prop_username(self):
-        self._config._username = "baz"
-        self.assertEqual(self._config._username, "baz")
-        self.assertEqual(self._config._username, self._config.username)
+    def test_config_prop_url(self):
+        self._config.url = "baz"
+        self.assertEqual(self._config._url, self._config.url)
+        self.assertEqual(self._config._url, "baz")
 
-class ClassInitializationTest ( unittest.TestCase ) :
+    def test_config_prop_username(self):
+        self._config.username = "qux"
+        self.assertEqual(self._config._username, self._config.username)
+        self.assertEqual(self._config._username, "qux")
+
+class ClassInitializationTest (TestCase) :
 
     """Test class initialization."""
 
-    @patch('iris_sdk.config.Config.load_from_file')
-    def test_config__init_without_filename(self, mock_method):
-        self._config = Config("foo", "bar", "baz")
-        self.assertEqual(self._config.account_id, "foo" )
-        self.assertEqual(self._config.password, "baz" )
-        self.assertEqual(self._config.username, "bar" )
-        assert not mock_method.called
+    def setUp(self):
+        patcher = patch('iris_sdk.utils.config.Config.load_from_file')
+        self._patch = patcher.start()
+        self.addCleanup(patch.stopall)
 
-    @patch('iris_sdk.config.Config.load_from_file')
-    def test_config__init_with_filename(self, mock_method):
+    def test_config__init_without_filename(self):
         self._config = Config("foo", "bar", "baz", "qux")
+        self.assertEqual(self._config.url, "foo" )
+        self.assertEqual(self._config.account_id, "bar" )
+        self.assertEqual(self._config.username, "baz" )
+        self.assertEqual(self._config.password, "qux" )
+        assert not self._patch.called
+
+    def test_config__init_with_filename(self):
+        self._config = Config("foo", "bar", "baz", "qux", "quux")
+        self.assertEqual(self._config.url, None )
         self.assertEqual(self._config.account_id, None )
         self.assertEqual(self._config.password, None )
         self.assertEqual(self._config.username, None )
-        mock_method.assert_called_once_with("qux")
+        self._patch.assert_called_once_with("quux")
 
-class ClassLoadCOnfigTest ( unittest.TestCase ) :
+class ClassLoadConfigTest (TestCase) :
 
     """Test file loading."""
 
+    def setUp(self):
+        patcher_isfile = patch('os.path.isfile')
+        patcher_getsize = patch('os.path.getsize')
+        self._isfile = patcher_isfile.start()
+        self._getsize = patcher_getsize.start()
+        self.addCleanup(patch.stopall)
+
     def test_config_load_from_non_existing_file(self):
-        with unittest.mock.patch('os.path.isfile',return_value=False) as func:
-            with self.assertRaises(ValueError):
-                self._config = Config("foo", "bar", "baz", "qux")
+        self._isfile.return_value = False
+        with self.assertRaises(ValueError):
+            self._config = Config(filename="foo")
 
     def test_config_load_from_huge_file(self):
-        with unittest.mock.patch('os.path.getsize',
-                return_value = MAX_FILE_SIZE + 1):
-            with unittest.mock.patch('os.path.isfile', return_value=True):
-                with self.assertRaises(ValueError):
-                    self._config = Config("foo", "bar", "baz", "qux")
+        self._isfile.return_value = True
+        self._getsize.return_value = MAX_FILE_SIZE + 1
+        with self.assertRaises(ValueError):
+            self._config = Config(filename="foo")
 
     def test_config_load_from_good_file(self):
-        with open("./tests/fixtures/test_cfg","w+",encoding="UTF-8") as test:
-            test.write(FILE_TEST_CFG)
-        self.assertTrue(test.closed)
-        self._config = Config(
-            "foo", "bar", "baz", "./tests/fixtures/test_cfg")
-        self.assertEqual(self._config.account_id, "\u28F1 foo")
-        self.assertEqual(self._config.username, "baz")
-        self.assertEqual(self._config.password, "")
-        os.remove("./tests/fixtures/test_cfg")
+        from iris_sdk.utils import config
+        m = mock_open()
+        m.return_value = StringIO(FILE_TEST_CFG)
+        self._isfile.return_value = True
+        self._getsize.return_value = 0
+        with patch.object(config, 'open', m, create=True):
+            self._config = Config(filename="whatever")
+            self.assertEqual(self._config.account_id, "\u28F1 foo")
+            self.assertEqual(self._config.username, "baz")
+            self.assertEqual(self._config.password, "")
 
 if __name__ == '__main__':
-    unittest.main()
+    main()
