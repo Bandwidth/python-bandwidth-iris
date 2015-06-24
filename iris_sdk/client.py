@@ -26,13 +26,10 @@ class Client():
         return res
 
     def get(self, section=None, params=None):
-        print(section)
-        _params = {}
-        _params["accountId"] = self.config.account_id
         return self._rest.request(
                     "GET", url=self.get_uri(section),
                     auth=(self.config.username, self.config.password),
-                    params=_params
+                    params=params
                 ).content.decode(encoding="UTF-8")
 
     def get_uri(self, section=None):
