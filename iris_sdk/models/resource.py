@@ -3,60 +3,26 @@
 from iris_sdk.utils.strings import Converter
 from xml.etree import ElementTree
 
-FOO_XML = (
-    "<AccountResponse>"
-    "<Account>"
-    "    <AccountId>14</AccountId>"
-    "    <CompanyName>CWI Hosting</CompanyName>"
-    "    <AccountType>Business</AccountType>"
-    "    <NenaId></NenaId>"
-    "    <Tiers>"
-    "        <Tier>0</Tier>"
-    "    </Tiers>"
-    "    <Address>"
-    "        <HouseNumber>60</HouseNumber>"
-    "        <HouseSuffix></HouseSuffix>"
-    "        <PreDirectional></PreDirectional>"
-    "        <StreetName>Pine</StreetName>"
-    "        <StreetSuffix>St</StreetSuffix>"
-    "        <PostDirectional></PostDirectional>"
-    "        <AddressLine2></AddressLine2>"
-    "        <City>Denver</City>"
-    "        <StateCode>CO</StateCode>"
-    "        <Zip>80016</Zip>"
-    "        <PlusFour></PlusFour>"
-    "        <County></County>"
-    "        <Country>United States</Country>"
-    "        <AddressType>Service</AddressType>"
-    "    </Address>"
-    "    <Contact>"
-    "        <FirstName>Sanjay</FirstName>"
-    "        <LastName>Rao</LastName>"
-    "        <Phone>9195441234</Phone>"
-    "        <Email>srao@bandwidth.com</Email>"
-    "    </Contact>"
-    "    <ReservationAllowed>true</ReservationAllowed>"
-    "    <LnpEnabled>true</LnpEnabled>"
-    "    <AltSpid>X455</AltSpid>"
-    "    <SPID>9999</SPID>"
-    "    <PortCarrierType>WIRELINE</PortCarrierType>"
-    "</Account>"
-    "</AccountResponse>"
-)
+DATA_LIST_NAME = "items"
 
 class BaseResource():
 
     """REST resource"""
 
-    def __init__(self, client=None):
+    _xpath = ""
+
+    def __init__(self, client=None, xpath=None):
 
         self._client = client
         self._id = None
-        self._xpath = None
+        if (xpath is not None):
+            self._xpath = xpath + self._xpath
         self._converter = Converter()
 
     # TODO: back - object to xml
-    def _parse_xml(self, element=None, instance=None):
+    def _parse_xml(self, element=None, instance=None, classname=None):
+
+        list = False
 
         """
         Parses XML elements into existing objects, e.g.:
@@ -69,15 +35,25 @@ class BaseResource():
 
         inst = (self if instance is None else instance)
         base_class = inst.__class__
-        class_name = self._converter.to_camelcase(base_class.__name__)
+        # Search elements by "classname" instead of the name of the class
+        if (classname is None):
+            class_name = self._converter.to_camelcase(base_class.__name__)
+        else:
+            class_name = classname
         element_children = element.findall(class_name)
+        # A list of elements - use append()
+        list = (hasattr(inst, DATA_LIST_NAME))
         for el in element_children:
             tags = el.getchildren()
             for prop in tags:
                 tag = self._converter.to_underscore(prop.tag)
                 if hasattr(base_class, tag):
                     if (len(prop.getchildren()) == 0):
-                        setattr(inst, tag, prop.text)
+                        if (list):
+                            lst = getattr(inst, DATA_LIST_NAME)
+                            lst.append(prop.text)
+                        else:
+                            setattr(inst, tag, prop.text)
                     else:
                        _class = getattr(inst, tag)
                        self._parse_xml(el, _class)
@@ -94,11 +70,17 @@ class BaseResource():
     def id(self):
         return self._id
 
-    def get(self, id, params=None):
-        #response_str = self._client.get(id, self._xpath.format(id), params)
-        response_str = FOO_XML
+    @property
+    def xpath(self):
+        return self._xpath
+
+    def get_raw(self, id=None, params=None, node_name=None):
+        xpath = self._xpath.format(
+            self._client.config.account_id, (id if id is not None else ""))
+        response_str = self._client.get(xpath, params)
         root = ElementTree.fromstring(response_str)
-        self._parse_xml(root)
+        self._parse_xml(element=root, classname=node_name)
+        return self
 
 class BaseList(BaseResource):
 

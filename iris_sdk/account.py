@@ -1,21 +1,24 @@
 #!/usr/bin/env python
 
-from iris_sdk.models.resource import BaseResource
+from abc import ABC
+
 from iris_sdk.models.address import Address
+from iris_sdk.models.available_numbers import AvailableNumbers
 from iris_sdk.models.contact import Contact
+from iris_sdk.models.resource import BaseResource
+from iris_sdk.models.tiers import Tiers
 
-class Account(BaseResource):
+XPATH_ACCOUNT = "/accounts/{}"
 
-    """Iris account"""
-
-    def __init__(self, client=None):
-        super().__init__(client)
-        self._address = Address()
-        self._contact = Contact()
+class AccountData(ABC):
 
     @property
     def address(self):
         return self._address
+
+    @property
+    def available_numbers(self):
+        return self._available_numbers
 
     @property
     def company_name(self):
@@ -43,15 +46,33 @@ class Account(BaseResource):
         self._description = description
 
     @property
-    def id(self):
-        return self._id
-    @id.setter
-    def id(self, id):
-        self._id = id
+    def account_id(self):
+        return self._account_id
+    @account_id.setter
+    def account_id(self, account_id):
+        self._account_id = account_id
 
     @property
-    def name(self):
-        return self._name
-    @name.setter
-    def name(self, name):
-        self._name = name
+    def tiers(self):
+        return self._tiers
+
+
+class Account(AccountData, BaseResource):
+
+    """Iris account"""
+
+    _xpath = XPATH_ACCOUNT
+
+    def __init__(self, client=None, xpath=None):
+        super().__init__(client, xpath)
+        self._address = Address()
+        self._contact = Contact()
+        self._tiers = Tiers()
+        self._available_numbers = AvailableNumbers(client, self._xpath)
+
+    def available_numbers_list(self, params=None):
+        self._available_numbers.list(params)
+        return self._available_numbers.items
+
+    def get(self):
+        return super().get_raw()

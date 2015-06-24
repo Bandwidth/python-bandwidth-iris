@@ -26,9 +26,13 @@ class Client():
         return res
 
     def get(self, section=None, params=None):
+        print(section)
+        _params = {}
+        _params["accountId"] = self.config.account_id
         return self._rest.request(
-                    "GET", self.get_uri(section),
-                    (self.config.username, self.config.password), params
+                    "GET", url=self.get_uri(section),
+                    auth=(self.config.username, self.config.password),
+                    params=_params
                 ).content.decode(encoding="UTF-8")
 
     def get_uri(self, section=None):
@@ -36,8 +40,9 @@ class Client():
         _section = ""
         if (section is not None):
             _section = section.lstrip('/').rstrip('/')
-        return self.config.url.rstrip('/') + ("" if not _section else '/') + \
+        res = self.config.url.rstrip('/') + ("" if not _section else '/') + \
             _section
+        return res
 
     def post(self, section=None, params=None, data=None):
         location = self._rest.request(
