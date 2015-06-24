@@ -2,6 +2,7 @@
 
 from iris_sdk.models.resource import BaseResource
 from iris_sdk.models.address import Address
+from iris_sdk.models.contact import Contact
 
 class Account(BaseResource):
 
@@ -10,12 +11,22 @@ class Account(BaseResource):
     def __init__(self, client=None):
         super().__init__(client)
         self._address = Address()
+        self._contact = Contact()
 
     @property
     def address(self):
-        return self._address = address
-    @address.setter(self, address):
-        self._address = address
+        return self._address
+
+    @property
+    def company_name(self):
+        return self._company_name
+    @company_name.setter
+    def company_name(self, company_name):
+        self._company_name = company_name
+
+    @property
+    def contact(self):
+        return self._contact
 
     @property
     def customer_name(self):
