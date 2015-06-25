@@ -7,6 +7,7 @@
 
 ## Imports
 
+    - future
     - requests
 
 ## Installation
