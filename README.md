@@ -19,11 +19,6 @@ pip install iris_sdk
 python -m unittest discover
 ```
 
-## Testing
-```console
-python -m unittest discover
-```
-
 ## Examples
 
 ```
@@ -34,7 +29,7 @@ client = Client(filename=<full_path>)
 acc = Account(client)
 ```
 
-# Accounts
+### Accounts
 
 ```
 acc.get()
@@ -45,7 +40,7 @@ print(acc.address.house_number)
 print(acc.contact.first_name)
 ```
 
-# Avalable numbers
+### Avalable numbers
 ```
 numbers_list = acc.available_numbers.list({"areaCode": "435"})
 ```
