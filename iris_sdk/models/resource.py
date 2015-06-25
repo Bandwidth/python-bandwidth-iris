@@ -50,17 +50,17 @@ class BaseResource():
             tags = el.getchildren()
             for prop in tags:
                 tag = self._converter.to_underscore(prop.tag)
-            if (not hasattr(base_class, tag)):
-                break
-            if (len(prop.getchildren()) == 0):
-                if (list):
-                    lst = getattr(inst, DATA_LIST_NAME)
-                    lst.append(prop.text)
+                if (not hasattr(base_class, tag)):
+                    continue
+                if (len(prop.getchildren()) == 0):
+                    if (list):
+                        lst = getattr(inst, DATA_LIST_NAME)
+                        lst.append(prop.text)
+                    else:
+                        setattr(inst, tag, prop.text)
                 else:
-                    setattr(inst, tag, prop.text)
-            else:
-               _class = getattr(inst, tag)
-               self._parse_xml(el, _class)
+                   _class = getattr(inst, tag)
+                   self._parse_xml(el, _class)
 
     @property
     def client(self):
