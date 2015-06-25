@@ -10,7 +10,6 @@ if (__package__ == None):
 
 from iris_sdk.utils.strings import Converter
 
-
 class ClassStringsConverterTest(TestCase):
 
     """Test HTTP requests."""

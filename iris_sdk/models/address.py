@@ -1,22 +1,8 @@
 #!/usr/bin/env python
 
-class Address():
+from abc import ABC
 
-    def __init__(self):
-        self._address_line2 = None
-        self._address_type = None
-        self._city = None
-        self._county = None
-        self._country = None
-        self._house_number = None
-        self._house_suffix = None
-        self._plus_four = None
-        self._pre_directional = None
-        self._post_directional = None
-        self._state_code = None
-        self._street_name = None
-        self._street_suffix = None
-        self._zip = None
+class AddressData():
 
     @property
     def address_line2(self):
@@ -115,3 +101,21 @@ class Address():
     @zip.setter
     def zip(self, zip):
         self._zip = zip
+
+class Address(AddressData):
+
+    def __init__(self):
+        self._address_line2 = None
+        self._address_type = None
+        self._city = None
+        self._county = None
+        self._country = None
+        self._house_number = None
+        self._house_suffix = None
+        self._plus_four = None
+        self._pre_directional = None
+        self._post_directional = None
+        self._state_code = None
+        self._street_name = None
+        self._street_suffix = None
+        self._zip = None

@@ -33,12 +33,16 @@ class Client():
                 ).content.decode(encoding="UTF-8")
 
     def get_uri(self, section=None):
-        # http://foo/bar/// + ///bar/// -> http://foo/bar
+
+        """http://foo/bar/// + ///bar/// -> http://foo/bar"""
+
         _section = ""
         if (section is not None):
             _section = section.lstrip('/').rstrip('/')
+
         res = self.config.url.rstrip('/') + ("" if not _section else '/') + \
             _section
+
         return res
 
     def post(self, section=None, params=None, data=None):

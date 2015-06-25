@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 
-class Contact():
+from abc import ABC
 
-    def __init__(self):
-        self._email = None
-        self._first_name = None
-        self._last_name = None
-        self._phone = None
+class ContactData(ABC):
 
     @property
     def email(self):
@@ -35,3 +31,11 @@ class Contact():
     @phone.setter
     def phone(self, phone):
         self._phone = phone
+
+class Contact(ContactData):
+
+    def __init__(self):
+        self._email = None
+        self._first_name = None
+        self._last_name = None
+        self._phone = None

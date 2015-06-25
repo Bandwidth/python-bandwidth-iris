@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-class Tiers():
+from abc import ABC
 
-    def __init__(self):
-        self._items = []
+class TiersData(ABC):
 
     @property
     def items(self):
@@ -12,3 +11,8 @@ class Tiers():
     @property
     def tier(self):
         return self.items
+
+class Tiers(TiersData):
+
+    def __init__(self):
+        self._items = []

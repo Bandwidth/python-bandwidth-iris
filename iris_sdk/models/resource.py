@@ -14,7 +14,6 @@ class BaseResource():
     def __init__(self, client=None, xpath=None):
 
         self._client = client
-        self._id = None
         if (xpath is not None):
             self._xpath = xpath + self._xpath
         self._converter = Converter()
@@ -35,28 +34,33 @@ class BaseResource():
 
         inst = (self if instance is None else instance)
         base_class = inst.__class__
+
         # Search elements by "classname" instead of the name of the class
         if (classname is None):
             class_name = self._converter.to_camelcase(base_class.__name__)
         else:
             class_name = classname
+
         element_children = element.findall(class_name)
+
         # A list of elements - use append()
         list = (hasattr(inst, DATA_LIST_NAME))
+
         for el in element_children:
             tags = el.getchildren()
             for prop in tags:
                 tag = self._converter.to_underscore(prop.tag)
-                if hasattr(base_class, tag):
-                    if (len(prop.getchildren()) == 0):
-                        if (list):
-                            lst = getattr(inst, DATA_LIST_NAME)
-                            lst.append(prop.text)
-                        else:
-                            setattr(inst, tag, prop.text)
-                    else:
-                       _class = getattr(inst, tag)
-                       self._parse_xml(el, _class)
+            if (not hasattr(base_class, tag)):
+                break
+            if (len(prop.getchildren()) == 0):
+                if (list):
+                    lst = getattr(inst, DATA_LIST_NAME)
+                    lst.append(prop.text)
+                else:
+                    setattr(inst, tag, prop.text)
+            else:
+               _class = getattr(inst, tag)
+               self._parse_xml(el, _class)
 
     @property
     def client(self):
@@ -67,23 +71,16 @@ class BaseResource():
         self._client = client
 
     @property
-    def id(self):
-        return self._id
-
-    @property
     def xpath(self):
         return self._xpath
 
     def get_raw(self, id=None, params=None, node_name=None):
+
         xpath = self._xpath.format(
             self._client.config.account_id, (id if id is not None else ""))
+
         response_str = self._client.get(xpath, params)
         root = ElementTree.fromstring(response_str)
         self._parse_xml(element=root, classname=node_name)
+
         return self
-
-class BaseList(BaseResource):
-
-    """A collection of resources"""
-
-    pass

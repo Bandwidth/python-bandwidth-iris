@@ -103,11 +103,15 @@ class ClassLoadConfigTest (TestCase) :
             self._config = Config(filename="foo")
 
     def test_config_load_from_good_file(self):
+
         from iris_sdk.utils import config
+
         m = mock_open()
         m.return_value = StringIO(FILE_TEST_CFG)
+
         self._isfile.return_value = True
         self._getsize.return_value = 0
+
         with patch.object(config, "open", m, create=True):
             self._config = Config(filename="whatever")
             self.assertEqual(self._config.account_id, "\u28F1 foo")

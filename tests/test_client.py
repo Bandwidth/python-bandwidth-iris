@@ -69,26 +69,32 @@ class ClassClientRequests(TestCase):
     """Test rest requests."""
 
     def setUp(self):
+
         patcher_req = patch("iris_sdk.utils.rest.RestClient.request")
-        self._request = patcher_req.start()
         patcher_url = patch("iris_sdk.utils.config.Config.url",
             new_callable = PropertyMock, return_value = "foo")
-        self._url = patcher_url.start()
         patcher_pass = patch("iris_sdk.utils.config.Config.password",
             new_callable = PropertyMock, return_value = "bar")
-        self._pass = patcher_pass.start()
         patcher_user = patch("iris_sdk.utils.config.Config.username",
             new_callable = PropertyMock, return_value = "baz")
+
+        self._url = patcher_url.start()
+        self._pass = patcher_pass.start()
+        self._request = patcher_req.start()
         self._user = patcher_user.start()
+
         self._request.return_value = self._mock_res
+
         self.addCleanup(patch.stopall)
 
     @classmethod
     def setUpClass(cls):
+
         cls._mock_res = MagicMock("requests.models.Request")
         cls._mock_res.headers = {"location": "return/return1"}
         cls._mock_res.content = b"foobar"
         cls._mock_res.status_code = 1337
+
         with patch("iris_sdk.utils.config.Config"):
             with patch("iris_sdk.utils.rest.RestClient"):
                 cls._client = Client()
@@ -107,8 +113,9 @@ class ClassClientRequests(TestCase):
     def test_client_get(self):
         res = self._client.get("", "qux")
         self._request.assert_called_once_with("GET",
-            self._url.return_value,
-            (self._user.return_value, self._pass.return_value), "qux")
+            url=self._url.return_value,
+            auth=(self._user.return_value, self._pass.return_value),
+            params="qux")
         self.assertEqual(res, "foobar")
 
     def test_client_post(self):
