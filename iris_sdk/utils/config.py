@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 from future import standard_library
-standard_library.install_aliases()
 
 import os
+
+from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
 from configparser import ConfigParser
 
@@ -15,7 +16,7 @@ VALUE_PASSWORD = "password"
 VALUE_URL = "url"
 VALUE_USERNAME = "username"
 
-class Config:
+class Config(object):
 
     """Reads config settings."""
 
@@ -91,7 +92,10 @@ class Config:
 
       with open(filename, encoding="UTF-8") as fp:
           self._parser = ConfigParser(allow_no_value = True)
-          self._parser.read_file(fp)
+          if (PY_VER_MAJOR == 3):
+              self._parser.read_file(fp)
+          else:
+              self._parser.readfp(fp)
 
       self._account_id = self._parser.get(
         SECTION_ACCOUNT, VALUE_ACCOUNT_ID

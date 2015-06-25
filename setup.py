@@ -10,7 +10,12 @@ setup(
     packages         = ["iris_sdk"],
     long_description = "IRIS / BBS Python API",
     classifiers = [
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+    ],
+    install_requires=[
+        'requests',
+        'future'
     ]
 )

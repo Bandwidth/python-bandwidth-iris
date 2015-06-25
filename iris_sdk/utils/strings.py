@@ -2,7 +2,7 @@
 
 from re import sub
 
-class Converter():
+class Converter(object):
 
     """
     String manipulation.

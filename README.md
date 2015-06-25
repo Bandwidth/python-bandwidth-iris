@@ -2,12 +2,13 @@
 
 ## Needed tools
 
-    - Python 3.x
+    - Python 2.7 or 3.x
     - pip
 
 ## Imports
 
     - future
+    - mock (for py2)
     - requests
 
 ## Installation

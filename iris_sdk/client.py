@@ -3,7 +3,7 @@
 from iris_sdk.utils.config import Config
 from iris_sdk.utils.rest import RestClient, HTTP_OK
 
-class Client():
+class Client(object):
 
     """Data fetching"""
 

@@ -3,8 +3,14 @@
 import os
 import sys
 
+from iris_sdk.utils.py_compat import PY_VER_MAJOR
+
 from unittest import main, TestCase
-from unittest.mock import MagicMock, Mock, patch, PropertyMock
+
+if (PY_VER_MAJOR == 3):
+    from unittest.mock import MagicMock, Mock, patch, PropertyMock
+else:
+    from mock import MagicMock, Mock, patch, PropertyMock
 
 if (__package__ == None):
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
@@ -86,7 +92,7 @@ class ClassRestRequestTest(TestCase):
         _mock[0][1] = _n
         _fromstring.return_value = _mock
 
-        with self.assertRaisesRegex(RestError, "bar Iris error: qux") as e:
+        with self.assertRaisesRegexp(RestError, "bar Iris error: qux") as e:
             self._rest_client.request("GET","foo","bar","baz","qux")
 
 if __name__ == "__main__":

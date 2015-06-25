@@ -12,7 +12,7 @@ HTTP_OK = 200
 class RestError(Exception):
     pass
 
-class RestClient():
+class RestClient(object):
 
     """
     HTTP requests wrapper.

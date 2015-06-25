@@ -3,8 +3,14 @@
 import os
 import sys
 
+from iris_sdk.utils.py_compat import PY_VER_MAJOR
+
 from unittest import TestCase, main
-from unittest.mock import patch, PropertyMock, MagicMock
+
+if (PY_VER_MAJOR == 3):
+    from unittest.mock import patch, PropertyMock, MagicMock
+else:
+    from mock import patch, PropertyMock, MagicMock
 
 if (__package__ == None):
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
@@ -31,6 +37,9 @@ class ClassClientInitTest(TestCase):
 class ClassClientConfigTest(TestCase):
 
     """Test class config."""
+
+    def setUp(self):
+        self._client = None
 
     def tearDown(self):
         del self._client

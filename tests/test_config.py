@@ -4,8 +4,14 @@ from io import StringIO
 import os
 import sys
 
+from iris_sdk.utils.py_compat import PY_VER_MAJOR
+
 from unittest import TestCase, main
-from unittest.mock import patch, mock_open
+
+if (PY_VER_MAJOR == 3):
+    from unittest.mock import patch, mock_open
+else:
+    from mock import patch, mock_open
 
 # For coverage
 if (__package__ == None):
@@ -107,7 +113,7 @@ class ClassLoadConfigTest (TestCase) :
         from iris_sdk.utils import config
 
         m = mock_open()
-        m.return_value = StringIO(FILE_TEST_CFG)
+        m.return_value = StringIO(unicode(FILE_TEST_CFG))
 
         self._isfile.return_value = True
         self._getsize.return_value = 0
