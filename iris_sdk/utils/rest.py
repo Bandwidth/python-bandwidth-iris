@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from future.utils import raise_from
+
 import requests
 from xml.etree import ElementTree
 
@@ -32,6 +34,6 @@ class RestClient():
                 error_msg = ERROR_TEMPLATE.format(
                     root[0][0].text, root[0][1].text)
                 # Suppress the HTTP exception.
-                raise RestError(error_msg) from None
+                raise_from(RestError(error_msg), None)
             else:
                 raise http_exception

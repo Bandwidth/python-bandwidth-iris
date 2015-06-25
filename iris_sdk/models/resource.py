@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 
 DATA_LIST_NAME = "items"
 
-class BaseResource():
+class BaseResource(object):
 
     """REST resource"""
 

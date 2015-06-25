@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-#from abc import ABC
+from __future__ import division, absolute_import, print_function
+from future.builtins import super
 
 from iris_sdk.models.resource import BaseResource
 
