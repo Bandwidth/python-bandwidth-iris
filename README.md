@@ -24,8 +24,17 @@ python -m unittest discover
 ```
 from iris_sdk.account import Account
 from iris_sdk.client import Client
+```
 
+```
 client = Client(filename=<full_path>)
+```
+
+```
+client = Client("http://foo.bar", 123456, "foo", "bar")
+```
+
+```
 acc = Account(client)
 ```
 
