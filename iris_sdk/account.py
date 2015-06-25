@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from abc import ABC
+#from abc import ABC
 
 from iris_sdk.models.address import Address
 from iris_sdk.models.available_numbers import AvailableNumbers
@@ -10,7 +10,7 @@ from iris_sdk.models.tiers import Tiers
 
 XPATH_ACCOUNT = "/accounts/{}"
 
-class AccountData(ABC):
+class AccountData():
 
     @property
     def address(self):

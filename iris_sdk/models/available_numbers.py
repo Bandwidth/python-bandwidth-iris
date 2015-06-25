@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-from abc import ABC
+#from abc import ABC
 
 from iris_sdk.models.resource import BaseResource
 
 XML_NAME_AVAILABLE_NUMBERS = "TelephoneNumberList"
 XPATH_AVAILABLE_NUMBERS = "/availableNumbers"
 
-class AvailableNumbersData(ABC):
+class AvailableNumbersData():
 
     @property
     def items(self):
