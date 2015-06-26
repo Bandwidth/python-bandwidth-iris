@@ -3,17 +3,18 @@
 import os
 import sys
 
-from iris_sdk.utils.py_compat import PY_VER_MAJOR
-
-from unittest import TestCase, main
-
-if (PY_VER_MAJOR == 3):
-    from unittest.mock import patch, PropertyMock, MagicMock
-else:
-    from mock import patch, PropertyMock, MagicMock
-
+# For coverage.
 if (__package__ == None):
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
+
+from iris_sdk.utils.py_compat import PY_VER_MAJOR
+
+from unittest import main, TestCase
+
+if (PY_VER_MAJOR == 3):
+    from unittest.mock import patch, MagicMock, PropertyMock
+else:
+    from mock import patch, MagicMock, PropertyMock
 
 from iris_sdk.client import Client
 

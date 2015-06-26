@@ -3,22 +3,23 @@
 import os
 import sys
 
+# For coverage.
+if (__package__ == None):
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
+
 from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
 from unittest import main, TestCase
 
 if (PY_VER_MAJOR == 3):
-    from unittest.mock import MagicMock, Mock, patch, PropertyMock
+    from unittest.mock import MagicMock, patch
 else:
-    from mock import MagicMock, Mock, patch, PropertyMock
-
-if (__package__ == None):
-    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
-
-from iris_sdk.utils.rest import HEADERS, HTTP_OK, RestClient, RestError
-from iris_sdk.utils.rest import ERROR_TEMPLATE
+    from mock import MagicMock, patch
 
 from requests.exceptions import HTTPError
+
+from iris_sdk.utils.rest import ERROR_TEMPLATE, HEADERS, HTTP_OK, RestClient
+from iris_sdk.utils.rest import RestError
 
 class HttpErrorStub(HTTPError):
     pass

@@ -4,30 +4,20 @@ from io import StringIO
 import os
 import sys
 
-from iris_sdk.utils.py_compat import PY_VER_MAJOR
-
-from unittest import TestCase, main
-
-if (PY_VER_MAJOR == 3):
-    from unittest.mock import patch, mock_open
-else:
-    from mock import patch, mock_open
-
-# For coverage
+# For coverage.
 if (__package__ == None):
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
-from iris_sdk.utils.config import *
+from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
-# A valid config.
-FILE_TEST_CFG =(
-    "[" + SECTION_ACCOUNT + "]\n" +
-    VALUE_ACCOUNT_ID + " = \u28F1 foo \n" + # U+10481, Ba
-    VALUE_USERNAME + " =  baz " + "\n" + # Leading and trailing ws
-    VALUE_PASSWORD + " = \nbar " + "\n" + # Supposed to be empty
-    "[" + SECTION_SRV + "]\n" +
-    VALUE_URL + " = qux"
-)
+from unittest import main, TestCase
+
+if (PY_VER_MAJOR == 3):
+    from unittest.mock import mock_open, patch
+else:
+    from mock import mock_open, patch
+
+from iris_sdk.utils.config import *
 
 class ClassPropsTest(TestCase):
 
@@ -93,8 +83,18 @@ class ClassLoadConfigTest (TestCase) :
     def setUp(self):
         patcher_isfile = patch("os.path.isfile")
         patcher_getsize = patch("os.path.getsize")
+        if (PY_VER_MAJOR == 3):
+            patcher_config_get = patch(
+                'configparser.ConfigParser.get')
+            patcher_config_read = patch(
+                'configparser.ConfigParser.read_file')
+        else:
+            patcher_config_get = patch('ConfigParser.ConfigParser.get')
+            patcher_config_read = patch('ConfigParser.ConfigParser.readfp')
         self._isfile = patcher_isfile.start()
         self._getsize = patcher_getsize.start()
+        self._config_read = patcher_config_read.start()
+        self._config_get = patcher_config_get.start()
         self.addCleanup(patch.stopall)
 
     def test_config_load_from_non_existing_file(self):
@@ -114,18 +114,28 @@ class ClassLoadConfigTest (TestCase) :
 
         m = mock_open()
         if (PY_VER_MAJOR == 3):
-            m.return_value = StringIO(FILE_TEST_CFG)
+            m.return_value = StringIO("foobar")
         else:
-            m.return_value = StringIO(unicode(FILE_TEST_CFG))
+            m.return_value = StringIO(unicode("foobar"))
 
         self._isfile.return_value = True
         self._getsize.return_value = 0
 
+        self._config_get.side_effect = lambda str1, str2: {
+            (SECTION_ACCOUNT, VALUE_ACCOUNT_ID): " foo ",
+            (SECTION_ACCOUNT, VALUE_USERNAME): " bar ",
+            (SECTION_ACCOUNT, VALUE_PASSWORD): " baz ",
+            (SECTION_SRV, VALUE_URL): " qux "} [str1, str2]
+
         with patch.object(config, "open", m, create=True):
             self._config = Config(filename="whatever")
-            self.assertEqual(self._config.account_id, "\u28F1 foo")
-            self.assertEqual(self._config.username, "baz")
-            self.assertEqual(self._config.password, "")
+            self._config_read.assert_called_once_with(m.return_value)
+            self._config_get.assert_any_calls()
+
+            self.assertEqual(self._config.account_id, "foo")
+            self.assertEqual(self._config.username, "bar")
+            self.assertEqual(self._config.password, "baz")
+            self.assertEqual(self._config.url, "qux")
 
 if __name__ == "__main__":
     main()

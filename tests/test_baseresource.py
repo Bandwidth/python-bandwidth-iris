@@ -3,17 +3,18 @@
 import os
 import sys
 
+# For coverage.
 if (__package__ == None):
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
-from unittest import TestCase, main
+from unittest import main, TestCase
 
 if (PY_VER_MAJOR == 3):
-    from unittest.mock import patch, mock_open, MagicMock, PropertyMock, call
+    from unittest.mock import call, MagicMock, patch
 else:
-    from mock import patch, mock_open, MagicMock, PropertyMock
+    from mock import call, MagicMock, patch
 
 from iris_sdk.models.resource import BaseResource
 
@@ -164,41 +165,55 @@ class ClassGetTest(TestCase):
 
         _xml_root = xml_elem()
         _xml_resource = xml_elem()
+
         _xml_elem_sub1 = xml_elem()
         _xml_elem_sub2 = xml_elem()
         _xml_elem_sub3 = xml_elem()
         _xml_elem_sub4 = xml_elem()
+
         _xml_elem_sub_sub1 = xml_elem()
         _xml_elem_sub_sub2 = xml_elem()
 
         _xml_elem_sub1.tag = "QuxQuux"
         _xml_elem_sub1.text = "0"
+
         _xml_elem_sub2.tag = "GarplyWaldo"
+
         _xml_elem_sub3.tag = "JimSheila"
         _xml_elem_sub3.text = "123"
+
         _xml_elem_sub4.tag = "Fred"
+
         _xml_elem_sub_sub1.tag = "Barney"
         _xml_elem_sub_sub1.text = "1"
+
         _xml_elem_sub_sub2.tag = "Barney"
         _xml_elem_sub_sub2.text = "2"
+
         _xml_elem_sub4.children.append(_xml_elem_sub_sub1)
         _xml_elem_sub4.children.append(_xml_elem_sub_sub2)
+
         _xml_resource.children.append(_xml_elem_sub1)
         _xml_resource.children.append(_xml_elem_sub2)
         _xml_resource.children.append(_xml_elem_sub3)
         _xml_resource.children.append(_xml_elem_sub4)
+
         _xml_resource.lst.append(_xml_elem_sub4)
+
         _xml_root.lst.append(_xml_resource)
 
         _client = MagicMock(spec="iris_sdk.client.Client")
+
         _baz = Baz(_client, "foo")
         _baz._parse_xml(element=_xml_root)
+
         self.assertEqual(camel_patched.call_args_list,
             [call("Baz"), call("Fred")])
         self.assertEqual(under_patched.call_args_list,
             [call("QuxQuux"), call("GarplyWaldo"), call("JimSheila"),
-            call("Fred"), call("Barney"), call("Barney")])
+             call("Fred"), call("Barney"), call("Barney")])
         self.assertEqual(_xml_root._call_arg, "Baz")
+
         _baz._parse_xml(element=_xml_root, classname = "Spam")
         self.assertEqual(_xml_root._call_arg, "Spam")
 

@@ -6,12 +6,20 @@ from future.builtins import super
 from iris_sdk.models.address import Address
 from iris_sdk.models.available_numbers import AvailableNumbers
 from iris_sdk.models.contact import Contact
+from iris_sdk.models.in_service_numbers import InServiceNumbers
 from iris_sdk.models.resource import BaseResource
 from iris_sdk.models.tiers import Tiers
 
 XPATH_ACCOUNT = "/accounts/{}"
 
 class AccountData(object):
+
+    @property
+    def account_id(self):
+        return self._account_id
+    @account_id.setter
+    def account_id(self, account_id):
+        self._account_id = account_id
 
     @property
     def address(self):
@@ -47,11 +55,8 @@ class AccountData(object):
         self._description = description
 
     @property
-    def account_id(self):
-        return self._account_id
-    @account_id.setter
-    def account_id(self, account_id):
-        self._account_id = account_id
+    def in_service_numbers(self):
+        return self._in_service_numbers
 
     @property
     def tiers(self):
@@ -69,10 +74,15 @@ class Account(AccountData, BaseResource):
         self._contact = Contact()
         self._tiers = Tiers()
         self._available_numbers = AvailableNumbers(client, self._xpath)
+        self._in_service_numbers = InServiceNumbers(client, self._xpath)
 
     def available_numbers_list(self, params=None):
         self._available_numbers.list(params)
         return self._available_numbers.items
+
+    def in_service_numbers_list(self, params=None):
+        self._in_service_numbers.list(params)
+        return self._in_service_numbers.items
 
     def get(self):
         return super().get_raw()
