@@ -11,7 +11,7 @@ from iris_sdk.models.tiers import Tiers
 
 XPATH_ACCOUNT = "/accounts/{}"
 
-class AccountData():
+class AccountData(object):
 
     @property
     def address(self):
@@ -56,7 +56,6 @@ class AccountData():
     @property
     def tiers(self):
         return self._tiers
-
 
 class Account(AccountData, BaseResource):
 

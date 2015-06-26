@@ -25,6 +25,7 @@ class ClassStringsConverterTest(TestCase):
     def test_to_camelcase(self):
         tests = [
             ('foo_bar', 'FooBar'),
+            ('FooBar', 'FooBar'),
             ('_foo_bar', 'FooBar'),
             ('_foo__bar', 'Foo_Bar')]
 
@@ -34,6 +35,7 @@ class ClassStringsConverterTest(TestCase):
     def test_to_underscore(self):
         tests = [
             ('foobar', 'foobar'),
+            ('foo_bar', 'foo_bar'),
             ('FooBar', 'foo_bar'),
             ('_foo__bar', '_foo__bar')]
 

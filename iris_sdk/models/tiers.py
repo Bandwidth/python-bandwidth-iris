@@ -2,7 +2,7 @@
 
 #from abc import ABC
 
-class TiersData():
+class TiersData(object):
 
     @property
     def items(self):

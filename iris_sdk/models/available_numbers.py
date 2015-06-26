@@ -8,7 +8,7 @@ from iris_sdk.models.resource import BaseResource
 XML_NAME_AVAILABLE_NUMBERS = "TelephoneNumberList"
 XPATH_AVAILABLE_NUMBERS = "/availableNumbers"
 
-class AvailableNumbersData():
+class AvailableNumbersData(object):
 
     @property
     def items(self):

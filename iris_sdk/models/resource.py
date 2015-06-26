@@ -27,7 +27,7 @@ class BaseResource(object):
         Parses XML elements into existing objects, e.g.:
 
         garply = foo()
-        <Foo><BarBaz>Qux</Bar></Foo> -> a.bar_baz equals "qux".
+        <Foo><BarBaz>Qux</Bar></Foo> -> garply.bar_baz equals "qux".
 
         Converts lowercase names to CamelCase.
         """

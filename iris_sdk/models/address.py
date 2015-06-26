@@ -2,7 +2,7 @@
 
 #from abc import ABC
 
-class AddressData():
+class AddressData(object):
 
     @property
     def address_line2(self):

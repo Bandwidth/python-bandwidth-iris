@@ -3,32 +3,19 @@
 import os
 import sys
 
+if (__package__ == None):
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
+
 from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
 from unittest import TestCase, main
 
 if (PY_VER_MAJOR == 3):
-    from unittest.mock import patch, mock_open
+    from unittest.mock import patch, mock_open, MagicMock, PropertyMock, call
 else:
-    from mock import patch, mock_open
-
-if (__package__ == None):
-    sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
+    from mock import patch, mock_open, MagicMock, PropertyMock
 
 from iris_sdk.models.resource import BaseResource
-
-FOO_XML = (
-    "<FooBar>"
-    "    <Baz>"
-    "        <QuxQuux>0</QuxQuux>"
-    "        <GarplyWaldo></GarplyWaldo>"
-    "        <Fred>"
-    "            <Barney>1</Barney>"
-    "            <Barney>1</Barney>"
-    "        </Fred>"
-    "    </Baz>"
-    "</FooBar>"
-)
 
 class ClassBaseResourceInitTest(TestCase):
 
@@ -84,13 +71,15 @@ class ClassGetTest(TestCase):
     def setUp(self):
         patcher_init = patch(
             "iris_sdk.utils.strings.Converter.__init__", return_value=None)
+        patcher_fromstring = patch("xml.etree.ElementTree.fromstring",
+            return_value = "barney")
         self._init_patched = patcher_init.start()
+        self.fs_patched = patcher_fromstring.start()
         self.addCleanup(patch.stopall)
 
     @patch("iris_sdk.client.Client.get", return_value="jim")
-    @patch("xml.etree.ElementTree.fromstring", return_value="barney")
     @patch("iris_sdk.models.resource.BaseResource._parse_xml")
-    def test_raw_get(self, parse_patched, fs_patched, get_patched):
+    def test_raw_get(self, parse_patched, get_patched):
 
         _base_resource = BaseResource("foo", "bar")
         _base_resource.client = MagicMock(spec="iris_sdk.client.Client")
@@ -104,14 +93,114 @@ class ClassGetTest(TestCase):
         res = _base_resource.get_raw("quux", "garply", "waldo")
 
         get_patched.assert_called_once_with("qux fred quux", "garply")
-        fs_patched.assert_called_once_with("jim")
+        self.fs_patched.assert_called_once_with("jim")
         parse_patched.assert_called_once_with(
             element="barney", classname="waldo")
         self.assertEqual(res, _base_resource)
 
-    @patch("iris_sdk.utils.strings.Converter.to_camelcase",return_value="jim")
-    def test_raw_get(self, camel_patched):
-        pass
+    @patch("iris_sdk.utils.strings.Converter.to_camelcase",return_value="Baz")
+    @patch("iris_sdk.utils.strings.Converter.to_underscore")
+    def test_parse_xml(self, under_patched, camel_patched):
+
+        class Baz(BaseResource):
+            def __init__(self, client=None, xpath=None):
+                super().__init__(client, xpath)
+                self._fred = Fred()
+                self._qux_quux = None
+                self._garply_waldo = None
+            @property
+            def fred(self):
+                return self._fred
+            @property
+            def qux_quux(self):
+                return self._qux_quux
+            @qux_quux.setter
+            def qux_quux(self, qux_quux):
+                self._qux_quux = qux_quux
+            @property
+            def garply_waldo(self):
+                return self._garply_waldo
+            @garply_waldo.setter
+            def garply_waldo(self, garply_waldo):
+                self._garply_waldo = garply_waldo
+
+        class Fred(object):
+            def __init__(self):
+                self._items = []
+            @property
+            def items(self):
+                return self._items
+            def barney(self):
+                return self.items
+
+        class xml_elem(object):
+            def __init__(self):
+                self.lst = []
+                self.children = []
+                self.tag = None
+                self.text = None
+            def findall(self, str):
+                self._call_arg = str
+                return self.lst
+            def getchildren(self):
+                return self.children
+
+        under_patched.side_effect = lambda str: {
+            "QuxQuux": "qux_quux", "GarplyWaldo": "garply_waldo",
+            "JimSheila": "jim_sheila", "Fred": "fred",
+            "Barney": "barney"} [str]
+
+        # <FooBar>
+        #     <Baz>
+        #         <QuxQuux>0</QuxQuux>
+        #         <GarplyWaldo></GarplyWaldo>
+        #         <JimSheila>123</JimSheila> - the class doesn't have this
+        #         <Fred>
+        #             <Barney>1</Barney>
+        #             <Barney>2</Barney>
+        #         </Fred>
+        #     </Baz>
+        # </FooBar>
+
+        _xml_root = xml_elem()
+        _xml_resource = xml_elem()
+        _xml_elem_sub1 = xml_elem()
+        _xml_elem_sub2 = xml_elem()
+        _xml_elem_sub3 = xml_elem()
+        _xml_elem_sub4 = xml_elem()
+        _xml_elem_sub_sub1 = xml_elem()
+        _xml_elem_sub_sub2 = xml_elem()
+
+        _xml_elem_sub1.tag = "QuxQuux"
+        _xml_elem_sub1.text = "0"
+        _xml_elem_sub2.tag = "GarplyWaldo"
+        _xml_elem_sub3.tag = "JimSheila"
+        _xml_elem_sub3.text = "123"
+        _xml_elem_sub4.tag = "Fred"
+        _xml_elem_sub_sub1.tag = "Barney"
+        _xml_elem_sub_sub1.text = "1"
+        _xml_elem_sub_sub2.tag = "Barney"
+        _xml_elem_sub_sub2.text = "2"
+        _xml_elem_sub4.children.append(_xml_elem_sub_sub1)
+        _xml_elem_sub4.children.append(_xml_elem_sub_sub2)
+        _xml_resource.children.append(_xml_elem_sub1)
+        _xml_resource.children.append(_xml_elem_sub2)
+        _xml_resource.children.append(_xml_elem_sub3)
+        _xml_resource.children.append(_xml_elem_sub4)
+        _xml_resource.lst.append(_xml_elem_sub4)
+        _xml_root.lst.append(_xml_resource)
+
+        _client = MagicMock(spec="iris_sdk.client.Client")
+        _baz = Baz(_client, "foo")
+        _baz._parse_xml(element=_xml_root)
+        self.assertEqual(camel_patched.call_args_list,
+            [call("Baz"), call("Fred")])
+        self.assertEqual(under_patched.call_args_list,
+            [call("QuxQuux"), call("GarplyWaldo"), call("JimSheila"),
+            call("Fred"), call("Barney"), call("Barney")])
+        self.assertEqual(_xml_root._call_arg, "Baz")
+        _baz._parse_xml(element=_xml_root, classname = "Spam")
+        self.assertEqual(_xml_root._call_arg, "Spam")
 
 if __name__ == "__main__":
     main()

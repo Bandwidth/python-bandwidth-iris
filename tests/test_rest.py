@@ -92,8 +92,12 @@ class ClassRestRequestTest(TestCase):
         _mock[0][1] = _n
         _fromstring.return_value = _mock
 
-        with self.assertRaisesRegexp(RestError, "bar Iris error: qux") as e:
-            self._rest_client.request("GET","foo","bar","baz","qux")
+        if (PY_VER_MAJOR == 3):
+            with self.assertRaisesRegex(RestError,"bar Iris error: qux"):
+                self._rest_client.request("GET","foo","bar","baz","qux")
+        else:
+            with self.assertRaisesRegexp(RestError,"bar Iris error: qux"):
+                self._rest_client.request("GET","foo","bar","baz","qux")
 
 if __name__ == "__main__":
     main()

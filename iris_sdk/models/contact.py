@@ -2,7 +2,7 @@
 
 #from abc import ABC
 
-class ContactData():
+class ContactData(object):
 
     @property
     def email(self):

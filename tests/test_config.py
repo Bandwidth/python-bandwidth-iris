@@ -113,7 +113,10 @@ class ClassLoadConfigTest (TestCase) :
         from iris_sdk.utils import config
 
         m = mock_open()
-        m.return_value = StringIO(unicode(FILE_TEST_CFG))
+        if (PY_VER_MAJOR == 3):
+            m.return_value = StringIO(FILE_TEST_CFG)
+        else:
+            m.return_value = StringIO(unicode(FILE_TEST_CFG))
 
         self._isfile.return_value = True
         self._getsize.return_value = 0
