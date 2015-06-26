@@ -23,6 +23,8 @@ python -m unittest discover
 
 ## Examples
 
+## Setup
+
 ```
 from iris_sdk.account import Account
 from iris_sdk.client import Client
@@ -31,7 +33,7 @@ from iris_sdk.client import Client
 ```
 client = Client(filename=<full_path>)
 ```
-
+or
 ```
 client = Client("http://foo.bar", 123456, "foo", "bar")
 ```
@@ -56,7 +58,7 @@ print(acc.contact.first_name)
 ```
 numbers_list = acc.available_numbers.list({"areaCode": "435"})
 ```
-
+or
 ```
 numbers_list = acc.available_numbers_list({"areaCode": "435"})
 ```
@@ -71,9 +73,9 @@ for telephone_number in numbers_list:
 ```
 numbers_list = acc.in_service_numbers.list({"areaCode": "435"})
 ```
-
+or
 ```
-numbers_list = acc.in_service_numbers({"areaCode": "435"})
+numbers_list = acc.in_service_numbers_list({"areaCode": "435"})
 ```
 
 ```
