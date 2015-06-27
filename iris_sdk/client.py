@@ -25,12 +25,15 @@ class Client(object):
                 ).status_code == HTTP_OK)
         return res
 
-    def get(self, section=None, params=None):
-        return self._rest.request(
+    def get(self, section=None, params=None, return_status=False):
+        response = self._rest.request(
                     "GET", url=self.get_uri(section),
                     auth=(self.config.username, self.config.password),
-                    params=params
-                ).content.decode(encoding="UTF-8")
+                    params=params)
+        if (return_status):
+            return response.status_code
+        else:
+            return response.content.decode(encoding="UTF-8")
 
     def get_uri(self, section=None):
 

@@ -29,7 +29,7 @@ class RestClient(object):
             return response
         except requests.exceptions.HTTPError as http_exception:
             # Logical errors in response body.
-            if (response.content != b"" ):
+            if (response.content != b"" ) and (response.status_code > 599):
                 root = ElementTree.fromstring(response.content)
                 error_msg = ERROR_TEMPLATE.format(
                     root[0][0].text, root[0][1].text)

@@ -18,10 +18,12 @@ class BaseResource(object):
             self._xpath = xpath + self._xpath
         self._converter = Converter()
 
+    def _get_xpath(self, id=None):
+        return self._xpath.format(
+            self._client.config.account_id, (id if id is not None else None))
+
     # TODO: back - object to xml
     def _parse_xml(self, element=None, instance=None, classname=None):
-
-        list = False
 
         """
         Parses XML elements into existing objects, e.g.:
@@ -41,21 +43,35 @@ class BaseResource(object):
         else:
             class_name = classname
 
-        element_children = element.findall(class_name)
-
-        # A list of elements - use append()
-        list = (hasattr(inst, DATA_LIST_NAME))
+        # If a class has different resource types returned in one xml
+        # under the root elements.
+        if (element.tag == class_name):
+            element_children = element.getchildren()
+        else:
+            element_children = element.findall(class_name)
 
         for el in element_children:
-            tags = el.getchildren()
+            # If the element we're searching for doesn't have any children.
+            if (len(el.getchildren()) == 0):
+                tags = []
+                tags.append(el)
+            else:
+                tags = el.getchildren()
+            check_tag = self._converter.to_underscore(el.tag)
+
+            if (hasattr(base_class, check_tag)):
+                property = getattr(inst, check_tag)
+            else:
+                property = None
+            # A list of elements - use append()
+            is_list = (property is not None) and (isinstance(property, list))
             for prop in tags:
                 tag = self._converter.to_underscore(prop.tag)
-                if (not hasattr(base_class, tag)):
+                if (not hasattr(base_class, tag)) and (not is_list):
                     continue
                 if (len(prop.getchildren()) == 0):
-                    if (list):
-                        lst = getattr(inst, DATA_LIST_NAME)
-                        lst.append(prop.text)
+                    if (is_list):
+                        property.append(prop.text)
                     else:
                         setattr(inst, tag, prop.text)
                 else:
@@ -74,13 +90,16 @@ class BaseResource(object):
     def xpath(self):
         return self._xpath
 
-    def get_raw(self, id=None, params=None, node_name=None):
+    def get_data(self, id=None, params=None, node_name=None):
 
-        xpath = self._xpath.format(
-            self._client.config.account_id, (id if id is not None else ""))
+        xpath = self._get_xpath(id)
 
         response_str = self._client.get(xpath, params)
         root = ElementTree.fromstring(response_str)
         self._parse_xml(element=root, classname=node_name)
 
         return self
+
+    def get_status(self, id=None, params=None, node_name=None):
+        xpath = self._get_xpath(id)
+        return self._client.get(xpath, params, True)

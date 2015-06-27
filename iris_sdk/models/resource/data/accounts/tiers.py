@@ -5,12 +5,12 @@
 class TiersData(object):
 
     @property
-    def items(self):
+    def tiers(self):
         return self._items
 
     @property
     def tier(self):
-        return self.items
+        return self.tiers
 
 class Tiers(TiersData):
 

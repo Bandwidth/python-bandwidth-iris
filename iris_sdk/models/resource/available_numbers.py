@@ -3,7 +3,7 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
-from iris_sdk.models.resource import BaseResource
+from iris_sdk.models.base_resource import BaseResource
 
 XML_NAME_AVAILABLE_NUMBERS = "TelephoneNumberList"
 XPATH_AVAILABLE_NUMBERS = "/availableNumbers"
@@ -12,11 +12,15 @@ class AvailableNumbersData(object):
 
     @property
     def items(self):
+        return self.telephone_number_list
+
+    @property
+    def telephone_number_list(self):
         return self._items
 
     @property
     def telephone_number(self):
-        return self.items
+        return self.telephone_number_list
 
 class AvailableNumbers(AvailableNumbersData, BaseResource):
 
@@ -30,5 +34,5 @@ class AvailableNumbers(AvailableNumbersData, BaseResource):
         self._items = []
 
     def list(self, params=None):
-        super().get_raw(params=params, node_name=self._node_name)
+        self.get_data(params=params, node_name=self._node_name)
         return self.items
