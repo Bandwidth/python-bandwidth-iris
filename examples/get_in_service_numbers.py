@@ -13,19 +13,19 @@ class GetInServiceNumbersExample():
 
         in_service_numbers = acc.in_service_numbers.list({"page":1, "size":1})
 
-        i = 1
         total_displayed = len(in_service_numbers)
         total = int(acc.in_service_numbers.search_count)
 
         print("total for search: " + acc.in_service_numbers.search_count)
 
+        page = None
         while (total_displayed <= total):
-            if (i > 1):
+            if (page is not None):
                 in_service_numbers = acc.in_service_numbers.list(
-                    {"page": i, "size": 1})
+                    {"page": page, "size": 1})
+            page = acc.in_service_numbers.links.next
             for phone_number in in_service_numbers:
                 print(phone_number)
-            i += 1
             total_displayed += len(in_service_numbers)
 
         print("total numbers for account: " + \

@@ -11,24 +11,20 @@ class GetOrdersExample():
 
         print("\n--- Orders ---\n")
 
-        # Note: different result sets for different page/size params, e.g.
-        # the test server responds with the same order for page=i/size=1, and
-        # while the xml states that the total number of orders for a search is
-        # X, an XML returned for page=1/size=X*2 is different than for size=X
-        # and actually includes X*2 orders.
+        orders = acc.orders.list({"page": 1, "size": 20})
 
-        orders = acc.orders.list({"page": 1, "size": 200})
-
-        i = 1
         total_displayed = len(orders)
         total = int(acc.orders.search_count)
 
         print("total for search: " + acc.orders.search_count)
 
+        page = None
         while (total_displayed <= total):
 
-            if (i > 1):
-                orders = acc.orders.list({"page": i, "size": 200})
+            if (page is not None):
+                orders = acc.orders.list({"page": page, "size": 20})
+
+            page = acc.orders.links.next
 
             for order in orders:
 
@@ -63,5 +59,4 @@ class GetOrdersExample():
                     print("            vendor name: " + (vendor.name or ""))
                     print("            phone numbers: " +(vendor.count or ""))
 
-            i += 1
             total_displayed += len(orders)

@@ -4,6 +4,7 @@ from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
+from iris_sdk.models.resource.data.common.links import Links
 from iris_sdk.models.resource.data.in_service_numbers.tn import TN
 from iris_sdk.models.resource.data.in_service_numbers.totals import Totals
 
@@ -15,6 +16,10 @@ class InserviceNumbersData(object):
     @property
     def items(self):
         return self.telephone_numbers
+
+    @property
+    def links(self):
+        return self._links
 
     @property
     def search_count(self):
@@ -52,10 +57,12 @@ class InserviceNumbers(InserviceNumbersData, BaseResource):
         self._items = []
         self._totals = Totals(client, self._xpath)
         self._tn = TN(client, self._xpath)
+        self._links = Links()
 
     def clear(self):
         del self.telephone_numbers[:]
         self._total_count = None
+        self._links.clear()
 
     def list(self, params=None):
         self.clear()

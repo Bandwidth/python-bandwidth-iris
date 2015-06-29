@@ -5,7 +5,7 @@ from examples.get_orders import GetOrdersExample
 
 FILENAME = "config.cfg"
 
-GetAccountInfoExample(FILENAME)
-GetAvailableNumbersExample(FILENAME)
-GetInServiceNumbersExample(FILENAME)
+#GetAccountInfoExample(FILENAME)
+#GetAvailableNumbersExample(FILENAME)
+#GetInServiceNumbersExample(FILENAME)
 GetOrdersExample(FILENAME)

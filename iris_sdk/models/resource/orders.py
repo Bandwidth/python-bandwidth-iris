@@ -3,10 +3,11 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
-from iris_sdk.models.resource.order import OrderDetails
+from iris_sdk.models.base_resource import BaseResource, BaseResourceList
+from iris_sdk.models.resource.data.common.links import Links
 from iris_sdk.models.resource.data.orders.order_id_user_id_date import \
     OrderIdUserIdDate
-from iris_sdk.models.base_resource import BaseResource, BaseResourceList
+from iris_sdk.models.resource.order import OrderDetails
 
 XML_NAME_ORDERS = "ListOrderIdUserIdDate"
 XPATH_ORDERS = "/orders"
@@ -16,6 +17,10 @@ class OrdersData(object):
     @property
     def items(self):
         return self.order_id_user_id_date
+
+    @property
+    def links(self):
+        return self._links
 
     @property
     def order_id_user_id_date(self):
@@ -42,10 +47,12 @@ class Orders(OrdersData, BaseResource):
     def __init__(self, client=None, xpath=None):
         super().__init__(client, xpath)
         self._order_id_user_id_date = BaseResourceList()
+        self._links = Links()
         self._total_count = None
 
     def clear(self):
         self._total_count = None
+        self._links.clear()
         del self._order_id_user_id_date.items[:]
         self._order_id_user_id_date.items.append(OrderIdUserIdDate())
 
