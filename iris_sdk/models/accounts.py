@@ -3,13 +3,13 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
+from iris_sdk.models.base_resource import BaseResource
+from iris_sdk.models.resource.available_numbers import AvailableNumbers
 from iris_sdk.models.resource.data.accounts.address import Address
 from iris_sdk.models.resource.data.accounts.contact import Contact
-from iris_sdk.models.resource.data.accounts.tiers import Tiers
-from iris_sdk.models.resource.available_numbers import AvailableNumbers
 from iris_sdk.models.resource.in_service_numbers import \
     InserviceNumbers
-from iris_sdk.models.base_resource import BaseResource
+from iris_sdk.models.resource.orders import Orders
 
 XPATH_ACCOUNT = "/accounts/{}"
 
@@ -60,8 +60,16 @@ class AccountData(object):
         return self._in_service_numbers
 
     @property
+    def orders(self):
+        return self._orders
+
+    @property
     def tiers(self):
         return self._tiers
+
+    @property
+    def tiers_list(self):
+        return self.tiers.items
 
 class Account(AccountData, BaseResource):
 
@@ -71,11 +79,16 @@ class Account(AccountData, BaseResource):
 
     def __init__(self, client=None, xpath=None):
         super().__init__(client, xpath)
+        self._account_id = None
+        self._company_name = None
+        self._customer_name = None
+        self._description = None
         self._address = Address()
         self._contact = Contact()
-        self._tiers = Tiers()
+        self._tiers = []
         self._available_numbers = AvailableNumbers(client, self._xpath)
         self._in_service_numbers = InserviceNumbers(client, self._xpath)
+        self._orders = Orders(client, self._xpath)
 
     def available_numbers_list(self, params=None):
         self._available_numbers.list(params)
@@ -85,5 +98,19 @@ class Account(AccountData, BaseResource):
         self._in_service_numbers.list(params)
         return self._in_service_numbers.items
 
+    def orders_list(self, params=None):
+        self._orders.list(params)
+        return self._orders.items
+
+    def clear(self):
+        del self._tiers[:]
+        self._account_id = None
+        self._company_name = None
+        self._customer_name = None
+        self._description = None
+        self._address.clear()
+        self._contact.clear()
+
     def get(self):
+        self.clear()
         return self.get_data()

@@ -35,6 +35,9 @@ class ContactData(object):
 class Contact(ContactData):
 
     def __init__(self):
+        self.clear()
+
+    def clear(self):
         self._email = None
         self._first_name = None
         self._last_name = None

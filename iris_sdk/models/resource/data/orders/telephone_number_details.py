@@ -3,30 +3,59 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
-from iris_sdk.models.base_resource import BaseResource
+from iris_sdk.models.resource.data.orders.cities import Cities
+from iris_sdk.models.resource.data.orders.rate_centers import RateCenters
+from iris_sdk.models.resource.data.orders.states import States
+from iris_sdk.models.resource.data.orders.tiers import Tiers
+from iris_sdk.models.resource.data.orders.vendors import Vendors
 
-XML_NAME_IN_SERVICE_NUMBERS_TOTALS = "Quantity"
-XPATH_IN_SERVICE_NUMBERS_TOTALS = "/totals"
-
-class TotalsData(object):
+class TelephoneNumberDetailsData(object):
 
     @property
-    def count(self):
-        return self._count
-    @count.setter
-    def count(self, count):
-        self._count = count
+    def cities(self):
+        return self._cities
 
-class Totals(TotalsData, BaseResource):
+    @property
+    def cities_list(self):
+        return self.cities.city_with_count.items
 
-    """In-service numbers totals for account"""
+    @property
+    def rate_centers(self):
+        return self._rate_centers
 
-    _node_name = XML_NAME_IN_SERVICE_NUMBERS_TOTALS
-    _xpath = XPATH_IN_SERVICE_NUMBERS_TOTALS
+    @property
+    def rate_centers_list(self):
+        return self.rate_centers.rate_center_with_count.items
 
-    def __init__(self, client=None, xpath=None):
-        super().__init__(client, xpath)
-        self._count = None
+    @property
+    def states(self):
+        return self._states
 
-    def get(self):
-        return self.get_data(node_name=self._node_name)
+    @property
+    def states_list(self):
+        return self.states.state_with_count.items
+
+    @property
+    def tiers(self):
+        return self._tiers
+
+    @property
+    def tiers_list(self):
+        return self.tiers.tier_with_count.items
+
+    @property
+    def vendors(self):
+        return self._vendors
+
+    @property
+    def vendors_list(self):
+        return self.vendors.vendor_with_count.items
+
+class TelephoneNumberDetails(TelephoneNumberDetailsData):
+
+    def __init__(self):
+        self._cities = Cities()
+        self._rate_centers = RateCenters()
+        self._states = States()
+        self._tiers = Tiers()
+        self._vendors = Vendors()

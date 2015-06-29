@@ -7,15 +7,6 @@ from iris_sdk.models.base_resource import BaseResource
 
 XPATH_IN_SERVICE_NUMBERS_TN = "/{}"
 
-class TotalsData(object):
-
-    @property
-    def count(self):
-        return self._count
-    @count.setter
-    def count(self, count):
-        self._count = count
-
 class TN(BaseResource):
 
     """In-service telephone number verification."""

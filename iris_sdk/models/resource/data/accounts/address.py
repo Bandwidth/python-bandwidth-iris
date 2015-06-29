@@ -105,6 +105,9 @@ class AddressData(object):
 class Address(AddressData):
 
     def __init__(self):
+        self.clear()
+
+    def clear(self):
         self._address_line2 = None
         self._address_type = None
         self._city = None

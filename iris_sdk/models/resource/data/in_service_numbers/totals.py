@@ -29,4 +29,4 @@ class Totals(TotalsData, BaseResource):
         self._count = None
 
     def get(self):
-        return self.get_data(node_name=self._node_name)
+        return self.get_data()

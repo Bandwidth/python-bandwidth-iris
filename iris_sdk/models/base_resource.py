@@ -23,7 +23,7 @@ class BaseResource(object):
             self._client.config.account_id, (id if id is not None else None))
 
     # TODO: back - object to xml
-    def _parse_xml(self, element=None, instance=None, classname=None):
+    def _parse_xml(self, element=None, instance=None):
 
         """
         Parses XML elements into existing objects, e.g.:
@@ -37,46 +37,58 @@ class BaseResource(object):
         inst = (self if instance is None else instance)
         base_class = inst.__class__
 
-        # Search elements by "classname" instead of the name of the class
-        if (classname is None):
-            class_name = self._converter.to_camelcase(base_class.__name__)
-        else:
-            class_name = classname
+        node_name = None
+        if hasattr(inst, "_node_name"):
+            node_name = inst._node_name
 
-        # If a class has different resource types returned in one xml
-        # under the root elements.
-        if (element.tag == class_name):
-            element_children = element.getchildren()
+        search_name = (inst.__class__.__name__ if node_name is None else \
+            inst._node_name)
+
+        # Searching for the root.
+        if (element.tag == search_name):
+            element_children = element
         else:
-            element_children = element.findall(class_name)
+            element_children = element.findall(search_name)
 
         for el in element_children:
-            # If the element we're searching for doesn't have any children.
-            if (len(el.getchildren()) == 0):
-                tags = []
-                tags.append(el)
-            else:
-                tags = el.getchildren()
-            check_tag = self._converter.to_underscore(el.tag)
 
-            if (hasattr(base_class, check_tag)):
-                property = getattr(inst, check_tag)
+            tag = self._converter.to_underscore(el.tag)
+
+            if (hasattr(base_class, tag)):
+                try:
+                    property = getattr(inst, tag)
+                except:
+                    #print(tag)
+                    break
             else:
                 property = None
-            # A list of elements - use append()
-            is_list = (property is not None) and (isinstance(property, list))
-            for prop in tags:
-                tag = self._converter.to_underscore(prop.tag)
-                if (not hasattr(base_class, tag)) and (not is_list):
-                    continue
-                if (len(prop.getchildren()) == 0):
-                    if (is_list):
-                        property.append(prop.text)
-                    else:
-                        setattr(inst, tag, prop.text)
-                else:
-                   _class = getattr(inst, tag)
-                   self._parse_xml(el, _class)
+
+            if (property is None) and (search_name != base_class.__name__) and\
+                    (node_name is None):
+                continue
+
+            if (len(el.getchildren()) == 0):
+                try:
+                    setattr(inst, tag, el.text)
+                except:
+                    #print(tag)
+                    break
+            else:
+                _inst = property
+                if (isinstance(property, BaseResourceList)):
+                    class_type = property.items[0].__class__
+                    property.items.append(class_type())
+                    _inst = property.items[-1]
+                elif (isinstance(property, list)):
+                    for item in el.getchildren():
+                        property.append(item.text)
+                if (isinstance(property, BaseResourceList)):
+                    print(el.tag)
+                    print(_inst)
+                self._parse_xml(el, _inst)
+
+    def _prepare_list(self, items):
+        del items[0]
 
     @property
     def client(self):
@@ -90,16 +102,27 @@ class BaseResource(object):
     def xpath(self):
         return self._xpath
 
-    def get_data(self, id=None, params=None, node_name=None):
+    def get_data(self, id=None, params=None):
 
         xpath = self._get_xpath(id)
 
         response_str = self._client.get(xpath, params)
         root = ElementTree.fromstring(response_str)
-        self._parse_xml(element=root, classname=node_name)
+        self._parse_xml(root)
 
         return self
 
-    def get_status(self, id=None, params=None, node_name=None):
+    def get_status(self, id=None, params=None):
         xpath = self._get_xpath(id)
         return self._client.get(xpath, params, True)
+
+class BaseResourceList(list):
+
+    """REST list of BaseResource items"""
+
+    def __init__(self):
+        self._items = []
+
+    @property
+    def items(self):
+        return self._items

@@ -17,12 +17,12 @@ class InserviceNumbersData(object):
         return self.telephone_numbers
 
     @property
-    def telephone_numbers(self):
-        return self._items
+    def search_count(self):
+        return self.total_count
 
     @property
-    def telephone_number(self):
-        return self.telephone_numbers
+    def telephone_numbers(self):
+        return self._items
 
     @property
     def tn(self):
@@ -53,10 +53,15 @@ class InserviceNumbers(InserviceNumbersData, BaseResource):
         self._totals = Totals(client, self._xpath)
         self._tn = TN(client, self._xpath)
 
+    def clear(self):
+        del self.telephone_numbers[:]
+        self._total_count = None
+
     def list(self, params=None):
-        self.get_data(params, node_name=self._node_name)
-        self.telephone_numbers.pop(0)
-        return self.items
+        self.clear()
+        self.get_data(params=params)
+        self._prepare_list(self.telephone_numbers)
+        return self.telephone_numbers
 
     def totals_count(self):
         self.totals.get()
