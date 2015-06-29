@@ -71,8 +71,9 @@ class BaseResource(object):
                 try:
                     setattr(inst, tag, el.text)
                 except:
-                    #print(tag)
-                    break
+                    print(inst)
+                    print(tag)
+                    #break
             else:
                 _inst = property
                 if (isinstance(property, BaseResourceList)):
@@ -82,9 +83,6 @@ class BaseResource(object):
                 elif (isinstance(property, list)):
                     for item in el.getchildren():
                         property.append(item.text)
-                if (isinstance(property, BaseResourceList)):
-                    print(el.tag)
-                    print(_inst)
                 self._parse_xml(el, _inst)
 
     def _prepare_list(self, items):
@@ -103,7 +101,6 @@ class BaseResource(object):
         return self._xpath
 
     def get_data(self, id=None, params=None):
-
         xpath = self._get_xpath(id)
 
         response_str = self._client.get(xpath, params)

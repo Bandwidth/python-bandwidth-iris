@@ -15,10 +15,6 @@ XML_PARAM_TN_DETAIL_TRUE = "true"
 class AvailableNumbersData(object):
 
     @property
-    def items(self):
-        return self.telephone_number_list
-
-    @property
     def result_count(self):
         return self._result_count
     @result_count.setter
@@ -58,9 +54,10 @@ class AvailableNumbers(AvailableNumbersData, BaseResource):
     def list(self, params=None):
         self.clear()
         self.get_data(params=params)
-        #self._prepare_list(
-        #    TelephoneNumberDetailList.telephone_number_detail.items)
-        if (params.get(XML_PARAM_TN_DETAIL, "") == XML_PARAM_TN_DETAIL_TRUE):
+        self._prepare_list(
+            self._telephone_number_detail_list.telephone_number_detail.items)
+        if ((params.get(XML_PARAM_TN_DETAIL, "").lower()) == \
+                XML_PARAM_TN_DETAIL_TRUE):
             return self._telephone_number_detail_list.\
                 telephone_number_detail.items
         else:

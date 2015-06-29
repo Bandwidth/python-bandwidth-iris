@@ -1,18 +1,13 @@
 #!/usr/bin/env python
 
 from __future__ import division, absolute_import, print_function
-from future.builtins import super
 
-from iris_sdk.models.base_resource import BaseResource, BaseResourceList
+from iris_sdk.models.base_resource import BaseResourceList
 
 class TiersData(object):
 
     @property
     def items(self):
-        return self.tier_with_count.items
-
-    @property
-    def list(self):
         return self.tier_with_count.items
 
     @property

@@ -1,5 +1,4 @@
-from __future__ import division, absolute_import, print_function
-from future.builtins import super
+#!/usr/bin/env python
 
 from iris_sdk.models.resource.data.orders.telephone_number_details import \
     TelephoneNumberDetails

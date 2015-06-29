@@ -8,6 +8,7 @@ from xml.etree import ElementTree
 ERROR_TEMPLATE = "{} Iris error: {}"
 HEADERS = {"content-type": "application/xml"}
 HTTP_OK = 200
+HTTP_OK_MAX = 299
 
 class RestError(Exception):
     pass
@@ -29,7 +30,7 @@ class RestClient(object):
             return response
         except requests.exceptions.HTTPError as http_exception:
             # Logical errors in response body.
-            if (response.content != b"" ) and (response.status_code > 599):
+            if (response.content!=b"") and (response.status_code>HTTP_OK_MAX):
                 root = ElementTree.fromstring(response.content)
                 error_msg = ERROR_TEMPLATE.format(
                     root[0][0].text, root[0][1].text)

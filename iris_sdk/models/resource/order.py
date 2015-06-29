@@ -5,7 +5,7 @@ from future.builtins import super
 
 from iris_sdk.models.resource.data.orders.completed_numbers import \
     CompletedNumbers
-from iris_sdk.models.resource.data.orders.error import Error
+from iris_sdk.models.resource.data.orders.errors import ErrorList
 from iris_sdk.models.resource.data.orders.order import Order
 from iris_sdk.models.base_resource import BaseResource, BaseResourceList
 
@@ -37,8 +37,16 @@ class OrderDetailsData(object):
         self._created_by_user = created_by_user
 
     @property
+    def details(self):
+        return self.order
+
+    @property
     def error_list(self):
         return self._error_list
+
+    @property
+    def errors(self):
+        return self.error_list.items
 
     @property
     def failed(self):
@@ -61,10 +69,6 @@ class OrderDetailsData(object):
     @last_modified_date.setter
     def last_modified_date(self, last_modified_date):
         self._last_modified_date = last_modified_date
-
-    @property
-    def details(self):
-        return self.order
 
     @property
     def order(self):
@@ -103,7 +107,7 @@ class OrderDetails(OrderDetailsData, BaseResource):
         self._completed_numbers = CompletedNumbers()
         self._completed_quantity = None
         self._created_by_user = None
-        self._error_list = BaseResourceList()
+        self._error_list = ErrorList()
         self._failed_numbers = []
         self._failed_quantity = None
         self._last_modified_date = None
@@ -123,8 +127,7 @@ class OrderDetails(OrderDetailsData, BaseResource):
         self._pending_quantity = None
         self._order.clear()
         self._completed_numbers.clear()
-        del self._error_list.items[:]
-        self._error_list.items.append(Error())
+        self._error_list.clear()
 
     def get(self, id=None):
         self.clear()

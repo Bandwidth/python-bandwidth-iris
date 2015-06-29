@@ -3,9 +3,9 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
+from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.resource.data.in_service_numbers.tn import TN
 from iris_sdk.models.resource.data.in_service_numbers.totals import Totals
-from iris_sdk.models.base_resource import BaseResource
 
 XML_NAME_IN_SERVICE_NUMBERS = "TNs"
 XPATH_IN_SERVICE_NUMBERS = "/inserviceNumbers"

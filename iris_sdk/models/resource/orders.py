@@ -62,9 +62,9 @@ class Orders(OrdersData, BaseResource):
     def prepare_lists(self):
         self._prepare_list(self._order_id_user_id_date.items)
         for details in self._order_id_user_id_date.items:
-            self._prepare_list(details.telephone_number_details.cities_list)
+            self._prepare_list(details.telephone_number_details.cities.items)
             self._prepare_list(
-                details.telephone_number_details.rate_centers_list)
-            self._prepare_list(details.telephone_number_details.states_list)
-            self._prepare_list(details.telephone_number_details.tiers_list)
-            self._prepare_list(details.telephone_number_details.vendors_list)
+                details.telephone_number_details.rate_centers.items)
+            self._prepare_list(details.telephone_number_details.states.items)
+            self._prepare_list(details.telephone_number_details.tiers.items)
+            self._prepare_list(details.telephone_number_details.vendors.items)

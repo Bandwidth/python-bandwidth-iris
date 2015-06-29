@@ -5,12 +5,18 @@ from future.builtins import super
 
 from iris_sdk.models.resource.data.orders.area_search import \
     AreaCodeSearchAndOrderType
+from iris_sdk.models.resource.data.orders.rate_search import \
+    RateCenterSearchAndOrderType
 
 class OrderData(object):
 
     @property
     def area_code_search_and_order_type(self):
         return self._area_code_search_and_order_type
+
+    @property
+    def area_search(self):
+        return self.area_code_search_and_order_type
 
     @property
     def back_order_requested(self):
@@ -55,6 +61,14 @@ class OrderData(object):
         self._peer_id = peer_id
 
     @property
+    def rate_center_search_and_order_type(self):
+        return self._rate_center_search_and_order_type
+
+    @property
+    def rate_center_search(self):
+        return self.rate_center_search_and_order_type
+
+    @property
     def tn_attributes(self):
         return self._tn_attributes
 
@@ -75,11 +89,13 @@ class Order(OrderData):
         self._order_created_date = None
         self._partial_allowed = None
         self._peer_id = None
+        self._rate_center_search_and_order_type=RateCenterSearchAndOrderType()
         self._tn_attributes = []
         self._site_id = None
 
     def clear(self):
         self._area_code_search_and_order_type.clear()
+        self._rate_center_search_and_order_type.clear()
         self._back_order_requested = None
         self._customer_order_id = None
         self._name = None

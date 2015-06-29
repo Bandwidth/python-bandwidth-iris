@@ -3,6 +3,8 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
+from iris_sdk.models.base_resource import BaseResourceList
+
 class ErrorData(object):
 
     @property
@@ -29,6 +31,28 @@ class ErrorData(object):
 class Error(ErrorData):
 
     def __init__(self):
+        self.clear()
+
+    def clear(self):
         self._code = None
         self._description = None
         self._telephone_number = None
+
+class ErrorListData(object):
+
+    @property
+    def error(self):
+        return self._error
+
+    @property
+    def items(self):
+        return self.error.items
+
+class ErrorList(ErrorListData):
+
+    def __init__(self):
+        self._error = BaseResourceList()
+
+    def clear(self):
+        del self._error.items[:]
+        self._error.items.append(Error())

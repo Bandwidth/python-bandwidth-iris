@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-#from abc import ABC
-
 class ContactData(object):
 
     @property

@@ -1,23 +1,14 @@
-from iris_sdk.account import Account
-from iris_sdk.client import Client
+from examples.get_account_info import GetAccountInfoExample
+from examples.get_available_numbers import GetAvailableNumbersExample
+from examples.get_in_service_numbers import GetInServiceNumbersExample
+from examples.get_orders import GetOrdersExample
 
-client = Client(
-    url="https://api.test.inetwork.com/v1.0",
-    account_id=123456,
-    username="",
-    password=""
-)
+URL = "https://foo.bar"
+ACCOUNT_ID = 123456789
+USER_NAME = "user"
+PASSWORD = "pass"
 
-acc = Account(client)
-acc.get()
-
-print(acc.account_id)
-print(acc.company_name)
-print(acc.address.house_number)
-print(acc.contact.first_name)
-print(acc.tiers.tier[0])
-
-
-lst = acc.available_numbers.list({"areaCode": "435"})
-for num in lst:
-    print(num)
+GetAccountInfoExample(URL, ACCOUNT_ID, USER_NAME, PASSWORD)
+GetAvailableNumbersExample(URL, ACCOUNT_ID, USER_NAME, PASSWORD)
+GetInServiceNumbersExample(URL, ACCOUNT_ID, USER_NAME, PASSWORD)
+GetOrdersExample(URL, ACCOUNT_ID, USER_NAME, PASSWORD)

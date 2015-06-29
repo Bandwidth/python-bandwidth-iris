@@ -5,10 +5,9 @@ from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.resource.available_numbers import AvailableNumbers
-from iris_sdk.models.resource.data.accounts.address import Address
 from iris_sdk.models.resource.data.accounts.contact import Contact
-from iris_sdk.models.resource.in_service_numbers import \
-    InserviceNumbers
+from iris_sdk.models.resource.data.common.address import Address
+from iris_sdk.models.resource.in_service_numbers import InserviceNumbers
 from iris_sdk.models.resource.orders import Orders
 
 XPATH_ACCOUNT = "/accounts/{}"
@@ -23,8 +22,22 @@ class AccountData(object):
         self._account_id = account_id
 
     @property
+    def account_type(self):
+        return self._account_type
+    @account_type.setter
+    def account_type(self, account_type):
+        self._account_type = account_type
+
+    @property
     def address(self):
         return self._address
+
+    @property
+    def alt_spid(self):
+        return self._alt_spid
+    @alt_spid.setter
+    def alt_spid(self, alt_spid):
+        self._alt_spid = alt_spid
 
     @property
     def available_numbers(self):
@@ -60,8 +73,50 @@ class AccountData(object):
         return self._in_service_numbers
 
     @property
+    def is_new_sms_account(self):
+        return self._is_new_sms_account
+    @is_new_sms_account.setter
+    def is_new_sms_account(self, is_new_sms_account):
+        self._is_new_sms_account = is_new_sms_account
+
+    @property
+    def lnp_enabled(self):
+        return self._lnp_enabled
+    @lnp_enabled.setter
+    def lnp_enabled(self, lnp_enabled):
+        self._lnp_enabled = lnp_enabled
+
+    @property
+    def nena_id(self):
+        return self._nena_id
+    @nena_id.setter
+    def nena_id(self, nena_id):
+        self._nena_id = nena_id
+
+    @property
     def orders(self):
         return self._orders
+
+    @property
+    def port_carrier_type(self):
+        return self._port_carrier_type
+    @port_carrier_type.setter
+    def port_carrier_type(self, port_carrier_type):
+        self._port_carrier_type = port_carrier_type
+
+    @property
+    def reservation_allowed(self):
+        return self._reservation_allowed
+    @reservation_allowed.setter
+    def reservation_allowed(self, reservation_allowed):
+        self._reservation_allowed = reservation_allowed
+
+    @property
+    def spid(self):
+        return self._spid
+    @spid.setter
+    def spid(self, spid):
+        self._spid = spid
 
     @property
     def tiers(self):
@@ -80,9 +135,17 @@ class Account(AccountData, BaseResource):
     def __init__(self, client=None, xpath=None):
         super().__init__(client, xpath)
         self._account_id = None
+        self._account_type = None
+        self._alt_spid = None
         self._company_name = None
         self._customer_name = None
         self._description = None
+        self._is_new_sms_account = None
+        self._lnp_enabled = None
+        self._nena_id = None
+        self._port_carrier_type = None
+        self._reservation_allowed = None
+        self._spid = None
         self._address = Address()
         self._contact = Contact()
         self._tiers = []
@@ -90,24 +153,20 @@ class Account(AccountData, BaseResource):
         self._in_service_numbers = InserviceNumbers(client, self._xpath)
         self._orders = Orders(client, self._xpath)
 
-    def available_numbers_list(self, params=None):
-        self._available_numbers.list(params)
-        return self._available_numbers.items
-
-    def in_service_numbers_list(self, params=None):
-        self._in_service_numbers.list(params)
-        return self._in_service_numbers.items
-
-    def orders_list(self, params=None):
-        self._orders.list(params)
-        return self._orders.items
-
     def clear(self):
         del self._tiers[:]
         self._account_id = None
+        self._account_type = None
+        self._alt_spid = None
         self._company_name = None
         self._customer_name = None
         self._description = None
+        self._is_new_sms_account = None
+        self._lnp_enabled = None
+        self._nena_id = None
+        self._port_carrier_type = None
+        self._reservation_allowed = None
+        self._spid = None
         self._address.clear()
         self._contact.clear()
 
