@@ -68,3 +68,6 @@ local_env.sh
 *.egg-info/
 .tox/
 deprecated/
+
+# Config
+config.cfg

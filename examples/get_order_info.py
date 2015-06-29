@@ -3,15 +3,9 @@ from iris_sdk.client import Client
 
 class GetOrderInfoExample():
 
-    def __init__(self, url=None, account_id=None, username=None,
-            password=None, filename=None):
+    def __init__(self, filename=None):
 
-        self._client = Client(
-            url=url,
-            account_id=account_id,
-            username=username,
-            password=password
-        )
+        self._client = Client(filename=filename)
 
         acc = Account(self._client)
 
