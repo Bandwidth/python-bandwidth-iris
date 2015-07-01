@@ -45,6 +45,13 @@ class AddressData(object):
         self._house_number = house_number
 
     @property
+    def house_prefix(self):
+        return self._house_prefix
+    @house_prefix.setter
+    def house_prefix(self, house_prefix):
+        self._house_prefix = house_prefix
+
+    @property
     def house_suffix(self):
         return self._house_suffix
     @house_suffix.setter
@@ -106,17 +113,18 @@ class Address(AddressData):
         self.clear()
 
     def clear(self):
-        self._address_line2 = None
-        self._address_type = None
-        self._city = None
-        self._county = None
-        self._country = None
-        self._house_number = None
-        self._house_suffix = None
-        self._plus_four = None
-        self._pre_directional = None
-        self._post_directional = None
-        self._state_code = None
-        self._street_name = None
-        self._street_suffix = None
-        self._zip = None
+        self.address_line2 = None
+        self.address_type = None
+        self.city = None
+        self.county = None
+        self.country = None
+        self.house_number = None
+        self.house_prefix = None
+        self.house_suffix = None
+        self.plus_four = None
+        self.pre_directional = None
+        self.post_directional = None
+        self.state_code = None
+        self.street_name = None
+        self.street_suffix = None
+        self.zip = None

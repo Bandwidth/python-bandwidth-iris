@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-from iris_sdk.utils.strings import Converter
 from xml.etree import ElementTree
 
-DATA_LIST_NAME = "items"
+from iris_sdk.utils.strings import Converter
 
 class BaseResource(object):
 
@@ -12,7 +11,6 @@ class BaseResource(object):
     _xpath = ""
 
     def __init__(self, client=None, xpath=None):
-
         self._client = client
         if (xpath is not None):
             self._xpath = xpath + self._xpath
@@ -23,30 +21,39 @@ class BaseResource(object):
             self._client.config.account_id, (id if id is not None else None))
 
     # TODO: back - object to xml
-    def _parse_xml(self, element=None, instance=None):
+    def _parse_xml(self, element, instance=None):
 
         """
         Parses XML elements into existing objects, e.g.:
 
-        garply = foo()
-        <Foo><BarBaz>Qux</Bar></Foo> -> garply.bar_baz equals "qux".
+        garply = some_class()
+        garply.foo = some_other_class()
+        garply.foo.bar_baz = None
 
-        Converts lowercase names to CamelCase.
+        <Foo><BarBaz>Qux</Bar></Foo> -> garply.foo.bar_baz equals "qux".
+
+        Converts CamelCase names to lowercase underscore ones.
         """
 
+        # If instance is None, the tag name to search for in XML data equals
+        # class name.
+
         inst = (self if instance is None else instance)
-        base_class = inst.__class__
+        class_name = inst.__class__.__name__
 
         node_name = None
         if hasattr(inst, "_node_name"):
             node_name = inst._node_name
 
-        search_name = (inst.__class__.__name__ if node_name is None else \
-            inst._node_name)
+        # Recursive call: instance's class represents the element's structure.
+        if (instance is not None):
+            search_name = element.tag
+        else:
+            search_name = (class_name if node_name is None else node_name)
 
-        # Searching for the root.
+        # The provided element is actually the one we're searching for.
         if (element.tag == search_name):
-            element_children = element
+            element_children = element.getchildren()
         else:
             element_children = element.findall(search_name)
 
@@ -54,44 +61,37 @@ class BaseResource(object):
 
             tag = self._converter.to_underscore(el.tag)
 
-            if (hasattr(base_class, tag)):
-                try:
-                    property = getattr(inst, tag)
-                except:
-                    #print(tag)
-                    break
+            property = None
+            if (not hasattr(inst, tag)):
+                # Not the base class.
+                if (instance is not None):
+                    continue
             else:
-                property = None
-
-            if (property is None) and (search_name != base_class.__name__) and\
-                    (node_name is None):
-                continue
+                property = getattr(inst, tag)
 
             if (len(el.getchildren()) == 0):
-                try:
-                    setattr(inst, tag, el.text)
-                except:
-                    print(inst)
-                    print(tag)
-                    #break
+                setattr(inst, tag, el.text)
             else:
                 _inst = property
+                # Simple list.
+                if (isinstance(property, BaseResourceSimpleList)):
+                    for child in el.getchildren():
+                        child_tag = self._converter.to_underscore(child.tag)
+                        item = property.class_type()
+                        if (hasattr(item, child_tag)):
+                            setattr(item, child_tag, child.text)
+                            property.items.append(item)
+                    continue
+                # List of instances - add an item and parse recursively.
                 if (isinstance(property, BaseResourceList)):
-                    class_type = property.items[0].__class__
-                    property.items.append(class_type())
+                    property.items.append(property.class_type())
                     _inst = property.items[-1]
-                elif (isinstance(property, list)):
-                    for item in el.getchildren():
-                        property.append(item.text)
+                # Instance's class mirrors the element's structure.
                 self._parse_xml(el, _inst)
-
-    def _prepare_list(self, items):
-        del items[0]
 
     @property
     def client(self):
         return self._client
-
     @client.setter
     def client(self, client):
         self._client = client
@@ -101,6 +101,7 @@ class BaseResource(object):
         return self._xpath
 
     def get_data(self, id=None, params=None):
+
         xpath = self._get_xpath(id)
 
         response_str = self._client.get(xpath, params)
@@ -113,13 +114,24 @@ class BaseResource(object):
         xpath = self._get_xpath(id)
         return self._client.get(xpath, params, True)
 
-class BaseResourceList(list):
+class BaseResourceList(object):
 
-    """REST list of BaseResource items"""
+    """List of instances of "class_type" passed to constructor"""
 
-    def __init__(self):
+    def __init__(self, class_type):
         self._items = []
+        self._class_type = class_type
+
+    @property
+    def class_type(self):
+        return self._class_type
 
     @property
     def items(self):
         return self._items
+
+    def clear(self):
+        del self.items[:]
+
+class BaseResourceSimpleList(BaseResourceList):
+    pass

@@ -3,12 +3,14 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
-from iris_sdk.models.base_resource import BaseResource
-from iris_sdk.models.resource.available_numbers import AvailableNumbers
-from iris_sdk.models.resource.data.accounts.contact import Contact
-from iris_sdk.models.resource.data.common.address import Address
-from iris_sdk.models.resource.in_service_numbers import InserviceNumbers
-from iris_sdk.models.resource.orders import Orders
+from iris_sdk.models.accounts.available_numbers import AvailableNumbers
+from iris_sdk.models.accounts.in_service_numbers import InserviceNumbers
+from iris_sdk.models.base_resource import BaseResource, BaseResourceList
+
+from iris_sdk.models.data.address import Address
+from iris_sdk.models.data.contact import Contact
+from iris_sdk.models.data.tier import Tier
+#from iris_sdk.models.resource.orders import Orders
 
 XPATH_ACCOUNT = "/accounts/{}"
 
@@ -122,10 +124,6 @@ class AccountData(object):
     def tiers(self):
         return self._tiers
 
-    @property
-    def tiers_list(self):
-        return self.tiers.items
-
 class Account(AccountData, BaseResource):
 
     """Iris account"""
@@ -136,8 +134,10 @@ class Account(AccountData, BaseResource):
         super().__init__(client, xpath)
         self._account_id = None
         self._account_type = None
+        self._address = Address()
         self._alt_spid = None
         self._company_name = None
+        self._contact = Contact()
         self._customer_name = None
         self._description = None
         self._is_new_sms_account = None
@@ -146,29 +146,29 @@ class Account(AccountData, BaseResource):
         self._port_carrier_type = None
         self._reservation_allowed = None
         self._spid = None
-        self._address = Address()
-        self._contact = Contact()
-        self._tiers = []
+        self._tiers = BaseResourceList(Tier)
         self._available_numbers = AvailableNumbers(client, self._xpath)
         self._in_service_numbers = InserviceNumbers(client, self._xpath)
-        self._orders = Orders(client, self._xpath)
+        #self._orders = Orders(client, self._xpath)
 
     def clear(self):
-        del self._tiers[:]
-        self._account_id = None
-        self._account_type = None
-        self._alt_spid = None
-        self._company_name = None
-        self._customer_name = None
-        self._description = None
-        self._is_new_sms_account = None
-        self._lnp_enabled = None
-        self._nena_id = None
-        self._port_carrier_type = None
-        self._reservation_allowed = None
-        self._spid = None
-        self._address.clear()
-        self._contact.clear()
+        self.account_id = None
+        self.account_type = None
+        self.address.clear()
+        self.alt_spid = None
+        self.available_numbers.clear()
+        self.company_name = None
+        self.contact.clear()
+        self.customer_name = None
+        self.description = None
+        self.in_service_numbers.clear()
+        self.is_new_sms_account = None
+        self.lnp_enabled = None
+        self.nena_id = None
+        self.port_carrier_type = None
+        self.reservation_allowed = None
+        self.spid = None
+        self.tiers.clear()
 
     def get(self):
         self.clear()

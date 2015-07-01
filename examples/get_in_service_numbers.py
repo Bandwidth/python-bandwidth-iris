@@ -1,7 +1,7 @@
-from iris_sdk.models.accounts import Account
+from iris_sdk.models.account import Account
 from iris_sdk.client import Client
 
-class GetInServiceNumbersExample():
+class GetInServiceNumbers():
 
     def __init__(self, filename=None):
 
@@ -13,10 +13,10 @@ class GetInServiceNumbersExample():
 
         in_service_numbers = acc.in_service_numbers.list({"page":1, "size":1})
 
-        total_displayed = len(in_service_numbers)
-        total = int(acc.in_service_numbers.search_count)
+        total_displayed = len(in_service_numbers.items)
+        total = int(acc.in_service_numbers.result_count)
 
-        print("total for search: " + acc.in_service_numbers.search_count)
+        print("total for search: " + acc.in_service_numbers.result_count)
 
         page = None
         while (total_displayed <= total):
@@ -24,9 +24,9 @@ class GetInServiceNumbersExample():
                 in_service_numbers = acc.in_service_numbers.list(
                     {"page": page, "size": 1})
             page = acc.in_service_numbers.links.next
-            for phone_number in in_service_numbers:
-                print(phone_number)
-            total_displayed += len(in_service_numbers)
+            for phone_number in in_service_numbers.items:
+                print(phone_number.telephone_number)
+            total_displayed += len(in_service_numbers.items)
 
         print("total numbers for account: " + \
             acc.in_service_numbers.totals_count())

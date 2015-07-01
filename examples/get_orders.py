@@ -1,7 +1,7 @@
 from iris_sdk.models.accounts import Account
 from iris_sdk.client import Client
 
-class GetOrdersExample():
+class GetOrders():
 
     def __init__(self, filename=None):
 
@@ -11,7 +11,7 @@ class GetOrdersExample():
 
         print("\n--- Orders ---\n")
 
-        orders = acc.orders.list({"page": 1, "size": 20})
+        orders = acc.orders.list({"page": 1, "size": 10})
 
         total_displayed = len(orders)
         total = int(acc.orders.search_count)
@@ -22,7 +22,7 @@ class GetOrdersExample():
         while (total_displayed <= total):
 
             if (page is not None):
-                orders = acc.orders.list({"page": page, "size": 20})
+                orders = acc.orders.list({"page": page, "size": 10})
 
             page = acc.orders.links.next
 

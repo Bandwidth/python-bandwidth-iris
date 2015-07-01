@@ -19,25 +19,7 @@ VALUE_PASSWORD = "password"
 VALUE_URL = "url"
 VALUE_USERNAME = "username"
 
-class Config(object):
-
-    """Reads config settings."""
-
-    def __init__(
-            self, url=None, account_id=None, username=None, password=None,
-            filename=None):
-
-        if (filename is None):
-            self._account_id = account_id
-            self._password = password
-            self._url = url
-            self._username = username
-        else:
-            self._account_id = None
-            self._password = None
-            self._url = None
-            self._username = None
-            self.load_from_file(filename)
+class ConfigData(object):
 
     @property
     def account_id(self):
@@ -70,6 +52,26 @@ class Config(object):
     @username.setter
     def username(self, username):
         self._username = username
+
+class Config(ConfigData):
+
+    """Reads config settings."""
+
+    def __init__(
+            self, url=None, account_id=None, username=None, password=None,
+            filename=None):
+
+        if (filename is None):
+            self._account_id = account_id
+            self._password = password
+            self._url = url
+            self._username = username
+        else:
+            self._account_id = None
+            self._password = None
+            self._url = None
+            self._username = None
+            self.load_from_file(filename)
 
     def load_from_file(self, filename=None):
 

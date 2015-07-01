@@ -26,7 +26,10 @@ class Totals(TotalsData, BaseResource):
 
     def __init__(self, client=None, xpath=None):
         super().__init__(client, xpath)
-        self._count = None
+        self.clear()
+
+    def clear(self):
+        self.count = None
 
     def get(self):
         return self.get_data()

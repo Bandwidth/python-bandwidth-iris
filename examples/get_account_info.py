@@ -1,7 +1,7 @@
-from iris_sdk.models.accounts import Account
+from iris_sdk.models.account import Account
 from iris_sdk.client import Client
 
-class GetAccountInfoExample():
+class GetAccountInfo():
 
     def __init__(self, filename=None):
 
@@ -20,6 +20,7 @@ class GetAccountInfoExample():
         print("description:" + (acc.description or ""))
         print("address: (" + (acc.address.address_type or "") + ")")
         print("    house no.: " + (acc.address.house_number or ""))
+        print("    house prefix: " + (acc.address.house_prefix or ""))
         print("    house suffix: " + (acc.address.house_suffix or ""))
         print("    pre-directional: " + (acc.address.pre_directional or ""))
         print("    street name: " + (acc.address.street_name or ""))
@@ -46,5 +47,5 @@ class GetAccountInfoExample():
         print("new sms account: " + (acc.is_new_sms_account or ""))
 
         print("tiers:")
-        for tier in acc.tiers:
-            print("    " + (tier or ""))
+        for tier in acc.tiers.items:
+            print("    " + (tier.tier or ""))

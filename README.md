@@ -23,19 +23,28 @@ python -m unittest discover
 
 ## Examples
 
-## Setup
-
 ```
 from iris_sdk.account import Account
 from iris_sdk.client import Client
 ```
 
 ```
-client = Client(filename=<full_path>)
+client = Client(filename=<path to config>)
 ```
 or
 ```
 client = Client("http://foo.bar", 123456, "foo", "bar")
+```
+
+config format
+```
+[account]
+account_id = 123456789
+username   = foo
+password   = bar
+
+[rest]
+url = http://foo.bar
 ```
 
 ```

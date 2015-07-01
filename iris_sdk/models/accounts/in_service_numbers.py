@@ -3,10 +3,11 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
-from iris_sdk.models.base_resource import BaseResource
-from iris_sdk.models.resource.data.common.links import Links
-from iris_sdk.models.resource.data.in_service_numbers.tn import TN
-from iris_sdk.models.resource.data.in_service_numbers.totals import Totals
+from iris_sdk.models.accounts.in_service_numbers_tn import Tn
+from iris_sdk.models.accounts.in_service_numbers_totals import Totals
+from iris_sdk.models.base_resource import BaseResource, BaseResourceSimpleList
+from iris_sdk.models.data.links import Links
+from iris_sdk.models.data.telephone_number import TelephoneNumber
 
 XML_NAME_IN_SERVICE_NUMBERS = "TNs"
 XPATH_IN_SERVICE_NUMBERS = "/inserviceNumbers"
@@ -14,20 +15,16 @@ XPATH_IN_SERVICE_NUMBERS = "/inserviceNumbers"
 class InserviceNumbersData(object):
 
     @property
-    def items(self):
-        return self.telephone_numbers
-
-    @property
     def links(self):
         return self._links
 
     @property
-    def search_count(self):
+    def result_count(self):
         return self.total_count
 
     @property
     def telephone_numbers(self):
-        return self._items
+        return self._telephone_numbers
 
     @property
     def tn(self):
@@ -53,21 +50,21 @@ class InserviceNumbers(InserviceNumbersData, BaseResource):
 
     def __init__(self, client=None, xpath=None):
         super().__init__(client, xpath)
-        self._total_count = None
-        self._items = []
-        self._totals = Totals(client, self._xpath)
-        self._tn = TN(client, self._xpath)
         self._links = Links()
+        self._telephone_numbers = BaseResourceSimpleList(TelephoneNumber)
+        self._tn = Tn(client, self._xpath)
+        self._total_count = None
+        self._totals = Totals(client, self._xpath)
 
     def clear(self):
-        del self.telephone_numbers[:]
-        self._total_count = None
-        self._links.clear()
+        self.links.clear()
+        self.telephone_numbers.clear()
+        self.total_count = None
+        self.totals.clear()
 
     def list(self, params=None):
         self.clear()
         self.get_data(params=params)
-        self._prepare_list(self.telephone_numbers)
         return self.telephone_numbers
 
     def totals_count(self):

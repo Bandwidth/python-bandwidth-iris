@@ -36,7 +36,7 @@ class Contact(ContactData):
         self.clear()
 
     def clear(self):
-        self._email = None
-        self._first_name = None
-        self._last_name = None
-        self._phone = None
+        self.email = None
+        self.first_name = None
+        self.last_name = None
+        self.phone = None

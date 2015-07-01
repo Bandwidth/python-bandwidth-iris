@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 
-class TelephoneNumberDetailData(object):
+class TelephoneNumberData(object):
+
+    @property
+    def account_id(self):
+        return self._account_id
+    @account_id.setter
+    def account_id(self, account_id):
+        self._account_id = account_id
 
     @property
     def city(self):
@@ -15,6 +22,13 @@ class TelephoneNumberDetailData(object):
     @full_number.setter
     def full_number(self, full_number):
         self._full_number = full_number
+
+    @property
+    def last_modified(self):
+        return self._last_modified
+    @last_modified.setter
+    def last_modified(self, last_modified):
+        self._last_modified = last_modified
 
     @property
     def lata(self):
@@ -38,6 +52,20 @@ class TelephoneNumberDetailData(object):
         self._state = state
 
     @property
+    def status(self):
+        return self._status
+    @status.setter
+    def status(self, status):
+        self._status = status
+
+    @property
+    def telephone_number(self):
+        return self._full_number
+    @telephone_number.setter
+    def telephone_number(self, telephone_number):
+        self._full_number = telephone_number
+
+    @property
     def tier(self):
         return self._tier
     @tier.setter
@@ -58,14 +86,20 @@ class TelephoneNumberDetailData(object):
     def vendor_name(self, vendor_name):
         self._vendor_name = vendor_name
 
-class TelephoneNumberDetail(TelephoneNumberDetailData):
+class TelephoneNumber(TelephoneNumberData):
 
     def __init__(self):
-        self._city = None
-        self._full_number = None
-        self._lata = None
-        self._rate_center = None
-        self._state = None
-        self._tier = None
-        self._vendor_id = None
-        self._vendor_name = None
+        self.clear()
+
+    def clear(self):
+        self.account_id = None
+        self.city = None
+        self.full_number = None
+        self.last_modified = None
+        self.lata = None
+        self.rate_center = None
+        self.state = None
+        self.status = None
+        self.tier = None
+        self.vendor_id = None
+        self.vendor_name = None
