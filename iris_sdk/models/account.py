@@ -3,126 +3,16 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
-from iris_sdk.models.accounts.available_numbers import AvailableNumbers
-from iris_sdk.models.accounts.in_service_numbers import InserviceNumbers
-from iris_sdk.models.base_resource import BaseResource, BaseResourceList
+from iris_sdk.models.available_numbers import AvailableNumbers
+from iris_sdk.models.base_resource import BaseResource
+from iris_sdk.models.in_service_numbers import InServiceNumbers
+from iris_sdk.models.sites import Sites
 
-from iris_sdk.models.data.address import Address
-from iris_sdk.models.data.contact import Contact
-from iris_sdk.models.data.tier import Tier
+from iris_sdk.models.data.account import AccountData
+
 #from iris_sdk.models.resource.orders import Orders
 
 XPATH_ACCOUNT = "/accounts/{}"
-
-class AccountData(object):
-
-    @property
-    def account_id(self):
-        return self._account_id
-    @account_id.setter
-    def account_id(self, account_id):
-        self._account_id = account_id
-
-    @property
-    def account_type(self):
-        return self._account_type
-    @account_type.setter
-    def account_type(self, account_type):
-        self._account_type = account_type
-
-    @property
-    def address(self):
-        return self._address
-
-    @property
-    def alt_spid(self):
-        return self._alt_spid
-    @alt_spid.setter
-    def alt_spid(self, alt_spid):
-        self._alt_spid = alt_spid
-
-    @property
-    def available_numbers(self):
-        return self._available_numbers
-
-    @property
-    def company_name(self):
-        return self._company_name
-    @company_name.setter
-    def company_name(self, company_name):
-        self._company_name = company_name
-
-    @property
-    def contact(self):
-        return self._contact
-
-    @property
-    def customer_name(self):
-        return self._customer_name
-    @customer_name.setter
-    def customer_name(self, customer_name):
-        self._customer_name = customer_name
-
-    @property
-    def description(self):
-        return self._description
-    @description.setter
-    def description(self, description):
-        self._description = description
-
-    @property
-    def in_service_numbers(self):
-        return self._in_service_numbers
-
-    @property
-    def is_new_sms_account(self):
-        return self._is_new_sms_account
-    @is_new_sms_account.setter
-    def is_new_sms_account(self, is_new_sms_account):
-        self._is_new_sms_account = is_new_sms_account
-
-    @property
-    def lnp_enabled(self):
-        return self._lnp_enabled
-    @lnp_enabled.setter
-    def lnp_enabled(self, lnp_enabled):
-        self._lnp_enabled = lnp_enabled
-
-    @property
-    def nena_id(self):
-        return self._nena_id
-    @nena_id.setter
-    def nena_id(self, nena_id):
-        self._nena_id = nena_id
-
-    @property
-    def orders(self):
-        return self._orders
-
-    @property
-    def port_carrier_type(self):
-        return self._port_carrier_type
-    @port_carrier_type.setter
-    def port_carrier_type(self, port_carrier_type):
-        self._port_carrier_type = port_carrier_type
-
-    @property
-    def reservation_allowed(self):
-        return self._reservation_allowed
-    @reservation_allowed.setter
-    def reservation_allowed(self, reservation_allowed):
-        self._reservation_allowed = reservation_allowed
-
-    @property
-    def spid(self):
-        return self._spid
-    @spid.setter
-    def spid(self, spid):
-        self._spid = spid
-
-    @property
-    def tiers(self):
-        return self._tiers
 
 class Account(AccountData, BaseResource):
 
@@ -130,46 +20,26 @@ class Account(AccountData, BaseResource):
 
     _xpath = XPATH_ACCOUNT
 
-    def __init__(self, client=None, xpath=None):
-        super().__init__(client, xpath)
-        self._account_id = None
-        self._account_type = None
-        self._address = Address()
-        self._alt_spid = None
-        self._company_name = None
-        self._contact = Contact()
-        self._customer_name = None
-        self._description = None
-        self._is_new_sms_account = None
-        self._lnp_enabled = None
-        self._nena_id = None
-        self._port_carrier_type = None
-        self._reservation_allowed = None
-        self._spid = None
-        self._tiers = BaseResourceList(Tier)
-        self._available_numbers = AvailableNumbers(client, self._xpath)
-        self._in_service_numbers = InserviceNumbers(client, self._xpath)
-        #self._orders = Orders(client, self._xpath)
+    @property
+    def available_numbers(self):
+        return self._available_numbers
 
-    def clear(self):
-        self.account_id = None
-        self.account_type = None
-        self.address.clear()
-        self.alt_spid = None
-        self.available_numbers.clear()
-        self.company_name = None
-        self.contact.clear()
-        self.customer_name = None
-        self.description = None
-        self.in_service_numbers.clear()
-        self.is_new_sms_account = None
-        self.lnp_enabled = None
-        self.nena_id = None
-        self.port_carrier_type = None
-        self.reservation_allowed = None
-        self.spid = None
-        self.tiers.clear()
+    @property
+    def in_service_numbers(self):
+        return self._in_service_numbers
+
+    @property
+    def sites(self):
+        return self._sites
+
+    def __init__(self, parent=None, client=None):
+        if (client is not None):
+            self.id = client.config.account_id
+            self.account_id = self.id
+        super().__init__(parent, client)
+        self._available_numbers = AvailableNumbers(self, client)
+        self._in_service_numbers = InServiceNumbers(self, client)
+        self._sites = Sites(self, client)
 
     def get(self):
-        self.clear()
-        return self.get_data()
+        return self.get_data(self.id)

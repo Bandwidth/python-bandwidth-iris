@@ -7,7 +7,7 @@ class GetAccountInfo():
 
         self._client = Client(filename=filename)
 
-        acc = Account(self._client)
+        acc = Account(client=self._client)
 
         acc.get()
 

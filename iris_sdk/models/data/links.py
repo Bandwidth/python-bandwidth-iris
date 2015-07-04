@@ -5,16 +5,25 @@ install_aliases()
 
 from urllib.parse import parse_qs, urlparse
 
+from iris_sdk.models.base_resource import BaseData
+from iris_sdk.models.maps.links import LinksMap
+
 LINK_PREFIX = "<"
 LINK_SUFFIX = ">"
 
-class LinksData(object):
+class Links(LinksMap, BaseData):
+
+    _first = None
+    _next = None
 
     @property
     def first(self):
         return self._first
     @first.setter
     def first(self, first):
+        if (first is None):
+            self._first = None
+            return
         url =(first or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]
         params = parse_qs(urlparse(url).query)
         self._first = params["page"]
@@ -24,15 +33,9 @@ class LinksData(object):
         return self._next
     @next.setter
     def next(self, next):
-        url =(next or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]
+        if (next is None):
+            self._next = None
+            return
+        url = (next or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]
         params = parse_qs(urlparse(url).query)
         self._next = params["page"]
-
-class Links(LinksData):
-
-    def __init__(self):
-        self.clear()
-
-    def clear(self):
-        self._first = None
-        self._next = None

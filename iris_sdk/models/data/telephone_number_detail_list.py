@@ -1,18 +1,10 @@
 #!/usr/bin/env python
 
-from iris_sdk.models.base_resource import BaseResourceList
+from iris_sdk.models.base_resource import BaseData, BaseResourceList
 from iris_sdk.models.data.telephone_number import TelephoneNumber
+from iris_sdk.models.maps.telephone_number_detail_list import \
+    TelephoneNumberDetailListMap
 
-class TelephoneNumberDetailListData(object):
+class TelephoneNumberDetailList(TelephoneNumberDetailListMap, BaseData):
 
-    @property
-    def telephone_number_detail(self):
-        return self._telephone_number_detail
-
-class TelephoneNumberDetailList(TelephoneNumberDetailListData):
-
-    def __init__(self):
-        self._telephone_number_detail=BaseResourceList(TelephoneNumber)
-
-    def clear(self):
-        self.telephone_number_detail.clear()
+    telephone_number_detail = BaseResourceList(TelephoneNumber)

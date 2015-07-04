@@ -4,21 +4,91 @@ from xml.etree import ElementTree
 
 from iris_sdk.utils.strings import Converter
 
-class BaseResource(object):
+BASE_PROP_CLIENT = "client"
+BASE_PROP_XPATH = "xpath"
+
+class BaseData(object):
+
+    def clear(self):
+        for prop in dir(self):
+            property = getattr(self, prop)
+            if (prop.startswith("_")) or (prop == BASE_PROP_CLIENT) or \
+                    (prop == BASE_PROP_XPATH) or (callable(property)):
+                continue
+            cleared = False
+            _class = property.__class__
+            if (_class == BaseData) or (_class == BaseResourceList):
+                property.clear()
+                cleared = True
+            else:
+                for classtype in property.__class__.__bases__:
+                    if (classtype==BaseData) or (classtype==BaseResourceList)\
+                            or (classtype==BaseResource):
+                        property.clear()
+                        cleared = True
+                        break
+            if (not cleared):
+                setattr(self, prop, None)
+
+class BaseResourceList(object):
+
+    """List of instances of "class_type" passed to constructor"""
+
+    def __init__(self, class_type, parent=None):
+        self._items = []
+        self._class_type = class_type
+        self._parent = parent
+
+    @property
+    def class_type(self):
+        return self._class_type
+
+    @property
+    def items(self):
+        return self._items
+
+    @property
+    def parent(self):
+        return self._parent
+
+    def clear(self):
+        del self.items[:]
+
+class BaseResourceSimpleList(BaseResourceList):
+    pass
+
+class BaseResource(BaseData):
 
     """REST resource"""
 
+    _parent = None
     _xpath = ""
+    _id = None
 
-    def __init__(self, client=None, xpath=None):
+    @property
+    def id(self):
+        return self._id
+    @id.setter
+    def id(self, id):
+        self._id = id
+
+    @property
+    def client(self):
+        return self._client
+    @client.setter
+    def client(self, client):
         self._client = client
-        if (xpath is not None):
-            self._xpath = xpath + self._xpath
-        self._converter = Converter()
 
-    def _get_xpath(self, id=None):
-        return self._xpath.format(
-            self._client.config.account_id, (id if id is not None else None))
+    @property
+    def xpath(self):
+        return self._xpath
+
+    def __init__(self, parent=None, client=None):
+        self._converter = Converter()
+        self._parent = parent
+        self._client = client
+        if (client is None):
+            self._client = parent.client
 
     # TODO: back - object to xml
     def _parse_xml(self, element, instance=None):
@@ -64,6 +134,7 @@ class BaseResource(object):
             property = None
             if (not hasattr(inst, tag)):
                 # Not the base class.
+                print(tag)
                 if (instance is not None):
                     continue
             else:
@@ -84,25 +155,32 @@ class BaseResource(object):
                     continue
                 # List of instances - add an item and parse recursively.
                 if (isinstance(property, BaseResourceList)):
-                    property.items.append(property.class_type())
+                    # Set parents for REST resources.
+                    has_parent = False
+                    for class_type in property.class_type.__bases__:
+                        if class_type == BaseResource:
+                            has_parent = True
+                            break
+                    _class = property.class_type
+                    if (has_parent):
+                        item = property.class_type(property.parent)
+                    else:
+                        item = property.class_type()
+                    property.items.append(item)
                     _inst = property.items[-1]
                 # Instance's class mirrors the element's structure.
                 self._parse_xml(el, _inst)
 
-    @property
-    def client(self):
-        return self._client
-    @client.setter
-    def client(self, client):
-        self._client = client
-
-    @property
-    def xpath(self):
-        return self._xpath
+    def get(self, id=None, params=None):
+        return self.get_data(id, params)
 
     def get_data(self, id=None, params=None):
 
-        xpath = self._get_xpath(id)
+        self.clear()
+
+        self.id = (id or "")
+
+        xpath = self.get_xpath()
 
         response_str = self._client.get(xpath, params)
         root = ElementTree.fromstring(response_str)
@@ -114,24 +192,9 @@ class BaseResource(object):
         xpath = self._get_xpath(id)
         return self._client.get(xpath, params, True)
 
-class BaseResourceList(object):
-
-    """List of instances of "class_type" passed to constructor"""
-
-    def __init__(self, class_type):
-        self._items = []
-        self._class_type = class_type
-
-    @property
-    def class_type(self):
-        return self._class_type
-
-    @property
-    def items(self):
-        return self._items
-
-    def clear(self):
-        del self.items[:]
-
-class BaseResourceSimpleList(BaseResourceList):
-    pass
+    def get_xpath(self):
+        parent_path = ""
+        if (self._parent is not None):
+            parent_path = self._parent.get_xpath()
+        xpath = parent_path + self._xpath
+        return xpath.format(self.id)

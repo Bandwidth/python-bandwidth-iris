@@ -7,7 +7,7 @@ class GetAvailableNumbers():
 
         self._client = Client(filename=filename)
 
-        acc = Account(self._client)
+        acc = Account(client=self._client)
 
         print("\n--- Available numbers ---\n")
 
@@ -17,7 +17,7 @@ class GetAvailableNumbers():
         print("total for search: " + acc.available_numbers.result_count)
 
         for phone_number in available_numbers.items:
-            print(phone_number)
+            print(phone_number.telephone_number)
 
         print("\ndetailed list:\n")
 

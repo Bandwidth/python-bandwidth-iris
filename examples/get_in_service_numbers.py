@@ -7,41 +7,17 @@ class GetInServiceNumbers():
 
         self._client = Client(filename=filename)
 
-        acc = Account(self._client)
+        acc = Account(client=self._client)
 
         print("\n--- In-service numbers ---\n")
 
-        in_service_numbers = acc.in_service_numbers.list({"page":1, "size":1})
+        in_service_numbers = acc.in_service_numbers.list({"page":1,"size":20})
 
-        total_displayed = len(in_service_numbers.items)
-        total = int(acc.in_service_numbers.result_count)
+        print("Totals for search: " + \
+            (acc.in_service_numbers.result_count or ""))
 
-        print("total for search: " + acc.in_service_numbers.result_count)
+        for phone_number in in_service_numbers.items:
+            print(phone_number.telephone_number)
 
-        page = None
-        while (total_displayed <= total):
-            if (page is not None):
-                in_service_numbers = acc.in_service_numbers.list(
-                    {"page": page, "size": 1})
-            page = acc.in_service_numbers.links.next
-            for phone_number in in_service_numbers.items:
-                print(phone_number.telephone_number)
-            total_displayed += len(in_service_numbers.items)
-
-        print("total numbers for account: " + \
-            acc.in_service_numbers.totals_count())
-        print("Veryfying number " + "8183386252")
-        print("    .")
-        print("    .")
-        print("    .")
-        print("    .")
-        print("    .")
-        print("    .")
-        print("    .")
-        print("    .")
-
-        try:
-            if (acc.in_service_numbers.verify(8183386252) == 200):
-                print("ok")
-        except:
-            print("not found")
+        print("Numbers in service: " + \
+            (acc.in_service_numbers.totals_count() or ""))

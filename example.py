@@ -1,13 +1,13 @@
 from examples.get_account_info import GetAccountInfo
 from examples.get_available_numbers import GetAvailableNumbers
 from examples.get_in_service_numbers import GetInServiceNumbers
-#from examples.get_order_info import GetOrderInfo
-#from examples.get_orders import GetOrders
+from examples.pagination import Pagination
+from examples.get_sites import GetSites
 
-FILENAME = "config.cfg"
+FILENAME = "examples/config.cfg"
 
 GetAccountInfo(FILENAME)
 GetAvailableNumbers(FILENAME)
 GetInServiceNumbers(FILENAME)
-#GetOrders(FILENAME)
-#GetOrderInfo(FILENAME)
+Pagination(FILENAME)
+GetSites(FILENAME)

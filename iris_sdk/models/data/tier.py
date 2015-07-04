@@ -1,18 +1,7 @@
 #!/usr/bin/env python
 
-class TierData(object):
+from iris_sdk.models.base_resource import BaseData
+from iris_sdk.models.maps.tier import TierMap
 
-    @property
-    def tier(self):
-        return self._tier
-    @tier.setter
-    def tier(self, tier):
-        self._tier = tier
-
-class Tier(TierData):
-
-    def __init__(self):
-        self.clear()
-
-    def clear(self):
-        self.tier = None
+class Tier(TierMap, BaseData):
+    pass
