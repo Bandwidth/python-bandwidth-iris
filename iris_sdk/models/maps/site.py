@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-class SiteMap(object):
+from iris_sdk.models.maps.base_map import BaseMap
+
+class SiteMap(BaseMap):
 
     address = None
     customer_name = None

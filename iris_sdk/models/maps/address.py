@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-class AddressMap(object):
+from iris_sdk.models.maps.base_map import BaseMap
+
+class AddressMap(BaseMap):
 
     address_line2 = None
     address_type = None

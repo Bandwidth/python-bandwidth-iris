@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-class AccountMap(object):
+from iris_sdk.models.maps.base_map import BaseMap
+
+class AccountMap(BaseMap):
 
     account_id = None
     account_type = None

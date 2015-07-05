@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
-class TotalsMap(object):
+from iris_sdk.models.maps.base_map import BaseMap
+
+class TotalsMap(BaseMap):
 
     count = None

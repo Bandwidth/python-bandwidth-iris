@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-class ContactMap(object):
+from iris_sdk.models.maps.base_map import BaseMap
+
+class ContactMap(BaseMap):
 
     email = None
     first_name = None

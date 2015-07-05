@@ -11,8 +11,7 @@ class GetSites():
 
         print("\n--- Sites ---\n")
 
-        sites = \
-            acc.sites.list()
+        sites = acc.sites.list()
 
         for site in sites.items:
             print("id: " + (site.id or ""))

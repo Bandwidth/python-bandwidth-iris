@@ -16,9 +16,12 @@ class Sites(SitesMap, BaseResource):
         super().__init__(parent, client)
         self.site = BaseResourceList(Site, self)
 
+    def add(self):
+        return Site(self)
+
+    def get(self, id):
+        return self.add().get(id)
+
     def list(self):
         self.get_data()
         return self.site
-
-    def get(self, id):
-        return Site(self, client).get(id)

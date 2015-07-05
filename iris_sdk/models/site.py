@@ -8,7 +8,7 @@ from iris_sdk.models.data.site import SiteData
 
 #from iris_sdk.models.resource.orders import Orders
 
-XPATH_SITE = "/sites/{}"
+XPATH_SITE = "/{}"
 
 class Site(SiteData, BaseResource):
 

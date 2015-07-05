@@ -1,22 +1,38 @@
 #!/usr/bin/env python
 
-from xml.etree import ElementTree
+from inspect import getmro
+from io import BytesIO
+from xml.etree.ElementTree import Element, ElementTree, fromstring, SubElement
 
+from iris_sdk.models.maps.base_map import BaseMap
 from iris_sdk.utils.strings import Converter
 
+BASE_MAP_SUFFIX = "Map"
 BASE_PROP_CLIENT = "client"
 BASE_PROP_XPATH = "xpath"
 
 class BaseData(object):
 
+    """Base class for everything"""
+
     def clear(self):
+
+        """Flushes the data"""
+
         for prop in dir(self):
+
             property = getattr(self, prop)
+
+            # Might be needed.
             if (prop.startswith("_")) or (prop == BASE_PROP_CLIENT) or \
                     (prop == BASE_PROP_XPATH) or (callable(property)):
                 continue
+
             cleared = False
             _class = property.__class__
+
+            # Everything is either a BaseData, a BaseResourceList or a
+            # BaseResource descendant (which itself inherits from BaseData).
             if (_class == BaseData) or (_class == BaseResourceList):
                 property.clear()
                 cleared = True
@@ -27,12 +43,18 @@ class BaseData(object):
                         property.clear()
                         cleared = True
                         break
+
+            # Built-in types.
             if (not cleared):
                 setattr(self, prop, None)
 
 class BaseResourceList(object):
 
-    """List of instances of "class_type" passed to constructor"""
+    """
+    List of instances of "class_type" passed to constructor.
+    "parent" used to link BaseResource instances and pass their "client"
+    properties.
+    """
 
     def __init__(self, class_type, parent=None):
         self._items = []
@@ -55,22 +77,26 @@ class BaseResourceList(object):
         del self.items[:]
 
 class BaseResourceSimpleList(BaseResourceList):
+
+    """
+    Same as BaseResourceList, but used to store instances with a single
+    property.
+    Just for convenience in XML parsing.
+    """
+
     pass
 
 class BaseResource(BaseData):
 
-    """REST resource"""
+    """
+    REST resource.
+    "client" does http requests,
+    "xpath" returns the REST resource's relative path.
+    """
 
+    _id = None
     _parent = None
     _xpath = ""
-    _id = None
-
-    @property
-    def id(self):
-        return self._id
-    @id.setter
-    def id(self, id):
-        self._id = id
 
     @property
     def client(self):
@@ -78,6 +104,13 @@ class BaseResource(BaseData):
     @client.setter
     def client(self, client):
         self._client = client
+
+    @property
+    def id(self):
+        return self._id
+    @id.setter
+    def id(self, id):
+        self._id = id
 
     @property
     def xpath(self):
@@ -90,17 +123,23 @@ class BaseResource(BaseData):
         if (client is None):
             self._client = parent.client
 
-    # TODO: back - object to xml
-    def _parse_xml(self, element, instance=None):
+    def _from_xml(self, element, instance=None):
 
         """
         Parses XML elements into existing objects, e.g.:
 
-        garply = some_class()
-        garply.foo = some_other_class()
-        garply.foo.bar_baz = None
+        garply = some_class(),
+        garply._node_name = "Foo"
+        garply.bar_baz = some_other_class()
+        garply.bar_baz.qux = None
 
-        <Foo><BarBaz>Qux</Bar></Foo> -> garply.foo.bar_baz equals "qux".
+        <Foo>
+            <BarBaz>
+                <Qux>Corge</Qux>
+            </BarBaz>
+        </Foo>
+
+        garply.bar_baz.qux equals "Corge".
 
         Converts CamelCase names to lowercase underscore ones.
         """
@@ -108,7 +147,7 @@ class BaseResource(BaseData):
         # If instance is None, the tag name to search for in XML data equals
         # class name.
 
-        inst = (self if instance is None else instance)
+        inst = (instance or self)
         class_name = inst.__class__.__name__
 
         node_name = None
@@ -119,7 +158,7 @@ class BaseResource(BaseData):
         if (instance is not None):
             search_name = element.tag
         else:
-            search_name = (class_name if node_name is None else node_name)
+            search_name = (node_name or class_name)
 
         # The provided element is actually the one we're searching for.
         if (element.tag == search_name):
@@ -134,7 +173,6 @@ class BaseResource(BaseData):
             property = None
             if (not hasattr(inst, tag)):
                 # Not the base class.
-                print(tag)
                 if (instance is not None):
                     continue
             else:
@@ -144,7 +182,7 @@ class BaseResource(BaseData):
                 setattr(inst, tag, el.text)
             else:
                 _inst = property
-                # Simple list.
+                # Simple list - multiple "<tag></tag>" lines.
                 if (isinstance(property, BaseResourceSimpleList)):
                     for child in el.getchildren():
                         child_tag = self._converter.to_underscore(child.tag)
@@ -169,7 +207,63 @@ class BaseResource(BaseData):
                     property.items.append(item)
                     _inst = property.items[-1]
                 # Instance's class mirrors the element's structure.
-                self._parse_xml(el, _inst)
+                self._from_xml(el, _inst)
+
+    def _to_xml(self, element=None, instance=None):
+
+        """
+        The opposite of "_from_xml".
+        Lowercase underscore names are converted to CamelCase.
+        TODO: resource lists.
+        """
+
+        inst = (instance or self)
+
+        if (element is None):
+            elem = Element(self.__class__.__name__)
+        else:
+            elem = element
+
+        map = None
+
+        # "Map" is a base class that sets the correspondence between XML
+        # elements and class properties, i.e. what's not in this class doesn't
+        # get written to the file.
+
+        for classtype in getmro(inst.__class__):
+            if (classtype.__name__.endswith(BASE_MAP_SUFFIX) and \
+                    classtype.__name__ != BaseMap.__name__):
+                map = classtype
+                break
+
+        if (map is None):
+            return elem
+
+        for prop in dir(map):
+
+            property = getattr(inst, prop)
+
+            if (prop.startswith("_")) or (callable(property)) or \
+                    (property is None):
+                continue
+
+            el = SubElement(elem, self._converter.to_camelcase(prop))
+
+            if (isinstance(property, BaseMap)):
+                self._to_xml(el, property)
+            else:
+                el.text = property
+
+        return elem
+
+    def _post_data(self, xpath, data):
+        return self._client.post(section=xpath, data=data)
+
+    def _put_data(self, xpath, data):
+        return self._client.put(section=xpath, data=data)
+
+    def delete(self):
+        return self._client.delete(self.get_xpath())
 
     def get(self, id=None, params=None):
         return self.get_data(id, params)
@@ -183,8 +277,8 @@ class BaseResource(BaseData):
         xpath = self.get_xpath()
 
         response_str = self._client.get(xpath, params)
-        root = ElementTree.fromstring(response_str)
-        self._parse_xml(root)
+        root = fromstring(response_str)
+        self._from_xml(root)
 
         return self
 
@@ -198,3 +292,15 @@ class BaseResource(BaseData):
             parent_path = self._parent.get_xpath()
         xpath = parent_path + self._xpath
         return xpath.format(self.id)
+
+    def save(self):
+
+        root = ElementTree(self._to_xml())
+        data = BytesIO()
+        root.write(data, encoding="UTF-8", xml_declaration=True)
+
+        if (self.id is not None):
+            return self._put_data(self.get_xpath(), data.getvalue())
+        else:
+            self.id=self._post_data(self._parent.get_xpath(), data.getvalue())
+            return True

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
-class TierMap(object):
+from iris_sdk.models.maps.base_map import BaseMap
+
+class TierMap(BaseMap):
 
     tier = None

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-class TelephoneNumberMap(object):
+from iris_sdk.models.maps.base_map import BaseMap
+
+class TelephoneNumberMap(BaseMap):
 
     account_id = None
     city = None

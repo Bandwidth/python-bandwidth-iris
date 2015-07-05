@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-class LinksMap(object):
+from iris_sdk.models.maps.base_map import BaseMap
+
+class LinksMap(BaseMap):
 
     first = None
     next = None
