@@ -7,12 +7,13 @@ from iris_sdk.models.maps.in_service_numbers import InServiceNumbersMap
 
 class InServiceNumbersData(InServiceNumbersMap):
 
-    links = Links()
-    telephone_numbers = BaseResourceSimpleList(TelephoneNumber)
-
     @property
     def result_count(self):
         return self.total_count
     @result_count.setter
     def result_count(self, result_count):
         self._result_count = result_count
+
+    def __init__(self):
+        self.links = Links()
+        self.telephone_numbers = BaseResourceSimpleList(TelephoneNumber)

@@ -14,7 +14,7 @@ from iris_sdk.models.data.account import AccountData
 
 XPATH_ACCOUNT = "/accounts/{}"
 
-class Account(AccountData, BaseResource):
+class Account(BaseResource, AccountData):
 
     """Iris account"""
 
@@ -37,6 +37,7 @@ class Account(AccountData, BaseResource):
             self.id = client.config.account_id
             self.account_id = self.id
         super().__init__(parent, client)
+        AccountData.__init__(self)
         self._available_numbers = AvailableNumbers(self, client)
         self._in_service_numbers = InServiceNumbers(self, client)
         self._sites = Sites(self, client)

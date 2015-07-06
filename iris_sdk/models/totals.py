@@ -9,7 +9,7 @@ from iris_sdk.models.maps.totals import TotalsMap
 XML_NAME_IN_SERVICE_NUMBERS_TOTALS = "Quantity"
 XPATH_IN_SERVICE_NUMBERS_TOTALS = "/totals"
 
-class Totals(TotalsMap, BaseResource):
+class Totals(BaseResource, TotalsMap):
 
     """In-service numbers totals for account"""
 

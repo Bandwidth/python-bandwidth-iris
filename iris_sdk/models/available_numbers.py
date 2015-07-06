@@ -1,24 +1,25 @@
 #!/usr/bin/env python
 
+from __future__ import division, absolute_import, print_function
+from future.builtins import super
+
 from iris_sdk.include.xml_consts import XML_PARAM_TN_DETAIL, XML_TRUE
-from iris_sdk.models.base_resource import BaseResource, BaseResourceSimpleList
-from iris_sdk.models.data.telephone_number import TelephoneNumber
-from iris_sdk.models.data.telephone_number_detail_list import \
-    TelephoneNumberDetailList
-from iris_sdk.models.maps.available_numbers import AvailableNumbersMap
+from iris_sdk.models.base_resource import BaseResource
+from iris_sdk.models.data.available_numbers import AvailableNumbersData
 
 XML_NAME_AVAILABLE_NUMBERS = "SearchResult"
 XPATH_AVAILABLE_NUMBERS = "/availableNumbers"
 
-class AvailableNumbers(AvailableNumbersMap, BaseResource):
+class AvailableNumbers(BaseResource, AvailableNumbersData):
 
     """Available numbers for account"""
 
     _node_name = XML_NAME_AVAILABLE_NUMBERS
     _xpath = XPATH_AVAILABLE_NUMBERS
 
-    telephone_number_detail_list = TelephoneNumberDetailList()
-    telephone_number_list = BaseResourceSimpleList(TelephoneNumber)
+    def __init__(self, parent=None, client=None):
+        super().__init__(parent, client)
+        AvailableNumbersData.__init__(self)
 
     def list(self, params=None):
         self.get_data(params=params)

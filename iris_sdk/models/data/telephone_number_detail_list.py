@@ -7,4 +7,5 @@ from iris_sdk.models.maps.telephone_number_detail_list import \
 
 class TelephoneNumberDetailList(TelephoneNumberDetailListMap, BaseData):
 
-    telephone_number_detail = BaseResourceList(TelephoneNumber)
+    def __init__(self):
+        self.telephone_number_detail = BaseResourceList(TelephoneNumber)

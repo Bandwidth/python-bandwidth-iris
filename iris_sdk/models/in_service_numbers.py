@@ -10,7 +10,7 @@ from iris_sdk.models.data.in_service_numbers import InServiceNumbersData
 XML_NAME_IN_SERVICE_NUMBERS = "TNs"
 XPATH_IN_SERVICE_NUMBERS = "/inserviceNumbers"
 
-class InServiceNumbers(InServiceNumbersData, BaseResource):
+class InServiceNumbers(BaseResource, InServiceNumbersData):
 
     """In-service numbers for account"""
 
@@ -23,6 +23,7 @@ class InServiceNumbers(InServiceNumbersData, BaseResource):
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
+        InServiceNumbersData.__init__(self)
         self._totals = Totals(self, client)
 
     def list(self, params=None):

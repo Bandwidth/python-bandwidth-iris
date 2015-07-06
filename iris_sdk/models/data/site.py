@@ -5,4 +5,5 @@ from iris_sdk.models.maps.site import SiteMap
 
 class SiteData(SiteMap):
 
-    address = Address()
+    def __init__(self):
+        self.address = Address()

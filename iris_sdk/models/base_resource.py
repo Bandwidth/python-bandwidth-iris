@@ -9,6 +9,7 @@ from iris_sdk.utils.strings import Converter
 
 BASE_MAP_SUFFIX = "Map"
 BASE_PROP_CLIENT = "client"
+BASE_PROP_ITEMS = "items"
 BASE_PROP_XPATH = "xpath"
 
 class BaseData(object):
@@ -25,7 +26,8 @@ class BaseData(object):
 
             # Might be needed.
             if (prop.startswith("_")) or (prop == BASE_PROP_CLIENT) or \
-                    (prop == BASE_PROP_XPATH) or (callable(property)):
+                    (prop == BASE_PROP_XPATH) or (prop == BASE_PROP_ITEMS) or\
+                    (callable(property)):
                 continue
 
             cleared = False
@@ -56,11 +58,6 @@ class BaseResourceList(object):
     properties.
     """
 
-    def __init__(self, class_type, parent=None):
-        self._items = []
-        self._class_type = class_type
-        self._parent = parent
-
     @property
     def class_type(self):
         return self._class_type
@@ -72,6 +69,19 @@ class BaseResourceList(object):
     @property
     def parent(self):
         return self._parent
+
+    def __init__(self, class_type, parent=None):
+        self._items = []
+        self._class_type = class_type
+        self._parent = parent
+
+    def add(self):
+        if (self.parent is not None):
+            item = self.class_type(self.parent)
+        else:
+            item = self.class_type()
+        self.items.append(item)
+        return item
 
     def clear(self):
         del self.items[:]
@@ -179,7 +189,8 @@ class BaseResource(BaseData):
                 property = getattr(inst, tag)
 
             if (len(el.getchildren()) == 0):
-                setattr(inst, tag, el.text)
+                if (el.text is not None):
+                    setattr(inst, tag, el.text)
             else:
                 _inst = property
                 # Simple list - multiple "<tag></tag>" lines.
@@ -214,7 +225,7 @@ class BaseResource(BaseData):
         """
         The opposite of "_from_xml".
         Lowercase underscore names are converted to CamelCase.
-        TODO: resource lists.
+        TODO: simple resource lists.
         """
 
         inst = (instance or self)
@@ -245,6 +256,12 @@ class BaseResource(BaseData):
 
             if (prop.startswith("_")) or (callable(property)) or \
                     (property is None):
+                continue
+
+            if (isinstance(property, BaseResourceList)):
+                for item in property.items:
+                    el = SubElement(elem, self._converter.to_camelcase(prop))
+                    self._to_xml(el, item)
                 continue
 
             el = SubElement(elem, self._converter.to_camelcase(prop))
