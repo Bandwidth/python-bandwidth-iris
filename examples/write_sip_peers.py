@@ -9,7 +9,7 @@ class WriteSipPeers():
 
         acc = Account(client=self._client)
 
-        print("\n--- Getting peers list ---\n")
+        print("\n--- Writing SIP peers data ---\n")
 
         sites = acc.sites.list()
 

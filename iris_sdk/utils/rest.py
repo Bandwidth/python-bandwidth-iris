@@ -29,12 +29,12 @@ class RestClient(object):
             response.raise_for_status()
             return response
         except requests.exceptions.HTTPError as http_exception:
-            # Logical errors in response body.
+            # Logical errors in response body
             if (response.content!=b"") and (response.status_code>HTTP_OK_MAX):
                 root = ElementTree.fromstring(response.content)
                 error_msg = ERROR_TEMPLATE.format(
                     root[0][0].text, root[0][1].text)
-                # Suppress the HTTP exception.
+                # Suppress the HTTP exception
                 raise_from(RestError(error_msg), None)
             else:
                 raise http_exception

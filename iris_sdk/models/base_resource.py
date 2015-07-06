@@ -7,9 +7,11 @@ from xml.etree.ElementTree import Element, ElementTree, fromstring, SubElement
 from iris_sdk.models.maps.base_map import BaseMap
 from iris_sdk.utils.strings import Converter
 
+BASE_ID_SKIP = -77777;
 BASE_MAP_SUFFIX = "Map"
 BASE_PROP_CLIENT = "client"
 BASE_PROP_ITEMS = "items"
+BASE_PROP_NODE = "_node_name"
 BASE_PROP_XPATH = "xpath"
 
 class BaseData(object):
@@ -24,7 +26,7 @@ class BaseData(object):
 
             property = getattr(self, prop)
 
-            # Might be needed.
+            # Might be needed
             if (prop.startswith("_")) or (prop == BASE_PROP_CLIENT) or \
                     (prop == BASE_PROP_XPATH) or (prop == BASE_PROP_ITEMS) or\
                     (callable(property)):
@@ -46,7 +48,7 @@ class BaseData(object):
                         cleared = True
                         break
 
-            # Built-in types.
+            # Built-in types
             if (not cleared):
                 setattr(self, prop, None)
 
@@ -106,6 +108,7 @@ class BaseResource(BaseData):
 
     _id = None
     _parent = None
+    _node_name = None
     _xpath = ""
 
     @property
@@ -161,16 +164,16 @@ class BaseResource(BaseData):
         class_name = inst.__class__.__name__
 
         node_name = None
-        if hasattr(inst, "_node_name"):
+        if hasattr(inst, BASE_PROP_NODE):
             node_name = inst._node_name
 
-        # Recursive call: instance's class represents the element's structure.
+        # Recursive call: instance's class represents the element's structure
         if (instance is not None):
             search_name = element.tag
         else:
             search_name = (node_name or class_name)
 
-        # The provided element is actually the one we're searching for.
+        # The provided element is actually the one we're searching for
         if (element.tag == search_name):
             element_children = element.getchildren()
         else:
@@ -182,7 +185,7 @@ class BaseResource(BaseData):
 
             property = None
             if (not hasattr(inst, tag)):
-                # Not the base class.
+                # Not the base class
                 if (instance is not None):
                     continue
             else:
@@ -193,7 +196,7 @@ class BaseResource(BaseData):
                     setattr(inst, tag, el.text)
             else:
                 _inst = property
-                # Simple list - multiple "<tag></tag>" lines.
+                # Simple list - multiple "<tag></tag>" lines
                 if (isinstance(property, BaseResourceSimpleList)):
                     for child in el.getchildren():
                         child_tag = self._converter.to_underscore(child.tag)
@@ -202,9 +205,9 @@ class BaseResource(BaseData):
                             setattr(item, child_tag, child.text)
                             property.items.append(item)
                     continue
-                # List of instances - add an item and parse recursively.
+                # List of instances - add an item and parse recursively
                 if (isinstance(property, BaseResourceList)):
-                    # Set parents for REST resources.
+                    # Set parents for REST resources
                     has_parent = False
                     for class_type in property.class_type.__bases__:
                         if class_type == BaseResource:
@@ -217,7 +220,7 @@ class BaseResource(BaseData):
                         item = property.class_type()
                     property.items.append(item)
                     _inst = property.items[-1]
-                # Instance's class mirrors the element's structure.
+                # Instance's class mirrors the element's structure
                 self._from_xml(el, _inst)
 
     def _to_xml(self, element=None, instance=None):
@@ -225,15 +228,17 @@ class BaseResource(BaseData):
         """
         The opposite of "_from_xml".
         Lowercase underscore names are converted to CamelCase.
-        TODO: simple resource lists.
         """
 
         inst = (instance or self)
 
-        if (element is None):
-            elem = Element(self.__class__.__name__)
-        else:
-            elem = element
+        # Renaming the root
+        node_name = inst.__class__.__name__
+        if hasattr(inst, BASE_PROP_NODE):
+            if (inst._node_name is not None):
+                node_name = inst._node_name
+
+        elem = (Element(node_name) if element is None else element)
 
         map = None
 
@@ -258,11 +263,21 @@ class BaseResource(BaseData):
                     (property is None):
                 continue
 
+            # Lists
+
             if (isinstance(property, BaseResourceList)):
                 for item in property.items:
                     el = SubElement(elem, self._converter.to_camelcase(prop))
                     self._to_xml(el, item)
                 continue
+
+            if (isinstance(property, list)) and (prop != BASE_PROP_ITEMS):
+                for item in property:
+                    el = SubElement(elem, self._converter.to_camelcase(prop))
+                    el.text = str(item)
+                continue
+
+            # Everything else
 
             el = SubElement(elem, self._converter.to_camelcase(prop))
 
@@ -313,11 +328,15 @@ class BaseResource(BaseData):
     def save(self):
 
         root = ElementTree(self._to_xml())
-        data = BytesIO()
-        root.write(data, encoding="UTF-8", xml_declaration=True)
+        data_io = BytesIO()
+        root.write(data_io, encoding="UTF-8", xml_declaration=True)
+        data = data_io.getvalue()
 
-        if (self.id is not None):
-            return self._put_data(self.get_xpath(), data.getvalue())
+        if (self.id is not None) and (self.id != BASE_ID_SKIP):
+            return self._put_data(self.get_xpath(), data)
+        elif (self.id == BASE_ID_SKIP):
+            self._post_data(self.get_xpath(), data)
+            return True
         else:
-            self.id=self._post_data(self._parent.get_xpath(), data.getvalue())
+            self.id=self._post_data(self._parent.get_xpath(), data)
             return True

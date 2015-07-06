@@ -71,3 +71,4 @@ deprecated/
 
 # Config
 examples/config.cfg
+*.cfg

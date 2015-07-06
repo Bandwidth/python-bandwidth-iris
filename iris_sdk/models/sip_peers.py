@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 
+from __future__ import division, absolute_import, print_function
+from future.builtins import super
+
 from iris_sdk.models.base_resource import BaseResource, BaseResourceList
 from iris_sdk.models.sip_peer import SipPeer
 from iris_sdk.models.maps.sip_peers import SipPeersMap
 
 XPATH_SIP_PEERS = "/sippeers"
 
-class SipPeers(SipPeersMap, BaseResource):
+class SipPeers(BaseResource, SipPeersMap):
 
-    """Available numbers for account"""
+    """Site's SIP peers"""
 
     _xpath = XPATH_SIP_PEERS
 

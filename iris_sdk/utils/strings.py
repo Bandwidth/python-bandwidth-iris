@@ -5,7 +5,7 @@ from re import sub
 class Converter(object):
 
     """
-    String manipulation.
+    String manipulation
     """
 
     def to_camelcase(self, string):

@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from __future__ import division, absolute_import, print_function
+from future.builtins import super
+
 from iris_sdk.models.base_resource import BaseResource, BaseResourceList
 from iris_sdk.models.site import Site
 from iris_sdk.models.maps.sites import SitesMap
@@ -8,7 +11,7 @@ XPATH_SITES = "/sites"
 
 class Sites(BaseResource, SitesMap):
 
-    """Available numbers for account"""
+    """Account sites"""
 
     _xpath = XPATH_SITES
 

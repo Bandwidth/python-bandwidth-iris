@@ -9,7 +9,7 @@ class WriteSites():
 
         acc = Account(client=self._client)
 
-        print("\n--- Getting sites list ---\n")
+        print("\n--- Writing sites data ---\n")
 
         sites = acc.sites.list()
 

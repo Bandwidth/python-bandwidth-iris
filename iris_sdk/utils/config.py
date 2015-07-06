@@ -55,7 +55,7 @@ class ConfigData(object):
 
 class Config(ConfigData):
 
-    """Reads config settings."""
+    """Reads config settings"""
 
     def __init__(
             self, url=None, account_id=None, username=None, password=None,
@@ -87,7 +87,7 @@ class Config(ConfigData):
           filename: a UTF-8 config file.
       """
 
-      # Skip non-existing and huge files.
+      # Skip non-existing and huge files
 
       if (not os.path.isfile(filename)):
           raise ValueError("Config file doesn't exist")

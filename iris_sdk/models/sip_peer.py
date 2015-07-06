@@ -5,12 +5,12 @@ from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.sip_peer import SipPeerData
-
 from iris_sdk.models.data.address import Address
 from iris_sdk.models.data.calling_name import CallingName
 from iris_sdk.models.data.hosts import Hosts
 from iris_sdk.models.data.termination_hosts import TerminationHosts
 from iris_sdk.models.maps.sip_peer import SipPeerMap
+from iris_sdk.models.movetns import Movetns
 
 XPATH_SIP_PEER = "/{}"
 
@@ -21,6 +21,10 @@ class SipPeer(BaseResource, SipPeerData):
     _xpath = XPATH_SIP_PEER
 
     @property
+    def movetns(self):
+        return self._movetns
+
+    @property
     def name(self):
         return self.peer_name
     @name.setter
@@ -29,14 +33,15 @@ class SipPeer(BaseResource, SipPeerData):
 
     @property
     def peer_id(self):
-        return self._id
+        return self.id
     @peer_id.setter
     def peer_id(self, peer_id):
-        self._id = peer_id
+        self.id = peer_id
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         SipPeerData.__init__(self)
+        self._movetns = Movetns(self, client)
 
     def get(self, id):
         return self.get_data(id)
