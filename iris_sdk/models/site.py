@@ -24,5 +24,5 @@ class Site(BaseResource, SiteData):
         SiteData.__init__(self)
         self._sip_peers = SipPeers(self, client)
 
-    def get(self, id):
-        return self.get_data(id)
+    def get(self, id=None):
+        return self._get_data(id or self.id)

@@ -26,5 +26,5 @@ class Sites(BaseResource, SitesMap):
         return self.add().get(id)
 
     def list(self):
-        self.get_data()
+        self._get_data()
         return self.site

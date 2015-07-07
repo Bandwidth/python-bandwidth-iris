@@ -3,6 +3,7 @@ from examples.get_available_numbers import GetAvailableNumbers
 from examples.get_in_service_numbers import GetInServiceNumbers
 from examples.get_sip_peers import GetSipPeers
 from examples.get_sites import GetSites
+from examples.get_tns import GetTns
 from examples.movetns import Movetns
 from examples.pagination import Pagination
 from examples.write_sip_peers import WriteSipPeers
@@ -21,3 +22,4 @@ WriteSites(fn)
 GetSipPeers(fn)
 WriteSipPeers(fn)
 Movetns(fn)
+GetTns(fn)

@@ -27,7 +27,7 @@ class InServiceNumbers(BaseResource, InServiceNumbersData):
         self._totals = Totals(self, client)
 
     def list(self, params=None):
-        self.get_data(params=params)
+        self._get_data(params=params)
         return self.telephone_numbers
 
     def totals_count(self):

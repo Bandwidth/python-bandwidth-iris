@@ -41,7 +41,7 @@ class BaseData(object):
                 property.clear()
                 cleared = True
             else:
-                for classtype in property.__class__.__bases__:
+                for classtype in getmro(property.__class__):
                     if (classtype==BaseData) or (classtype==BaseResourceList)\
                             or (classtype==BaseResource):
                         property.clear()
@@ -133,7 +133,7 @@ class BaseResource(BaseData):
         self._converter = Converter()
         self._parent = parent
         self._client = client
-        if (client is None):
+        if (client is None) and (parent is not None):
             self._client = parent.client
 
     def _from_xml(self, element, instance=None):
@@ -223,6 +223,29 @@ class BaseResource(BaseData):
                 # Instance's class mirrors the element's structure
                 self._from_xml(el, _inst)
 
+    def _get_data(self, id=None, params=None, xpath=None):
+
+        new_id = (id if id is not None else self.id)
+
+        if (xpath is None):
+            self.clear()
+
+        self.id = new_id
+
+        _xpath = self.get_xpath() + (xpath or "")
+
+        response_str = self._client.get(_xpath, params)
+        root = fromstring(response_str)
+        self._from_xml(root)
+
+        return self
+
+    def _post_data(self, xpath, data):
+        return self._client.post(section=xpath, data=data)
+
+    def _put_data(self, xpath, data):
+        return self._client.put(section=xpath, data=data)
+
     def _to_xml(self, element=None, instance=None):
 
         """
@@ -288,31 +311,11 @@ class BaseResource(BaseData):
 
         return elem
 
-    def _post_data(self, xpath, data):
-        return self._client.post(section=xpath, data=data)
-
-    def _put_data(self, xpath, data):
-        return self._client.put(section=xpath, data=data)
-
     def delete(self):
         return self._client.delete(self.get_xpath())
 
     def get(self, id=None, params=None):
-        return self.get_data(id, params)
-
-    def get_data(self, id=None, params=None):
-
-        self.clear()
-
-        self.id = (id or "")
-
-        xpath = self.get_xpath()
-
-        response_str = self._client.get(xpath, params)
-        root = fromstring(response_str)
-        self._from_xml(root)
-
-        return self
+        return self._get_data(id, params)
 
     def get_status(self, id=None, params=None):
         xpath = self._get_xpath(id)

@@ -43,4 +43,4 @@ class Account(BaseResource, AccountData):
         self._sites = Sites(self, client)
 
     def get(self):
-        return self.get_data(self.id)
+        return self._get_data(self.id)

@@ -21,6 +21,9 @@ class Movetns(BaseResource, MovetnsData):
     def items(self):
         return self.full_number
 
+    def __call__(self):
+        self.save()
+
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         MovetnsData.__init__(self)

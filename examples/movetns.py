@@ -1,5 +1,6 @@
 from iris_sdk.models.account import Account
 from iris_sdk.client import Client
+from iris_sdk.utils.rest import RestError
 
 class Movetns():
 
@@ -21,4 +22,8 @@ class Movetns():
 
         sip_peer.movetns.add(123456789)
         print("moving TNs for peer " +sip_peer.id +", site " +site.id +" ...")
-        sip_peer.movetns.save()
+        print("\n")
+        try:
+            sip_peer.movetns()
+        except RestError as error:
+            print(error)

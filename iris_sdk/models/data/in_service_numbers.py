@@ -2,7 +2,7 @@
 
 from iris_sdk.models.base_resource import BaseResourceSimpleList
 from iris_sdk.models.data.links import Links
-from iris_sdk.models.data.telephone_number import TelephoneNumber
+from iris_sdk.models.data.telephone_number import TelephoneNumberData
 from iris_sdk.models.maps.in_service_numbers import InServiceNumbersMap
 
 class InServiceNumbersData(InServiceNumbersMap):
@@ -16,4 +16,4 @@ class InServiceNumbersData(InServiceNumbersMap):
 
     def __init__(self):
         self.links = Links()
-        self.telephone_numbers = BaseResourceSimpleList(TelephoneNumber)
+        self.telephone_numbers = BaseResourceSimpleList(TelephoneNumberData)

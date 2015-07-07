@@ -6,15 +6,15 @@ from future.builtins import super
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.maps.totals import TotalsMap
 
-XML_NAME_IN_SERVICE_NUMBERS_TOTALS = "Quantity"
-XPATH_IN_SERVICE_NUMBERS_TOTALS = "/totals"
+XML_NAME_TOTALS = "Quantity"
+XPATH_TOTALS = "/totals"
 
 class Totals(BaseResource, TotalsMap):
 
     """In-service numbers totals for account"""
 
-    _node_name = XML_NAME_IN_SERVICE_NUMBERS_TOTALS
-    _xpath = XPATH_IN_SERVICE_NUMBERS_TOTALS
+    _node_name = XML_NAME_TOTALS
+    _xpath = XPATH_TOTALS
 
     def get(self):
-        return self.get_data()
+        return self._get_data()
