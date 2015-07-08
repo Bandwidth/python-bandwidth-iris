@@ -3,7 +3,6 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
-from iris_sdk.include.xml_consts import XML_PARAM_TN_DETAIL, XML_TRUE
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.rate_centers import RateCentersData
 
