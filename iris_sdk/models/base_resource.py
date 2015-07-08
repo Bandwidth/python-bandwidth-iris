@@ -193,7 +193,10 @@ class BaseResource(BaseData):
 
             if (len(el.getchildren()) == 0):
                 if (el.text is not None):
-                    setattr(inst, tag, el.text)
+                    try:
+                        setattr(inst, tag, el.text)
+                    except:
+                        print(tag)
             else:
                 _inst = property
                 # Simple list - multiple "<tag></tag>" lines
@@ -223,18 +226,15 @@ class BaseResource(BaseData):
                 # Instance's class mirrors the element's structure
                 self._from_xml(el, _inst)
 
-    def _get_data(self, id=None, params=None, xpath=None):
+    def _get_data(self, id=None, params=None):
 
-        new_id = (id if id is not None else self.id)
+        new_id = (id or self.id)
 
-        if (xpath is None):
-            self.clear()
+        self.clear()
 
         self.id = new_id
 
-        _xpath = self.get_xpath() + (xpath or "")
-
-        response_str = self._client.get(_xpath, params)
+        response_str = self._client.get(self.get_xpath(), params)
         root = fromstring(response_str)
         self._from_xml(root)
 

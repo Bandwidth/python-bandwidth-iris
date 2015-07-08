@@ -24,20 +24,6 @@ class SipPeer(BaseResource, SipPeerData):
     def movetns(self):
         return self._movetns
 
-    @property
-    def name(self):
-        return self.peer_name
-    @name.setter
-    def name(self, name):
-        self.peer_name = name
-
-    @property
-    def peer_id(self):
-        return self.id
-    @peer_id.setter
-    def peer_id(self, peer_id):
-        self.id = peer_id
-
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         SipPeerData.__init__(self)

@@ -8,6 +8,20 @@ from iris_sdk.models.maps.sip_peer import SipPeerMap
 
 class SipPeerData(SipPeerMap):
 
+    @property
+    def name(self):
+        return self.peer_name
+    @name.setter
+    def name(self, name):
+        self.peer_name = name
+
+    @property
+    def peer_id(self):
+        return self.id
+    @peer_id.setter
+    def peer_id(self, peer_id):
+        self.id = peer_id
+
     def __init__(self):
         self.address = Address()
         self.calling_name = CallingName()

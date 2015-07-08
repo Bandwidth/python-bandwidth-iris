@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 from iris_sdk.models.base_resource import BaseData
-from iris_sdk.models.maps.telephone_number import TelephoneNumberMap
+from iris_sdk.models.data.features import Features
+from iris_sdk.models.maps.tndetails import TndetailsMap
 
-class TelephoneNumberData(TelephoneNumberMap, BaseData):
+class TndetailsData(TndetailsMap, BaseData):
 
     @property
     def id(self):
@@ -19,9 +20,5 @@ class TelephoneNumberData(TelephoneNumberMap, BaseData):
     def last_modified_date(self, last_modified_date):
         self.last_modified = last_modified_date
 
-    @property
-    def telephone_number(self):
-        return self.full_number
-    @telephone_number.setter
-    def telephone_number(self, number):
-        self.full_number = number
+    def __init__(self):
+        self.features = Features()

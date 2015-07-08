@@ -12,7 +12,7 @@ class InServiceNumbersData(InServiceNumbersMap):
         return self.total_count
     @result_count.setter
     def result_count(self, result_count):
-        self._result_count = result_count
+        self.total_count = result_count
 
     def __init__(self):
         self.links = Links()

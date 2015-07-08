@@ -19,7 +19,8 @@ class GetTns():
             print(phone_number.full_number or "")
             print("    account: " + (phone_number.account_id or ""))
             print("    city: " + (phone_number.city or ""))
-            print("    last modified: " + (phone_number.last_modified or ""))
+            print("    last modified: " + \
+                (phone_number.last_modified_date or ""))
             print("    LATA: " + (phone_number.lata or ""))
             print("    rate center: " + (phone_number.rate_center or ""))
             print("    state: " + (phone_number.state or ""))
@@ -28,7 +29,6 @@ class GetTns():
             print("    vendor name: " + (phone_number.vendor_name or ""))
 
         phone = tns.get(7576768750)
-        phone.tndetails()
 
         print("\n")
         print(phone.id or "")

@@ -42,5 +42,6 @@ class Account(BaseResource, AccountData):
         self._in_service_numbers = InServiceNumbers(self, client)
         self._sites = Sites(self, client)
 
-    def get(self):
-        return self._get_data(self.id)
+    def get(self, id=None):
+        get_id = (id if id is not None else self.id)
+        return self._get_data(get_id)
