@@ -7,7 +7,7 @@ class City(CityMap, BaseData):
 
     @property
     def city(self):
-        return name
+        return self.name
     @city.setter
     def city(self, city):
         self.name = city

@@ -3,6 +3,7 @@
 from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
+from iris_sdk.models.account_users import AccountUsers
 from iris_sdk.models.available_numbers import AvailableNumbers
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.in_service_numbers import InServiceNumbers
@@ -32,6 +33,10 @@ class Account(BaseResource, AccountData):
     def sites(self):
         return self._sites
 
+    @property
+    def users(self):
+        return self._users
+
     def __init__(self, parent=None, client=None):
         if (client is not None):
             self.id = client.config.account_id
@@ -41,6 +46,7 @@ class Account(BaseResource, AccountData):
         self._available_numbers = AvailableNumbers(self, client)
         self._in_service_numbers = InServiceNumbers(self, client)
         self._sites = Sites(self, client)
+        self._users = AccountUsers(self, client)
 
     def get(self, id=None):
         get_id = (id if id is not None else self.id)
