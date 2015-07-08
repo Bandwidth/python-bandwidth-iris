@@ -17,3 +17,7 @@ class GetSites():
             print("id: " + (site.id or ""))
             print("    name: " + (site.name or ""))
             print("    description: " + (site.description or ""))
+
+        site = sites.items[-1]
+        totaltns = site.totaltns.get().count
+        print("Site " + (site.id or "") + ", total TNs: " + (totaltns or ""))
