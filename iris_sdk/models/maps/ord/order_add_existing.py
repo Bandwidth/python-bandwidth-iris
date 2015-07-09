@@ -2,12 +2,12 @@
 
 from iris_sdk.models.maps.base_map import BaseMap
 
-class OrderAddNpaMap(BaseMap):
+class OrderAddExistingMap(BaseMap):
 
-    back_order_requested = None
     customer_order_id = None
-    enable_lca = None
+    existing_telephone_number_order_type = None
     name = None
-    npanxx_search_and_order_type = None
     partial_allowed = None
+    peer_id = None
+    reservation_id_list = None
     site_id = None
