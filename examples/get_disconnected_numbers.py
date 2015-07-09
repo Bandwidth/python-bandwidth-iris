@@ -19,3 +19,5 @@ class GetDisconnectedNumbers():
 
         for phone_number in disc_numbers.items:
             print(phone_number.telephone_number)
+
+        print("total: " + acc.disconnected_numbers.totals_count())

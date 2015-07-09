@@ -11,7 +11,7 @@ XPATH_TOTALS = "/totals"
 
 class Totals(BaseResource, TotalsMap):
 
-    """In-service numbers totals for account"""
+    """Telephone numbers totals for resource"""
 
     _node_name = XML_NAME_TOTALS
     _xpath = XPATH_TOTALS
