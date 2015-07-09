@@ -2,6 +2,7 @@ from examples.change_pass import ChangePass
 from examples.get_account_hosts import GetAccountHosts
 from examples.get_account_info import GetAccountInfo
 from examples.get_available_numbers import GetAvailableNumbers
+from examples.get_disconnected_numbers import GetDisconnectedNumbers
 from examples.get_cities import GetCities
 from examples.get_covered_rate_centers import GetCoveredRateCenters
 from examples.get_in_service_numbers import GetInServiceNumbers
@@ -25,6 +26,7 @@ fn = FILENAME
 GetAccountInfo(fn)
 GetAccountHosts(fn)
 GetAvailableNumbers(fn)
+GetDisconnectedNumbers(fn)
 GetInServiceNumbers(fn)
 Pagination(fn)
 GetSites(fn)
