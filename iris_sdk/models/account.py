@@ -6,8 +6,9 @@ from future.builtins import super
 from iris_sdk.models.account_users import AccountUsers
 from iris_sdk.models.available_numbers import AvailableNumbers
 from iris_sdk.models.base_resource import BaseResource
+from iris_sdk.models.site_hosts import SiteHosts
 from iris_sdk.models.in_service_numbers import InServiceNumbers
-from iris_sdk.models.orders import Orders
+#from iris_sdk.models.orders import Orders
 from iris_sdk.models.sites import Sites
 
 from iris_sdk.models.data.account import AccountData
@@ -27,12 +28,16 @@ class Account(BaseResource, AccountData):
         return self._available_numbers
 
     @property
+    def hosts(self):
+        return self._hosts
+
+    @property
     def in_service_numbers(self):
         return self._in_service_numbers
 
-    @property
-    def orders(self):
-        return self._orders
+    #@property
+    #def orders(self):
+    #    return self._orders
 
     @property
     def sites(self):
@@ -49,9 +54,10 @@ class Account(BaseResource, AccountData):
         super().__init__(parent, client)
         AccountData.__init__(self)
         self._available_numbers = AvailableNumbers(self, client)
+        self._hosts = SiteHosts(self, client)
         self._in_service_numbers = InServiceNumbers(self, client)
         self._sites = Sites(self, client)
-        self._orders = Orders(self, client)
+        #self._orders = Orders(self, client)
         self._users = AccountUsers(self, client)
 
     def get(self, id=None):
