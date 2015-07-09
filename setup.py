@@ -16,7 +16,7 @@ setup(
     ],
     install_requires=[
         "future",
-        "mock"
+        "mock",
         "requests",
     ]
 )
