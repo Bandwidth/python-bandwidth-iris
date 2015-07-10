@@ -5,6 +5,7 @@ from future.utils import raise_from
 import requests
 from xml.etree import ElementTree
 
+ERROR_TAG = "ErrorList"
 ERROR_TEMPLATE = "{} Iris error: {}"
 HEADERS = {"content-type": "application/xml"}
 HTTP_OK = 200
@@ -31,9 +32,17 @@ class RestClient(object):
         except requests.exceptions.HTTPError as http_exception:
             # Logical errors in response body
             if (response.content!=b"") and (response.status_code>HTTP_OK_MAX):
-                root = ElementTree.fromstring(response.content)
-                error_msg = ERROR_TEMPLATE.format(
-                    root[0][0].text, root[0][1].text)
+                error_msg = None
+                try:
+                    root = ElementTree.fromstring(response.content)
+                    msg_node = root
+                    # Order responses
+                    el = root.find(ERROR_TAG)
+                    msg_node = (el if el is not None else msg_node)
+                    error_msg = ERROR_TEMPLATE.format(
+                        msg_node[0][0].text, msg_node[0][1].text)
+                except:
+                    error_msg = response.content
                 # Suppress the HTTP exception
                 raise_from(RestError(error_msg), None)
             else:

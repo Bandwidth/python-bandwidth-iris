@@ -6,12 +6,12 @@ from iris_sdk.models.maps.termination_hosts import TerminationHostsMap
 
 class TerminationHosts(TerminationHostsMap, BaseData):
 
-    def add(self):
-        return self.termination_host.add()
-
     @property
     def items(self):
         return self.termination_host.items
 
     def __init__(self):
         self.termination_host = BaseResourceList(Host)
+
+    def add(self):
+        return self.termination_host.add()

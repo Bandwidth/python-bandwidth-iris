@@ -5,6 +5,7 @@ from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.orders import OrdersData
+from iris_sdk.models.order import Order
 
 XML_NAME_ORDERS = "ListOrderIdUserIdDate"
 XPATH_ORDERS = "/orders"
@@ -20,9 +21,11 @@ class Orders(BaseResource, OrdersData):
         super().__init__(parent, client)
         OrdersData.__init__(self, self)
 
-    #def get(self, id):
-    #    return RateCenter(self).get(id)
+    def add(self):
+        return Order(self)
+
+    def get(self, id):
+        return self.add().get(id)
 
     def list(self, params):
-        self._get_data(params=params)
         return self._get_data(params=params).order_id_user_id_date

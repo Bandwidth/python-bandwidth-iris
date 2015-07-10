@@ -16,6 +16,8 @@ from examples.get_tns import GetTns
 from examples.get_users import GetUsers
 from examples.movetns import Movetns
 from examples.pagination import Pagination
+from examples.reserve_number import ReserveNumber
+from examples.write_orders import WriteOrders
 from examples.write_sip_peers import WriteSipPeers
 from examples.write_sites import WriteSites
 
@@ -26,6 +28,7 @@ fn = FILENAME
 GetAccountInfo(fn)
 GetAccountHosts(fn)
 GetAvailableNumbers(fn)
+ReserveNumber(fn)
 GetDisconnectedNumbers(fn)
 GetInServiceNumbers(fn)
 Pagination(fn)
@@ -42,4 +45,5 @@ GetCoveredRateCenters(fn)
 GetCities(fn)
 GetUsers(fn)
 ChangePass(fn)
-#GetOrders(fn)
+GetOrders(fn)
+WriteOrders(fn)

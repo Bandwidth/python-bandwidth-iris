@@ -7,7 +7,6 @@ from xml.etree.ElementTree import Element, ElementTree, fromstring, SubElement
 from iris_sdk.models.maps.base_map import BaseMap
 from iris_sdk.utils.strings import Converter
 
-BASE_ID_SKIP = -77777;
 BASE_MAP_SUFFIX = "Map"
 BASE_PROP_CLIENT = "client"
 BASE_PROP_ITEMS = "items"
@@ -109,7 +108,9 @@ class BaseResource(BaseData):
     _id = None
     _parent = None
     _node_name = None
+    _save_post = False
     _xpath = ""
+    _xpath_save = None
 
     @property
     def client(self):
@@ -193,10 +194,7 @@ class BaseResource(BaseData):
 
             if (len(el.getchildren()) == 0):
                 if (el.text is not None):
-                    try:
-                        setattr(inst, tag, el.text)
-                    except:
-                        print(tag)
+                    setattr(inst, tag, el.text)
             else:
                 _inst = property
                 # Simple list - multiple "<tag></tag>" lines
@@ -243,8 +241,19 @@ class BaseResource(BaseData):
     def _post_data(self, xpath, data):
         return self._client.post(section=xpath, data=data)
 
+    #def _prepare_xml(element):
+    #    for el in element.getchildren():
+    #        if (len(el.getchildren) > 0):
+    #            self.
+
     def _put_data(self, xpath, data):
         return self._client.put(section=xpath, data=data)
+
+    def _serialize(self):
+        root = ElementTree(self._to_xml())
+        data_io = BytesIO()
+        root.write(data_io, encoding="UTF-8", xml_declaration=True)
+        return data_io.getvalue()
 
     def _to_xml(self, element=None, instance=None):
 
@@ -288,6 +297,12 @@ class BaseResource(BaseData):
 
             # Lists
 
+            if (isinstance(property, BaseResourceSimpleList)):
+                for item in property.items:
+                    el = SubElement(elem, self._converter.to_camelcase(prop))
+                    el.text = str(getattr(item, prop))
+                continue
+
             if (isinstance(property, BaseResourceList)):
                 for item in property.items:
                     el = SubElement(elem, self._converter.to_camelcase(prop))
@@ -306,8 +321,10 @@ class BaseResource(BaseData):
 
             if (isinstance(property, BaseMap)):
                 self._to_xml(el, property)
+                if (len(el.getchildren()) == 0) and (el.text is None):
+                    elem.remove(el)
             else:
-                el.text = property
+                el.text = str(property)
 
         return elem
 
@@ -321,25 +338,24 @@ class BaseResource(BaseData):
         xpath = self._get_xpath(id)
         return self._client.get(xpath, params, True)
 
-    def get_xpath(self):
+    def get_xpath(self, save_path=False):
         parent_path = ""
         if (self._parent is not None):
-            parent_path = self._parent.get_xpath()
-        xpath = parent_path + self._xpath
+            parent_path = self._parent.get_xpath(save_path)
+        own_path = self._xpath
+        if (save_path) and (self._xpath_save is not None):
+           own_path = self._xpath_save
+        xpath = parent_path + own_path
         return xpath.format(self.id)
 
     def save(self):
 
-        root = ElementTree(self._to_xml())
-        data_io = BytesIO()
-        root.write(data_io, encoding="UTF-8", xml_declaration=True)
-        data = data_io.getvalue()
+        data = self._serialize()
 
-        if (self.id is not None) and (self.id != BASE_ID_SKIP):
-            return self._put_data(self.get_xpath(), data)
-        elif (self.id == BASE_ID_SKIP):
-            self._post_data(self.get_xpath(), data)
-            return True
+        if (self.id is not None) and (not self._save_post):
+            return self._put_data(self.get_xpath(True), data)
+        elif (self._save_post):
+            self.id = self._post_data(self.get_xpath(True), data)
         else:
-            self.id=self._post_data(self._parent.get_xpath(), data)
+            self.id = self._post_data(self._parent.get_xpath(True), data)
             return True

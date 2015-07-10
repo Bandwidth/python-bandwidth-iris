@@ -1,21 +1,13 @@
 #!/usr/bin/env python
 
-from iris_sdk.models.base_resource import BaseData, BaseResourceList
+from iris_sdk.models.base_resource import BaseData
 from iris_sdk.models.data.error_list import ErrorList
-from iris_sdk.models.data.links import Links
 from iris_sdk.models.data.telephone_number_list import TelephoneNumberList
 from iris_sdk.models.maps.order_response import OrderResponseMap
 
-class OrderReponseData(OrderResponseMap, BaseData):
+class OrderResponseData(OrderResponseMap, BaseData):
 
-    @property
-    def count_of_tns(self):
-        return self.count_of_tn_s
-    @count_of_tns.setter
-    def count_of_tns(self, count_of_tns):
-        self.count_of_tn_s = count_of_tns
-
-    def __init__(self, parent=None):
+    def __init__(self):
         self.completed_numbers = TelephoneNumberList()
         self.error_list = ErrorList()
-        self.links = Links()
+        self.failed_numbers = TelephoneNumberList()
