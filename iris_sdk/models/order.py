@@ -30,3 +30,11 @@ class Order(BaseResource, OrderData):
         order_response = OrderResponse(self._parent)
         order_response.order = self
         return order_response.get((id or self.id))
+
+    def save(self):
+        str = self._save(True)
+        order_response = OrderResponse(self._parent)
+        order_response.order = self
+        order_response._from_xml(self._element_from_string(str))
+        self.order_status = order_response.order_status
+        return True

@@ -5,6 +5,7 @@ from io import BytesIO
 from xml.etree.ElementTree import Element, ElementTree, fromstring, SubElement
 
 from iris_sdk.models.maps.base_map import BaseMap
+from iris_sdk.utils.rest import HTTP_OK
 from iris_sdk.utils.strings import Converter
 
 BASE_MAP_SUFFIX = "Map"
@@ -233,7 +234,7 @@ class BaseResource(BaseData):
         self.id = new_id
 
         response_str = self._client.get(self.get_xpath(), params)
-        root = fromstring(response_str)
+        root = self._element_from_string(response_str)
         self._from_xml(root)
 
         return self
@@ -241,13 +242,39 @@ class BaseResource(BaseData):
     def _post_data(self, xpath, data):
         return self._client.post(section=xpath, data=data)
 
-    #def _prepare_xml(element):
-    #    for el in element.getchildren():
-    #        if (len(el.getchildren) > 0):
-    #            self.
-
     def _put_data(self, xpath, data):
         return self._client.put(section=xpath, data=data)
+
+    def _element_from_string(self, str):
+        return fromstring(str)
+
+    def _save(self, return_content=False):
+
+        data = self._serialize()
+
+        if (self.id is not None) and (not self._save_post):
+            response = self._put_data(self.get_xpath(True), data)
+            if (return_content):
+                return response.content.decode(encoding="UTF-8")
+            else:
+                return response.status_code == HTTP_OK
+
+        resource = (self if self._save_post else self._parent)
+        path = resource.get_xpath(True)
+
+        response = self._post_data(path, data)
+
+        if (return_content):
+            return response.content.decode(encoding="UTF-8")
+
+        location = response.headers["location"]
+        res = ""
+        if (location is not None):
+            pos = location.rfind("/")
+            res = location[pos+1:]
+
+        self.id = (res if res else self.id)
+        return True
 
     def _serialize(self):
         root = ElementTree(self._to_xml())
@@ -349,13 +376,4 @@ class BaseResource(BaseData):
         return xpath.format(self.id)
 
     def save(self):
-
-        data = self._serialize()
-
-        if (self.id is not None) and (not self._save_post):
-            return self._put_data(self.get_xpath(True), data)
-        elif (self._save_post):
-            self.id = self._post_data(self.get_xpath(True), data)
-        else:
-            self.id = self._post_data(self._parent.get_xpath(True), data)
-            return True
+        self._save()

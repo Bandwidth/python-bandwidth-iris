@@ -49,19 +49,12 @@ class Client(object):
         return res
 
     def post(self, section=None, params=None, data=None):
-        location = self._rest.request(
+        return self._rest.request(
                     "POST", self.get_uri(section),
-                    (self.config.username,self.config.password), params, data
-                ).headers["location"]
-        res = ""
-        if (location is not None):
-            pos = location.rfind("/")
-            res = location[pos+1:]
-        return res
+                    (self.config.username,self.config.password), params, data)
 
     def put(self, section=None, params=None, data=None):
-        res = (self._rest.request(
+        return self._rest.request(
                     "PUT", self.get_uri(section),
                     (self.config.username, self.config.password), params, data
-                ).status_code == HTTP_OK)
-        return res
+                )

@@ -11,7 +11,7 @@ class Pagination():
 
         print("\n--- In-service numbers pagination ---\n")
 
-        in_service_numbers = acc.in_service_numbers.list({"page":1, "size":1})
+        in_service_numbers = acc.in_service_numbers.list({"page":1,"size":10})
 
         total_displayed = len(in_service_numbers.items)
         total = int(acc.in_service_numbers.result_count)
@@ -20,7 +20,7 @@ class Pagination():
         while (total_displayed <= total):
             if (page is not None):
                 in_service_numbers = acc.in_service_numbers.list(
-                    {"page": page, "size": 1})
+                    {"page": page, "size": 10})
             page = acc.in_service_numbers.links.next
             for phone_number in in_service_numbers.items:
                 print(phone_number.telephone_number)
