@@ -18,7 +18,8 @@ else:
 
 from requests.exceptions import HTTPError
 
-from iris_sdk.utils.rest import ERROR_TEMPLATE, HEADERS, HTTP_OK, RestClient
+from iris_sdk.utils.rest import ERROR_TAG, ERROR_TEMPLATE, HEADERS, HTTP_OK,\
+    RestClient
 from iris_sdk.utils.rest import RestError
 
 class HttpErrorStub(HTTPError):
@@ -61,6 +62,7 @@ class ClassRestRequestTest(TestCase):
     def test_rest_client_response(self):
 
         self._mock_req_res.content=b"<something><foo>bar</foo><baz>qux</baz>"
+        self._mock_req_res.status_code = HTTP_OK
         self._mock_req_res.raise_for_status = self._stat
 
         self._rest_client.request("GET","foo","bar","baz","qux")
@@ -77,12 +79,13 @@ class ClassRestRequestTest(TestCase):
     def test_rest_client_exception(self, _fromstring):
 
         self._mock_req_res.content = b""
+        self._mock_req_res.status_code = 300
         self._mock_req_res.raise_for_status = self.raise_for_status_stub
 
         with self.assertRaises(HttpErrorStub):
             self._rest_client.request("GET","foo","bar","baz","qux")
 
-        self._mock_req_res.content=b"<something><foo>bar</foo><baz>qux</baz>"
+        self._mock_req_res.content =b"<something><foo>bar</foo><baz>qux</baz>"
 
         _mock = [[0 for i in range(2)] for i in range(1)]
         _m = MagicMock("xml.etree.ElementTree.Element")
@@ -94,10 +97,12 @@ class ClassRestRequestTest(TestCase):
         _fromstring.return_value = _mock
 
         if (PY_VER_MAJOR == 3):
-            with self.assertRaisesRegex(RestError,"bar Iris error: qux"):
+            with self.assertRaisesRegex(RestError,
+                    "<something><foo>bar</foo><baz>qux</baz>"):
                 self._rest_client.request("GET","foo","bar","baz","qux")
         else:
-            with self.assertRaisesRegexp(RestError,"bar Iris error: qux"):
+            with self.assertRaisesRegexp(RestError,
+                    "<something><foo>bar</foo><baz>qux</baz>"):
                 self._rest_client.request("GET","foo","bar","baz","qux")
 
 if __name__ == "__main__":

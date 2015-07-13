@@ -67,11 +67,11 @@ class ClassClientStrings(TestCase):
         del cls._client
 
     def test_client_get_uri_no_section(self):
-        str = self._client.get_uri()
+        str = self._client._get_uri()
         self.assertEqual(str, "foo")
 
     def test_client_get_uri_with_section(self):
-        str = self._client.get_uri("///bar/baz///")
+        str = self._client._get_uri("///bar/baz///")
         self.assertEqual(str, "foo/bar/baz")
 
 class ClassClientRequests(TestCase):
@@ -114,34 +114,31 @@ class ClassClientRequests(TestCase):
         del cls._client
 
     def test_client_delete(self):
-        res = self._client.delete("", "qux")
+        res = self._client.delete("qux")
         self._request.assert_called_once_with("DELETE",
-            self._url.return_value,
-            (self._user.return_value, self._pass.return_value), "qux")
-        self.assertEqual(res, False)
+            url="foo/qux", data=None,
+            auth=(self._user.return_value, self._pass.return_value),
+            params=None)
 
     def test_client_get(self):
         res = self._client.get("", "qux")
-        self._request.assert_called_once_with("GET",
-            url=self._url.return_value,
+        self._request.assert_called_once_with("GET", data=None,
             auth=(self._user.return_value, self._pass.return_value),
-            params="qux")
-        self.assertEqual(res, "foobar")
+            params="qux", url=self._url.return_value,)
 
     def test_client_post(self):
         res = self._client.post("", "qux", "quux")
         self._request.assert_called_once_with("POST",
-            self._url.return_value,
-            (self._user.return_value, self._pass.return_value), "qux", "quux")
-        self.assertEqual(res, "return1")
+            auth=(self._user.return_value, self._pass.return_value),
+            url=self._url.return_value, params="qux", data="quux")
 
     def test_client_put(self):
         self._request.return_value.status_code = 200
         res = self._client.put("", "qux", "quux")
         self._request.assert_called_once_with("PUT",
-            self._url.return_value,
-            (self._user.return_value, self._pass.return_value), "qux", "quux")
-        self.assertEqual(res, True)
+            url=self._url.return_value, data="quux", 
+            auth=(self._user.return_value, self._pass.return_value),
+            params="qux")
 
 if __name__ == "__main__":
     main()
