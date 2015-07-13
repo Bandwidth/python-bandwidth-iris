@@ -71,7 +71,7 @@ class BaseData(object):
                                 attr = BaseResource()
                                 attr.set_from_dict(initial_data[key])
                                 setattr(self, key, attr)
-                            elif isinstance(attr, BaseResource):
+                            elif isinstance(attr, BaseData):
                                 attr.set_from_dict(initial_data[key])
                         elif isinstance(initial_data[key], list):
                             if attr is None:
