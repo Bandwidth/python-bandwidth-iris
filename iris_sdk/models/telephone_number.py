@@ -29,6 +29,13 @@ class TelephoneNumber(BaseResource, TelephoneNumberData):
         return self._history
 
     @property
+    def id(self):
+        return self.full_number
+    @id.setter
+    def id(self, id):
+        self.full_number = id
+
+    @property
     def lca(self):
         return self._lca
 
@@ -68,7 +75,4 @@ class TelephoneNumber(BaseResource, TelephoneNumberData):
         self._tnreservation = TnReservation(self, client)
 
     def get(self, id=None):
-        new_id = (id or self.id)
-        self._get_data(new_id)
-        self.id = new_id
-        return self
+        return self._get_data(id)

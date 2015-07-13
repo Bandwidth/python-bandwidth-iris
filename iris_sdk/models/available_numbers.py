@@ -21,9 +21,9 @@ class AvailableNumbers(BaseResource, AvailableNumbersData):
         super().__init__(parent, client)
         AvailableNumbersData.__init__(self)
 
-    def list(self, params=None):
-        self._get_data(params=params)
+    def list(self, params):
+        self.get(params=params)
         if ((params.get(XML_PARAM_TN_DETAIL, "").lower()) == XML_TRUE):
             return self.telephone_number_detail_list.telephone_number_detail
         else:
-            return self.telephone_number_list
+            return self.telephone_number_list.telephone_number

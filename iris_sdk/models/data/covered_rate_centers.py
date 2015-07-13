@@ -7,13 +7,6 @@ from iris_sdk.models.maps.covered_rate_centers import CoveredRateCentersMap
 
 class CoveredRateCentersData(CoveredRateCentersMap, BaseData):
 
-    @property
-    def result_count(self):
-        return self.total_count
-    @result_count.setter
-    def result_count(self, result_count):
-        self.total_count = result_count
-
     def __init__(self, parent=None):
         self.links = Links()
         self.covered_rate_center = BaseResourceList(RateCenter, parent)

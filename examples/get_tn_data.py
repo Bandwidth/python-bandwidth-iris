@@ -35,13 +35,13 @@ class GetTnData():
 
         print("\nLCA:")
         for npanxx in lca.listof_npanxx.items:
-            print("    " + (npanxx.npanxx or ""))
+            print("    " + (npanxx or ""))
 
         print("LCA rate centers:")
         for center in lca.location.rate_centers.items:
             print("    state: " + (center.state or "center"))
             for rc in center.rcs.items:
-                print("        " + (rc.rc or ""))
+                print("        " + (rc or ""))
 
         print("\nLata: " + (phone_number.tn_lata.get().lata or ""))
 

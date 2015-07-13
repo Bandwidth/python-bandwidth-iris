@@ -5,6 +5,7 @@ install_aliases()
 
 from urllib.parse import parse_qs, urlparse
 
+from iris_sdk.include.xml_consts import XML_PARAM_PAGE
 from iris_sdk.models.base_resource import BaseData
 from iris_sdk.models.maps.links import LinksMap
 
@@ -26,7 +27,7 @@ class Links(LinksMap, BaseData):
             return
         url =(first or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]
         params = parse_qs(urlparse(url).query)
-        self._first = params["page"]
+        self._first = params[XML_PARAM_PAGE]
 
     @property
     def next(self):
@@ -38,4 +39,4 @@ class Links(LinksMap, BaseData):
             return
         url = (next or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]
         params = parse_qs(urlparse(url).query)
-        self._next = params["page"]
+        self._next = params[XML_PARAM_PAGE]

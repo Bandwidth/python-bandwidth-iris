@@ -28,8 +28,4 @@ class InServiceNumbers(BaseResource, InServiceNumbersData):
 
     def list(self, params=None):
         self._get_data(params=params)
-        return self.telephone_numbers
-
-    def totals_count(self):
-        self.totals.get()
-        return self.totals.count
+        return self.telephone_numbers.telephone_number

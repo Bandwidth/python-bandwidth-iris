@@ -28,8 +28,5 @@ class DiscNumbers(BaseResource, DiscNumbersData):
         self._totals = Totals(self)
 
     def list(self, params):
-        return self._get_data(params=params).telephone_number_list
-
-    def totals_count(self):
-        self.totals.get()
-        return self.totals.count
+        return self._get_data(params=params).telephone_numbers.\
+            telephone_number

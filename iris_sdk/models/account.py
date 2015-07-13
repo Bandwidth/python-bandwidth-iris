@@ -4,18 +4,16 @@ from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
 from iris_sdk.models.account_users import AccountUsers
+from iris_sdk.models.available_npa_nxx import AvailableNpaNxx
 from iris_sdk.models.available_numbers import AvailableNumbers
 from iris_sdk.models.base_resource import BaseResource
+from iris_sdk.models.data.account import AccountData
 from iris_sdk.models.disc_numbers import DiscNumbers
 from iris_sdk.models.reservation import Reservation
 from iris_sdk.models.site_hosts import SiteHosts
 from iris_sdk.models.in_service_numbers import InServiceNumbers
 from iris_sdk.models.orders import Orders
 from iris_sdk.models.sites import Sites
-
-from iris_sdk.models.data.account import AccountData
-
-#from iris_sdk.models.resource.orders import Orders
 
 XPATH_ACCOUNT = "/accounts/{}"
 
@@ -26,11 +24,15 @@ class Account(BaseResource, AccountData):
     _xpath = XPATH_ACCOUNT
 
     @property
-    def account_id(self):
-        return self.id
-    @account_id.setter
-    def account_id(self, account_id):
-        self.id = account_id
+    def id(self):
+        return self.account_id
+    @id.setter
+    def id(self, id):
+        self.account_id = id
+
+    @property
+    def available_npa_nxx(self):
+        return self._available_npa_nxx
 
     @property
     def available_numbers(self):
@@ -67,9 +69,9 @@ class Account(BaseResource, AccountData):
     def __init__(self, parent=None, client=None):
         if (client is not None):
             self.id = client.config.account_id
-            self.account_id = self.id
         super().__init__(parent, client)
         AccountData.__init__(self)
+        self._available_npa_nxx = AvailableNpaNxx(self, client)
         self._available_numbers = AvailableNumbers(self, client)
         self._disconnected_numbers = DiscNumbers(self, client)
         self._hosts = SiteHosts(self, client)
@@ -80,5 +82,4 @@ class Account(BaseResource, AccountData):
         self._users = AccountUsers(self, client)
 
     def get(self, id=None):
-        get_id = (id if id is not None else self.id)
-        return self._get_data(get_id)
+        return self._get_data(id)

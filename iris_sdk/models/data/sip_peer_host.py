@@ -7,13 +7,6 @@ from iris_sdk.models.maps.sip_peer_host import SipPeerHostMap
 
 class SipPeerHost(SipPeerHostMap, BaseData):
 
-    @property
-    def id(self):
-        return self.sip_peer_id
-    @id.setter
-    def id(self, id):
-        self.sip_peer_id = id
-
     def __init__(self):
         self.sms_hosts = Hosts()
         self.termination_hosts = Hosts()

@@ -16,11 +16,11 @@ class Order(BaseResource, OrderData):
     _xpath = XPATH_ORDER
 
     @property
-    def order_id(self):
-        return self.id
-    @order_id.setter
-    def order_id(self, order_id):
-        self.id = order_id
+    def id(self):
+        return self.order_id
+    @id.setter
+    def id(self, id):
+        self.order_id = id
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
@@ -29,7 +29,7 @@ class Order(BaseResource, OrderData):
     def get(self, id=None):
         order_response = OrderResponse(self._parent)
         order_response.order = self
-        return order_response.get((id or self.id))
+        return order_response.get(id)
 
     def save(self):
         str = self._save(True)

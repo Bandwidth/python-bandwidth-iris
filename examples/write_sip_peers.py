@@ -1,5 +1,5 @@
-from iris_sdk.models.account import Account
 from iris_sdk.client import Client
+from iris_sdk.models.account import Account
 
 class WriteSipPeers():
 

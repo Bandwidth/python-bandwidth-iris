@@ -1,5 +1,6 @@
-from iris_sdk.models.account import Account
 from iris_sdk.client import Client
+from iris_sdk.include.xml_consts import *
+from iris_sdk.models.account import Account
 
 class GetDisconnectedNumbers():
 
@@ -12,12 +13,13 @@ class GetDisconnectedNumbers():
         print("\n--- Disconnected numbers ---\n")
 
         disc_numbers = \
-            acc.disconnected_numbers.list({"page": 1, "size": 20})
+            acc.disconnected_numbers.list(
+                {XML_PARAM_PAGE: 1, XML_PARAM_SIZE: 20})
 
         print("total for search: " + \
-            (acc.disconnected_numbers.result_count or "0"))
+            (acc.disconnected_numbers.total_count or "0"))
 
         for phone_number in disc_numbers.items:
-            print(phone_number.telephone_number)
+            print(phone_number)
 
-        print("total: " + acc.disconnected_numbers.totals_count())
+        print("total: " + acc.disconnected_numbers.totals.get().count)

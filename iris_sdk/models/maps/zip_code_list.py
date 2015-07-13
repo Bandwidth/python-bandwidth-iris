@@ -2,6 +2,6 @@
 
 from iris_sdk.models.maps.base_map import BaseMap
 
-class TierMap(BaseMap):
+class ZipCodeListMap(BaseMap):
 
-    tier = None
+    zip_code = None

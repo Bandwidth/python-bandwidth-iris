@@ -23,8 +23,8 @@ class WriteOrders():
             print("No available numbers")
             return
 
-        print("ordering tn " + (phone_number.telephone_number or "") + " ...")
-        order.add_tn(phone_number.telephone_number)
+        print("ordering tn " + (phone_number or "") + " ...")
+        order.add_tn(phone_number)
         order.save()
         print("ok, id: " + (order.id or ""))
         print("status: " + (order.order_status or ""))

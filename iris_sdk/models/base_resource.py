@@ -13,6 +13,7 @@ BASE_PROP_CLIENT = "client"
 BASE_PROP_ITEMS = "items"
 BASE_PROP_NODE = "_node_name"
 BASE_PROP_XPATH = "xpath"
+BASE_PROP_XPATH_SEPARATOR = "{"
 
 class BaseData(object):
 
@@ -37,13 +38,15 @@ class BaseData(object):
 
             # Everything is either a BaseData, a BaseResourceList or a
             # BaseResource descendant (which itself inherits from BaseData).
-            if (_class == BaseData) or (_class == BaseResourceList):
+            if (_class == BaseData) or (_class == BaseResourceList) or \
+                    (_class == BaseResourceSimpleList):
                 property.clear()
                 cleared = True
             else:
                 for classtype in getmro(property.__class__):
                     if (classtype==BaseData) or (classtype==BaseResourceList)\
-                            or (classtype==BaseResource):
+                            or (classtype==BaseResource) or \
+                            (classtype==BaseResourceSimpleList):
                         property.clear()
                         cleared = True
                         break
@@ -52,7 +55,27 @@ class BaseData(object):
             if (not cleared):
                 setattr(self, prop, None)
 
-class BaseResourceList(object):
+class BaseResourceSimpleList(object):
+
+    """
+    Used to store simple values.
+    """
+
+    @property
+    def items(self):
+        return self._items
+
+    def __init__(self):
+        self._items = []
+
+    def add(self, value):
+        self.items.append(value)
+        return self.items[-1]
+
+    def clear(self):
+        del self.items[:]
+
+class BaseResourceList(BaseResourceSimpleList):
 
     """
     List of instances of "class_type" passed to constructor.
@@ -65,15 +88,11 @@ class BaseResourceList(object):
         return self._class_type
 
     @property
-    def items(self):
-        return self._items
-
-    @property
     def parent(self):
         return self._parent
 
     def __init__(self, class_type, parent=None):
-        self._items = []
+        BaseResourceSimpleList.__init__(self)
         self._class_type = class_type
         self._parent = parent
 
@@ -85,23 +104,14 @@ class BaseResourceList(object):
         self.items.append(item)
         return item
 
-    def clear(self):
-        del self.items[:]
-
-class BaseResourceSimpleList(BaseResourceList):
-
-    """
-    Same as BaseResourceList, but used to store instances with a single
-    property.
-    Just for convenience in XML parsing.
-    """
-
-    pass
-
 class BaseResource(BaseData):
 
     """
     REST resource.
+
+    "_node_name" - corresponding XML element name,
+    "_save_post" - uses POST if True, PUT - otherwise,
+    "_xpath_save" - if set, uses this for saving,
     "client" does http requests,
     "xpath" returns the REST resource's relative path.
     """
@@ -137,6 +147,9 @@ class BaseResource(BaseData):
         self._client = client
         if (client is None) and (parent is not None):
             self._client = parent.client
+
+    def _element_from_string(self, str):
+        return fromstring(str)
 
     def _from_xml(self, element, instance=None):
 
@@ -195,58 +208,62 @@ class BaseResource(BaseData):
 
             if (len(el.getchildren()) == 0):
                 if (el.text is not None):
-                    setattr(inst, tag, el.text)
-            else:
-                _inst = property
-                # Simple list - multiple "<tag></tag>" lines
-                if (isinstance(property, BaseResourceSimpleList)):
-                    for child in el.getchildren():
-                        child_tag = self._converter.to_underscore(child.tag)
-                        item = property.class_type()
-                        if (hasattr(item, child_tag)):
-                            setattr(item, child_tag, child.text)
-                            property.items.append(item)
-                    continue
-                # List of instances - add an item and parse recursively
-                if (isinstance(property, BaseResourceList)):
-                    # Set parents for REST resources
-                    has_parent = False
-                    for class_type in property.class_type.__bases__:
-                        if class_type == BaseResource:
-                            has_parent = True
-                            break
-                    _class = property.class_type
-                    if (has_parent):
-                        item = property.class_type(property.parent)
+                    # Simple list - multiple "<tag></tag>" lines
+                    if (isinstance(property, BaseResourceSimpleList)):
+                        property.items.append(el.text)
                     else:
-                        item = property.class_type()
-                    property.items.append(item)
-                    _inst = property.items[-1]
-                # Instance's class mirrors the element's structure
-                self._from_xml(el, _inst)
+                        setattr(inst, tag, el.text)
+                continue
+
+            _inst = property
+
+            # List of instances - add an item and parse recursively
+            if (isinstance(property, BaseResourceList)):
+                # Set parents for REST resources
+                has_parent = False
+                for class_type in property.class_type.__bases__:
+                    if class_type == BaseResource:
+                        has_parent = True
+                        break
+                _class = property.class_type
+                if (has_parent):
+                    item = property.class_type(property.parent)
+                else:
+                    item = property.class_type()
+                property.items.append(item)
+                _inst = property.items[-1]
+
+            # Instance's class mirrors the element's structure
+            self._from_xml(el, _inst)
+
+    def _get(self, id=None, params=None):
+
+        new_id = (id or self.id)
+        self.clear()
+        self.id = new_id
+        xpath = self.get_xpath()
+
+        if (self.id is None) and (BASE_PROP_XPATH_SEPARATOR in xpath):
+            raise ValueError("No id specified")
+
+        return self._client.get(self.get_xpath(), params)
 
     def _get_data(self, id=None, params=None):
 
-        new_id = (id or self.id)
-
-        self.clear()
-
-        self.id = new_id
-
-        response_str = self._client.get(self.get_xpath(), params)
-        root = self._element_from_string(response_str)
+        content = self._get(id, params).content.decode(encoding="UTF-8")
+        root = self._element_from_string(content)
         self._from_xml(root)
 
         return self
+
+    def _get_status(self, id=None, params=None):
+        return self._get(id, params).status
 
     def _post_data(self, xpath, data):
         return self._client.post(section=xpath, data=data)
 
     def _put_data(self, xpath, data):
         return self._client.put(section=xpath, data=data)
-
-    def _element_from_string(self, str):
-        return fromstring(str)
 
     def _save(self, return_content=False):
 
@@ -324,20 +341,14 @@ class BaseResource(BaseData):
 
             # Lists
 
-            if (isinstance(property, BaseResourceSimpleList)):
-                for item in property.items:
-                    el = SubElement(elem, self._converter.to_camelcase(prop))
-                    el.text = str(getattr(item, prop))
-                continue
-
             if (isinstance(property, BaseResourceList)):
                 for item in property.items:
                     el = SubElement(elem, self._converter.to_camelcase(prop))
                     self._to_xml(el, item)
                 continue
 
-            if (isinstance(property, list)) and (prop != BASE_PROP_ITEMS):
-                for item in property:
+            if (isinstance(property, BaseResourceSimpleList)):
+                for item in property.items:
                     el = SubElement(elem, self._converter.to_camelcase(prop))
                     el.text = str(item)
                 continue
@@ -356,14 +367,14 @@ class BaseResource(BaseData):
         return elem
 
     def delete(self):
-        return self._client.delete(self.get_xpath())
+        response = self._client.delete(self.get_xpath())
+        return response.status_code == HTTP_OK
 
     def get(self, id=None, params=None):
         return self._get_data(id, params)
 
     def get_status(self, id=None, params=None):
-        xpath = self._get_xpath(id)
-        return self._client.get(xpath, params, True)
+        return self._get_status(self._get_xpath(id), params, True)
 
     def get_xpath(self, save_path=False):
         parent_path = ""

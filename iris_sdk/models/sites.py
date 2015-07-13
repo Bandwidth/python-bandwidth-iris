@@ -4,12 +4,12 @@ from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource, BaseResourceList
+from iris_sdk.models.data.sites import SitesData
 from iris_sdk.models.site import Site
-from iris_sdk.models.maps.sites import SitesMap
 
 XPATH_SITES = "/sites"
 
-class Sites(BaseResource, SitesMap):
+class Sites(BaseResource, SitesData):
 
     """Account sites"""
 
@@ -17,7 +17,7 @@ class Sites(BaseResource, SitesMap):
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
-        self.site = BaseResourceList(Site, self)
+        SitesData.__init__(self, self)
 
     def add(self):
         return Site(self)
@@ -26,5 +26,4 @@ class Sites(BaseResource, SitesMap):
         return self.add().get(id)
 
     def list(self):
-        self._get_data()
-        return self.site
+        return self._get_data().site

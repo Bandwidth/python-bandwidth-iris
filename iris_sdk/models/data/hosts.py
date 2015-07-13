@@ -6,12 +6,12 @@ from iris_sdk.models.maps.hosts import HostsMap
 
 class Hosts(HostsMap, BaseData):
 
-    def add(self):
-        return self.host.add()
-
     @property
     def items(self):
         return self.host.items
 
     def __init__(self):
         self.host = BaseResourceList(Host)
+
+    def add(self):
+        return self.host.add()

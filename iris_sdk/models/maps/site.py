@@ -8,4 +8,5 @@ class SiteMap(BaseMap):
     customer_name = None
     customer_provided_id = None
     description = None
+    id = None
     name = None

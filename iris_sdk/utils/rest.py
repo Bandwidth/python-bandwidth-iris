@@ -36,7 +36,7 @@ class RestClient(object):
                 try:
                     root = ElementTree.fromstring(response.content)
                     msg_node = root
-                    # Order responses
+                    # Data responses
                     el = root.find(ERROR_TAG)
                     msg_node = (el if el is not None else msg_node)
                     error_msg = ERROR_TEMPLATE.format(

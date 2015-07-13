@@ -13,7 +13,7 @@ class GetRateCenters():
 
         rate_centers = rc.list({"state": "NC"})
 
-        print("total for search: " + (rc.result_count or ""))
+        print("total for search: " + (rc.total_count or ""))
 
         for center in rate_centers.items:
-            print((center.abbreviation or "") +"(" +(center.name or "") + ")")
+            print((center.abbreviation or "") +" (" +(center.name or "") +")")

@@ -13,7 +13,7 @@ class GetCoveredRateCenters():
 
         rate_centers = rc.list({"page":1,"size":20})
 
-        print("total for search: " + (rc.result_count or ""))
+        print("total for search: " + (rc.total_count or ""))
 
         for center in rate_centers.items:
             print(center.id or "")
@@ -23,23 +23,23 @@ class GetCoveredRateCenters():
             print("    lata: " + (center.lata or ""))
             print("    tiers:")
             for tier in center.tiers.items:
-                print("        " + (tier.tier or ""))
+                print("        " + (tier or ""))
 
         center = rate_centers.items[0].get()
         print("\n" + (center.name or "") + " (" + (center.id or "") + ")")
         print("    available: " + (center.available_number_count or ""))
         print("    zip codes:")
         for zip in center.zip_codes.items:
-            print("        " + (zip.zip_code or ""))
+            print("        " + (zip or ""))
         print("    cities:")
         for city in center.cities.items:
-            print("        " + (city.city or ""))
+            print("        " + (city or ""))
         print("    tiers:")
         for tier in center.tiers.items:
-            print("        " + (tier.tier or ""))
+            print("        " + (tier or ""))
         print("    NPA-NXX:")
         for npa in center.npa_nxx_xs.items:
-            print("        " + (npa.npa_nxx_x or ""))
+            print("        " + (npa or ""))
         print("    local rate centers:")
         for lrc in center.local_rate_centers.items:
-            print("        " + (lrc.id or ""))
+            print("        " + (lrc or ""))

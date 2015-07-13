@@ -17,19 +17,9 @@ class Movetns(BaseResource, MovetnsData):
     _save_post = True
     _xpath = XPATH_MOVETNS
 
-    @property
-    def items(self):
-        return self.full_number
-
     def __call__(self):
         self.save()
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         MovetnsData.__init__(self)
-
-    def add(self, full_number):
-        self.full_number.append(full_number)
-
-    def clear(self):
-        del self.full_number[:]

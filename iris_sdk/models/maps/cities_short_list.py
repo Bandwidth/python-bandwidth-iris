@@ -2,6 +2,6 @@
 
 from iris_sdk.models.maps.base_map import BaseMap
 
-class ZipCodeMap(BaseMap):
+class CitiesShortListMap(BaseMap):
 
-    zip_code = None
+    city = None

@@ -1,5 +1,5 @@
-from iris_sdk.models.account import Account
 from iris_sdk.client import Client
+from iris_sdk.models.account import Account
 
 class GetAccountHosts():
 
@@ -14,9 +14,9 @@ class GetAccountHosts():
         print("\n--- Account hosts ---\n")
 
         for site_host in hosts.items:
-            print("site " + (site_host.id or ""))
+            print("site " + (site_host.site_id or ""))
             for sip_peer_host in site_host.sip_peer_hosts.items:
-                print("    sip peer " + (sip_peer_host.id or ""))
+                print("    sip peer " + (sip_peer_host.sip_peer_id or ""))
                 print("        sms:")
                 for sms_host in sip_peer_host.sms_hosts.items:
                     print("            host name: " + \

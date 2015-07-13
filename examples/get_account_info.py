@@ -1,5 +1,5 @@
-from iris_sdk.models.account import Account
 from iris_sdk.client import Client
+from iris_sdk.models.account import Account
 
 class GetAccountInfo():
 
@@ -45,7 +45,6 @@ class GetAccountInfo():
         print("spid: " + (acc.spid or ""))
         print("alt. spid: " + (acc.alt_spid or ""))
         print("new sms account: " + (acc.is_new_sms_account or ""))
-
         print("tiers:")
         for tier in acc.tiers.items:
-            print("    " + (tier.tier or ""))
+            print("    " + (tier or ""))

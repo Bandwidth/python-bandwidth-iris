@@ -4,5 +4,6 @@ from iris_sdk.models.maps.base_map import BaseMap
 
 class DiscNumbersMap(BaseMap):
 
-    result_count = None
-    telephone_number_list = None
+    links = None
+    telephone_numbers = None
+    total_count = None

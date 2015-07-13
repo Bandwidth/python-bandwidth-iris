@@ -20,9 +20,9 @@ class ReserveNumber():
             return
 
         reservation = acc.tnreservation
-        reservation.reserved_tn = phone_number.telephone_number
+        reservation.reserved_tn = phone_number
         reservation.save()
-        print(phone_number.telephone_number + " reserved:")
+        print(phone_number + " reserved:")
         reservation.get()
         print("    reservation id: " + (reservation.reservation_id or ""))
         print("    expires: " + (reservation.reservation_expires or ""))
