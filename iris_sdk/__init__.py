@@ -5,6 +5,7 @@ from iris_sdk.models.covered_rate_centers import CoveredRateCenters
 from iris_sdk.models.rate_centers import RateCenters
 from iris_sdk.models.tns import Tns
 from iris_sdk.models.users import Users
+from iris_sdk.utils.rest import RestError
 
 __all__ = ["Client", "Account", "Tns", "Users", "Cities", "RateCenters",
-    "CoveredRateCenters"]
+    "RestError", "CoveredRateCenters"]

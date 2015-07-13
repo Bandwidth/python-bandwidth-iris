@@ -1,6 +1,6 @@
 import sys
 
-from iris_sdk import Client, CoveredRateCenters
+from iris_sdk import Client, CoveredRateCenters, RestError
 
 if len(sys.argv) < 2:
     sys.exit("usage: python covered_rate.py [zip], e.g.:" +
@@ -8,9 +8,14 @@ if len(sys.argv) < 2:
 
 rate_centers = CoveredRateCenters(client=Client(filename="config.cfg"))
 
-rc = rate_centers.list({"zip": sys.argv[1], "page": 1, "size": 30})
+print("\n")
 
-print("\ntotal for search: " + (rate_centers.total_count or ""))
+try:
+    rc = rate_centers.list({"zip": sys.argv[1], "page": 1, "size": 30})
+except RestError as error:
+    sys.exit(error)
+
+print("total for search: " + (rate_centers.total_count or ""))
 
 for center in rc.items:
     print(center.id or "")

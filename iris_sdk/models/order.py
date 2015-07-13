@@ -46,6 +46,7 @@ class Order(BaseResource, OrderData):
     def save(self):
         str = self._save(True)
         order_response = OrderResponse(self._parent)
+        self.clear()
         order_response.order = self
         order_response._from_xml(self._element_from_string(str))
         self.order_status = order_response.order_status
