@@ -407,7 +407,8 @@ class BaseResource(BaseData):
                                 """ attr should be already not None by the moment of calling set_from_dict,
                                 but just in case: """
                                 setattr(self, key, BaseResourceList(BaseResource))
-                            elif isinstance(attr, BaseResourceSimpleList):
+                                attr = getattr(self, key)
+                            if isinstance(attr, BaseResourceSimpleList):
                                 attr.clear()
                                 for list_item in initial_data[key]:
                                     attr.add(list_item)
