@@ -15,5 +15,5 @@ class Password(BaseResource):
     _xpath = XPATH_PASSWORD
 
     def change(self, new_password):
-        self._put_data(self.get_xpath(),
+        self._put(self.get_xpath(),
             PAYLOAD_PASSWORD.format(new_password))

@@ -5,6 +5,7 @@ from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.line_option_order import LineOptionOrderData
+from iris_sdk.models.line_option_order_response import LineOptionOrderResponse
 
 XML_NAME_LINE_OPTION_ORDERS = "LineOptionOrder"
 XPATH_LINE_OPTION_ORDERS = "/lineOptionOrders"
@@ -20,5 +21,6 @@ class LineOptionOrder(BaseResource, LineOptionOrderData):
         super().__init__(parent, client)
         LineOptionOrderData.__init__(self)
 
-    def list(self):
-        return self._get_data().tn_line_options
+    def post(self):
+        _response = LineOptionOrderResponse(self._parent)
+        return self._post_data(_response)

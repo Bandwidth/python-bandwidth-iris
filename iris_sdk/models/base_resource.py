@@ -270,33 +270,39 @@ class BaseResource(BaseData):
             self._from_xml(el, _inst)
 
     def _get(self, id=None, params=None):
-
         new_id = (id or self.id)
         self.clear()
         self.id = new_id
         xpath = self.get_xpath()
-
         if (self.id is None) and (BASE_PROP_XPATH_SEPARATOR in xpath):
             raise ValueError("No id specified")
-
         return self._client.get(self.get_xpath(), params)
 
     def _get_data(self, id=None, params=None):
-
         content = self._get(id, params).content.decode(encoding="UTF-8")
         if content:
             root = self._element_from_string(content)
             self._from_xml(root)
+        return self
 
+    def _post_data(self, response_instance=None):
+        content = self._save(return_content=True)
+        if content:
+            root = self._element_from_string(content)
+            if response_instance is not None:
+                response_instance._from_xml(root)
+                return response_instance
+            else:
+                self._from_xml(root)
         return self
 
     def _get_status(self, id=None, params=None):
         return self._get(id, params).status
 
-    def _post_data(self, xpath, data):
+    def _post(self, xpath, data):
         return self._client.post(section=xpath, data=data)
 
-    def _put_data(self, xpath, data):
+    def _put(self, xpath, data):
         return self._client.put(section=xpath, data=data)
 
     def _save(self, return_content=False):
@@ -304,7 +310,7 @@ class BaseResource(BaseData):
         data = self._serialize()
 
         if (self.id is not None) and (not self._save_post):
-            response = self._put_data(self.get_xpath(True), data)
+            response = self._put(self.get_xpath(True), data)
             if return_content:
                 return response.content.decode(encoding="UTF-8")
             else:
@@ -313,7 +319,7 @@ class BaseResource(BaseData):
         resource = (self if self._save_post else self._parent)
         path = resource.get_xpath(True)
 
-        response = self._post_data(path, data)
+        response = self._post(path, data)
 
         if return_content:
             return response.content.decode(encoding="UTF-8")

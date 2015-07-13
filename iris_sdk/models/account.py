@@ -13,6 +13,8 @@ from iris_sdk.models.reservation import Reservation
 from iris_sdk.models.site_hosts import SiteHosts
 from iris_sdk.models.in_service_numbers import InServiceNumbers
 from iris_sdk.models.orders import Orders
+from iris_sdk.models.disconnects import Disconnects
+from iris_sdk.models.line_option_orders import LineOptionOrder
 from iris_sdk.models.sites import Sites
 
 XPATH_ACCOUNT = "/accounts/{}"
@@ -55,6 +57,14 @@ class Account(BaseResource, AccountData):
         return self._orders
 
     @property
+    def disconnects(self):
+        return self._disconnects
+
+    @property
+    def line_option_orders(self):
+        return self._line_option_orders
+
+    @property
     def sites(self):
         return self._sites
 
@@ -77,6 +87,8 @@ class Account(BaseResource, AccountData):
         self._hosts = SiteHosts(self, client)
         self._in_service_numbers = InServiceNumbers(self, client)
         self._orders = Orders(self, client)
+        self._disconnects = Disconnects(self, client)
+        self._line_option_orders = LineOptionOrder(self, client)
         self._sites = Sites(self, client)
         self._tnreservation = Reservation(self, client)
         self._users = AccountUsers(self, client)
