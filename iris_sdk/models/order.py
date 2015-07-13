@@ -5,6 +5,7 @@ from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.order import OrderData
+from iris_sdk.models.notes import Notes
 from iris_sdk.models.order_response import OrderResponse
 
 XPATH_ORDER = "/{}"
@@ -22,9 +23,14 @@ class Order(BaseResource, OrderData):
     def id(self, id):
         self.order_id = id
 
+    @property
+    def notes(self):
+        return self._notes
+
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         OrderData.__init__(self)
+        self._notes = Notes(self, client)
 
     def get(self, id=None):
         order_response = OrderResponse(self._parent)

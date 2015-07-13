@@ -252,8 +252,9 @@ class BaseResource(BaseData):
     def _get_data(self, id=None, params=None):
 
         content = self._get(id, params).content.decode(encoding="UTF-8")
-        root = self._element_from_string(content)
-        self._from_xml(root)
+        if (content):
+            root = self._element_from_string(content)
+            self._from_xml(root)
 
         return self
 
