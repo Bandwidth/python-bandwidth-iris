@@ -96,11 +96,12 @@ class BaseResourceList(BaseResourceSimpleList):
         self._class_type = class_type
         self._parent = parent
 
-    def add(self):
+    def add(self, initial_data=None):
         if (self.parent is not None):
             item = self.class_type(self.parent)
         else:
             item = self.class_type()
+        item.set_from_dict(initial_data)
         self.items.append(item)
         return item
 
@@ -374,7 +375,7 @@ class BaseResource(BaseData):
         return self._get_data(id, params)
 
     def get_status(self, id=None, params=None):
-        return self._get_status(self._get_xpath(id), params, True)
+        return self._get_status(self.get_xpath(id), params, True)
 
     def get_xpath(self, save_path=False):
         parent_path = ""
@@ -385,6 +386,28 @@ class BaseResource(BaseData):
            own_path = self._xpath_save
         xpath = parent_path + own_path
         return xpath.format(self.id)
+
+    def set_from_dict(self, initial_data=None):
+        if initial_data is not None and isinstance(initial_data, dict):
+            for key in initial_data:
+                if hasattr(self, key):
+                    if isinstance(initial_data[key], basestring):
+                        setattr(self, key, initial_data[key])
+                    else:
+                        attr = getattr(self, key)
+                        if isinstance(initial_data[key], dict):
+                            if attr is None:
+                                setattr(self, key, BaseResource(initial_data[key]))
+                            elif isinstance(attr, BaseResource):
+                                attr.set_from_dict(initial_data[key])
+                        elif isinstance(initial_data[key], list):
+                            if attr is None:
+                                setattr(self, key, BaseResourceList(BaseResource))
+                            elif isinstance(attr, BaseResourceList):
+                                attr.clear()
+                                for list_item in initial_data[key]:
+                                    attr.add(list_item)
+                                setattr(self, key, attr)
 
     def save(self):
         self._save()
