@@ -397,13 +397,17 @@ class BaseResource(BaseData):
                         attr = getattr(self, key)
                         if isinstance(initial_data[key], dict):
                             if attr is None:
+                                """ attr should be already not None by the moment of calling set_from_dict,
+                                but just in case: """
                                 setattr(self, key, BaseResource(initial_data[key]))
                             elif isinstance(attr, BaseResource):
                                 attr.set_from_dict(initial_data[key])
                         elif isinstance(initial_data[key], list):
                             if attr is None:
+                                """ attr should be already not None by the moment of calling set_from_dict,
+                                but just in case: """
                                 setattr(self, key, BaseResourceList(BaseResource))
-                            elif isinstance(attr, BaseResourceList):
+                            elif isinstance(attr, BaseResourceSimpleList):
                                 attr.clear()
                                 for list_item in initial_data[key]:
                                     attr.add(list_item)
