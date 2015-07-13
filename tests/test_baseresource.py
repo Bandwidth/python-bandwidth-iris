@@ -93,7 +93,7 @@ class ClassGetTest(TestCase):
             spec="iris_sdk.utils.config.Config")
 
         get_patched.return_value = ContentStub()
-        get_patched.return_value.content = bytes("jim").encode(encoding="UTF-8")
+        get_patched.return_value.content = bytes("jim").decode(encoding="UTF-8")
 
         _base_resource.client.get = get_patched
         _base_resource._xpath = "fred {}"
