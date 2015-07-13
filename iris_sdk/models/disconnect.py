@@ -4,39 +4,34 @@ from __future__ import division, absolute_import, print_function
 from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
-from iris_sdk.models.data.order import OrderData
+from iris_sdk.models.data.disconnect import DisconnectData
 from iris_sdk.models.notes import Notes
 from iris_sdk.models.order_response import OrderResponse
-from iris_sdk.models.order_tns import OrderTns
 
-XPATH_ORDER = "/{}"
+XML_NAME_DISCONNECT = "DisconnectTelephoneNumberOrder"
+XPATH_DISCONNECT = "/{}"
 
-class Order(BaseResource, OrderData):
+class Disconnect(BaseResource, DisconnectData):
 
-    """Account telephone numbers order"""
+    """Disconnect telephone numbers order for account"""
 
-    _xpath = XPATH_ORDER
+    _xpath = XPATH_DISCONNECT
 
     @property
     def id(self):
-        return self.order_id
+        return self.disconnect_id
     @id.setter
     def id(self, id):
-        self.order_id = id
+        self.disconnect_id = id
 
     @property
     def notes(self):
         return self._notes
 
-    @property
-    def tns(self):
-        return self._tns
-
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
-        OrderData.__init__(self)
+        DisconnectData.__init__(self)
         self._notes = Notes(self, client)
-        self._tns = OrderTns(self, client)
 
     def get(self, id=None, params=None):
         order_response = OrderResponse(self._parent)

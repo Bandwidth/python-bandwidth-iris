@@ -400,7 +400,9 @@ class BaseResource(BaseData):
                             if attr is None:
                                 """ attr should be already not None by the moment of calling set_from_dict,
                                 but just in case: """
-                                setattr(self, key, BaseResource(initial_data[key]))
+                                attr = BaseResource()
+                                attr.set_from_dict(initial_data[key])
+                                setattr(self, key, attr)
                             elif isinstance(attr, BaseResource):
                                 attr.set_from_dict(initial_data[key])
                         elif isinstance(initial_data[key], list):
