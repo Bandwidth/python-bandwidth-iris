@@ -39,9 +39,9 @@ class Order(BaseResource, OrderData):
         self._tns = OrderTns(self, client)
 
     def get(self, id=None, params=None):
-        order_response = OrderResponse(self._parent, params=params)
+        order_response = OrderResponse(self._parent)
         order_response.order = self
-        return order_response.get(id)
+        return order_response.get(id, params=params)
 
     def save(self):
         str = self._save(True)

@@ -28,9 +28,9 @@ class OrderResponse(BaseResource, OrderResponseData):
     def order(self, order):
         self._order = order
 
-    def __init__(self, parent=None, client=None, params=None):
+    def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         OrderResponseData.__init__(self)
 
-    def get(self, id=None):
-        return self._get_data((id or self.id))
+    def get(self, id=None, params=None):
+        return self._get_data((id or self.id), params=params)
