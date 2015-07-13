@@ -7,6 +7,7 @@ setup(
     author           = "Bandwidth",
     maintainer       = "Bandwidth",
     url              = "https://github.com/scottbarstow/iris-python",
+    license          = "MIT",
     packages         = ["iris_sdk"],
     long_description = "Python client library for IRIS / BBS API",
     classifiers = [

@@ -13,7 +13,7 @@
 
 ## Installation
 ```console
-pip install iris_sdk
+pip install -e git+https://github.com/scottbarstow/iris-python#egg=iris_sdk
 ```
 
 ## Testing

@@ -55,6 +55,38 @@ class BaseData(object):
             if (not cleared):
                 setattr(self, prop, None)
 
+    def set_from_dict(self, initial_data=None):
+        if initial_data is not None and isinstance(initial_data, dict):
+            for key in initial_data:
+                if hasattr(self, key):
+                    if isinstance(initial_data[key], basestring):
+                        setattr(self, key, initial_data[key])
+                    else:
+                        attr = getattr(self, key)
+                        if isinstance(initial_data[key], dict):
+                            if attr is None:
+                                """ attr should be already not None by the
+                                moment of calling set_from_dict,
+                                but just in case: """
+                                attr = BaseResource()
+                                attr.set_from_dict(initial_data[key])
+                                setattr(self, key, attr)
+                            elif isinstance(attr, BaseResource):
+                                attr.set_from_dict(initial_data[key])
+                        elif isinstance(initial_data[key], list):
+                            if attr is None:
+                                """ attr should be already not None by the
+                                moment of calling set_from_dict,
+                                but just in case: """
+                                setattr(self, key,
+                                    BaseResourceList(BaseResource))
+                                attr = getattr(self, key)
+                            if isinstance(attr, BaseResourceSimpleList):
+                                attr.clear()
+                                for list_item in initial_data[key]:
+                                    attr.add(list_item)
+                                setattr(self, key, attr)
+
 class BaseResourceSimpleList(object):
 
     """
@@ -387,35 +419,6 @@ class BaseResource(BaseData):
            own_path = self._xpath_save
         xpath = parent_path + own_path
         return xpath.format(self.id)
-
-    def set_from_dict(self, initial_data=None):
-        if initial_data is not None and isinstance(initial_data, dict):
-            for key in initial_data:
-                if hasattr(self, key):
-                    if isinstance(initial_data[key], basestring):
-                        setattr(self, key, initial_data[key])
-                    else:
-                        attr = getattr(self, key)
-                        if isinstance(initial_data[key], dict):
-                            if attr is None:
-                                """ attr should be already not None by the moment of calling set_from_dict,
-                                but just in case: """
-                                attr = BaseResource()
-                                attr.set_from_dict(initial_data[key])
-                                setattr(self, key, attr)
-                            elif isinstance(attr, BaseResource):
-                                attr.set_from_dict(initial_data[key])
-                        elif isinstance(initial_data[key], list):
-                            if attr is None:
-                                """ attr should be already not None by the moment of calling set_from_dict,
-                                but just in case: """
-                                setattr(self, key, BaseResourceList(BaseResource))
-                                attr = getattr(self, key)
-                            if isinstance(attr, BaseResourceSimpleList):
-                                attr.clear()
-                                for list_item in initial_data[key]:
-                                    attr.add(list_item)
-                                setattr(self, key, attr)
 
     def save(self):
         self._save()
