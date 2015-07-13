@@ -38,8 +38,8 @@ class Order(BaseResource, OrderData):
         self._notes = Notes(self, client)
         self._tns = OrderTns(self, client)
 
-    def get(self, id=None):
-        order_response = OrderResponse(self._parent)
+    def get(self, id=None, params=None):
+        order_response = OrderResponse(self._parent, params=params)
         order_response.order = self
         return order_response.get(id)
 

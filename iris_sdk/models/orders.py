@@ -24,8 +24,15 @@ class Orders(BaseResource, OrdersData):
     def add(self):
         return Order(self)
 
-    def get(self, id):
-        return self.add().get(id)
+    def get(self, id, params=None):
+        return self.add().get(id, params=params)
 
     def list(self, params):
         return self._get_data(params=params).order_id_user_id_date
+
+    def create(self, initial_data, save=True):
+        order = self.add()
+        order.set_from_dict(initial_data)
+        if(save):
+            order.save()
+        return order
