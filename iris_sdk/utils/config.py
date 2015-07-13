@@ -6,7 +6,7 @@ import os
 
 from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
-if (PY_VER_MAJOR < 3):
+if PY_VER_MAJOR < 3:
     from io import open
 
 from configparser import ConfigParser
@@ -61,7 +61,7 @@ class Config(ConfigData):
             self, url=None, account_id=None, username=None, password=None,
             filename=None):
 
-        if (filename is None):
+        if filename is None:
             self._account_id = account_id
             self._password = password
             self._url = url
@@ -89,7 +89,7 @@ class Config(ConfigData):
 
       # Skip non-existing and huge files
 
-      if (not os.path.isfile(filename)):
+      if not os.path.isfile(filename):
           raise ValueError("Config file doesn't exist")
 
       if os.path.getsize(filename) > MAX_FILE_SIZE:
@@ -97,8 +97,8 @@ class Config(ConfigData):
 
       with open(filename, encoding="UTF-8") as fp:
           self._parser = ConfigParser(allow_no_value = True)
-          if (PY_VER_MAJOR == 3):
-              self._parser.read_file(fp)
+          if PY_VER_MAJOR == 3:
+              self._parser.readfp(fp)
           else:
               self._parser.readfp(fp)
 

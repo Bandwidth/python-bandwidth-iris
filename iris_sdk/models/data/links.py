@@ -22,7 +22,7 @@ class Links(LinksMap, BaseData):
         return self._first
     @first.setter
     def first(self, first):
-        if (first is None):
+        if first is None:
             self._first = None
             return
         url =(first or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]
@@ -34,7 +34,7 @@ class Links(LinksMap, BaseData):
         return self._next
     @next.setter
     def next(self, next):
-        if (next is None):
+        if next is None:
             self._next = None
             return
         url = (next or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]

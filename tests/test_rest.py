@@ -4,14 +4,14 @@ import os
 import sys
 
 # For coverage.
-if (__package__ == None):
+if __package__ is None:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
 from unittest import main, TestCase
 
-if (PY_VER_MAJOR == 3):
+if PY_VER_MAJOR == 3:
     from unittest.mock import MagicMock, patch
 else:
     from mock import MagicMock, patch
@@ -96,7 +96,7 @@ class ClassRestRequestTest(TestCase):
         _mock[0][1] = _n
         _fromstring.return_value = _mock
 
-        if (PY_VER_MAJOR == 3):
+        if PY_VER_MAJOR == 3:
             with self.assertRaisesRegex(RestError,
                     "<something><foo>bar</foo><baz>qux</baz>"):
                 self._rest_client.request("GET","foo","bar","baz","qux")

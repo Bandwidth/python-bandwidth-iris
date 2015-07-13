@@ -24,6 +24,7 @@ class RestClient(object):
 
         assert method in ("GET", "POST", "DELETE", "PUT")
 
+        response = None
         try:
             response = requests.request(method, url, auth=auth,
                 headers=HEADERS, data=data, params=params)
@@ -31,7 +32,9 @@ class RestClient(object):
             return response
         except requests.exceptions.HTTPError as http_exception:
             # Logical errors in response body
-            if (response.content!=b"") and (response.status_code>HTTP_OK_MAX):
+            if (response is not None and
+                not response.content == b"" and
+                response.status_code>HTTP_OK_MAX):
                 error_msg = None
                 try:
                     root = ElementTree.fromstring(response.content)

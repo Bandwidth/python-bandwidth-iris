@@ -4,14 +4,14 @@ import os
 import sys
 
 # For coverage.
-if (__package__ == None):
+if __package__ is None:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
 from unittest import main, TestCase
 
-if (PY_VER_MAJOR == 3):
+if PY_VER_MAJOR == 3:
     from unittest.mock import patch, MagicMock, PropertyMock
 else:
     from mock import patch, MagicMock, PropertyMock

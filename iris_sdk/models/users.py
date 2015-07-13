@@ -20,6 +20,6 @@ class Users(BaseResource):
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
-        if (client is not None):
+        if client is not None:
             self.id = (client.config.username or "")
         self._password = Password(self, client)

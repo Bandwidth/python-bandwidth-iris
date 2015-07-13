@@ -52,7 +52,7 @@ class BaseData(object):
                         break
 
             # Built-in types
-            if (not cleared):
+            if not cleared:
                 setattr(self, prop, None)
 
     def set_from_dict(self, initial_data=None):
@@ -129,7 +129,7 @@ class BaseResourceList(BaseResourceSimpleList):
         self._parent = parent
 
     def add(self, initial_data=None):
-        if (self.parent is not None):
+        if self.parent is not None:
             item = self.class_type(self.parent)
         else:
             item = self.class_type()
@@ -216,13 +216,13 @@ class BaseResource(BaseData):
             node_name = inst._node_name
 
         # Recursive call: instance's class represents the element's structure
-        if (instance is not None):
+        if instance is not None:
             search_name = element.tag
         else:
             search_name = (node_name or class_name)
 
         # The provided element is actually the one we're searching for
-        if (element.tag == search_name):
+        if element.tag == search_name:
             element_children = element.getchildren()
         else:
             element_children = element.findall(search_name)
@@ -232,17 +232,17 @@ class BaseResource(BaseData):
             tag = self._converter.to_underscore(el.tag)
 
             property = None
-            if (not hasattr(inst, tag)):
+            if not hasattr(inst, tag):
                 # Not the base class
-                if (instance is not None):
+                if instance is not None:
                     continue
             else:
                 property = getattr(inst, tag)
 
-            if (len(el.getchildren()) == 0):
-                if (el.text is not None):
+            if len(el.getchildren()) == 0:
+                if el.text is not None:
                     # Simple list - multiple "<tag></tag>" lines
-                    if (isinstance(property, BaseResourceSimpleList)):
+                    if isinstance(property, BaseResourceSimpleList):
                         property.items.append(el.text)
                     else:
                         setattr(inst, tag, el.text)
@@ -251,15 +251,15 @@ class BaseResource(BaseData):
             _inst = property
 
             # List of instances - add an item and parse recursively
-            if (isinstance(property, BaseResourceList)):
+            if isinstance(property, BaseResourceList):
                 # Set parents for REST resources
                 has_parent = False
                 for class_type in property.class_type.__bases__:
                     if class_type == BaseResource:
                         has_parent = True
                         break
-                _class = property.class_type
-                if (has_parent):
+                self._class = property.class_type
+                if has_parent:
                     item = property.class_type(property.parent)
                 else:
                     item = property.class_type()
@@ -284,7 +284,7 @@ class BaseResource(BaseData):
     def _get_data(self, id=None, params=None):
 
         content = self._get(id, params).content.decode(encoding="UTF-8")
-        if (content):
+        if content:
             root = self._element_from_string(content)
             self._from_xml(root)
 
@@ -305,7 +305,7 @@ class BaseResource(BaseData):
 
         if (self.id is not None) and (not self._save_post):
             response = self._put_data(self.get_xpath(True), data)
-            if (return_content):
+            if return_content:
                 return response.content.decode(encoding="UTF-8")
             else:
                 return response.status_code == HTTP_OK
@@ -315,12 +315,12 @@ class BaseResource(BaseData):
 
         response = self._post_data(path, data)
 
-        if (return_content):
+        if return_content:
             return response.content.decode(encoding="UTF-8")
 
         location = response.headers["location"]
         res = ""
-        if (location is not None):
+        if location is not None:
             pos = location.rfind("/")
             res = location[pos+1:]
 
@@ -345,7 +345,7 @@ class BaseResource(BaseData):
         # Renaming the root
         node_name = inst.__class__.__name__
         if hasattr(inst, BASE_PROP_NODE):
-            if (inst._node_name is not None):
+            if inst._node_name is not None:
                 node_name = inst._node_name
 
         elem = (Element(node_name) if element is None else element)
@@ -357,31 +357,32 @@ class BaseResource(BaseData):
         # get written to the file.
 
         for classtype in getmro(inst.__class__):
-            if (classtype.__name__.endswith(BASE_MAP_SUFFIX) and \
+            if (classtype.__name__.endswith(BASE_MAP_SUFFIX) and
                     classtype.__name__ != BaseMap.__name__):
                 map = classtype
                 break
 
-        if (map is None):
+        if map is None:
             return elem
 
         for prop in dir(map):
 
             property = getattr(inst, prop)
 
-            if (prop.startswith("_")) or (callable(property)) or \
-                    (property is None):
+            if (prop.startswith("_") or
+                callable(property) or
+                property is None):
                 continue
 
             # Lists
 
-            if (isinstance(property, BaseResourceList)):
+            if isinstance(property, BaseResourceList):
                 for item in property.items:
                     el = SubElement(elem, self._converter.to_camelcase(prop))
                     self._to_xml(el, item)
                 continue
 
-            if (isinstance(property, BaseResourceSimpleList)):
+            if isinstance(property, BaseResourceSimpleList):
                 for item in property.items:
                     el = SubElement(elem, self._converter.to_camelcase(prop))
                     el.text = str(item)
@@ -391,7 +392,7 @@ class BaseResource(BaseData):
 
             el = SubElement(elem, self._converter.to_camelcase(prop))
 
-            if (isinstance(property, BaseMap)):
+            if isinstance(property, BaseMap):
                 self._to_xml(el, property)
                 if (len(el.getchildren()) == 0) and (el.text is None):
                     elem.remove(el)
@@ -408,14 +409,14 @@ class BaseResource(BaseData):
         return self._get_data(id, params)
 
     def get_status(self, id=None, params=None):
-        return self._get_status(self.get_xpath(id), params, True)
+        return self._get_status(self.get_xpath(id), params)
 
     def get_xpath(self, save_path=False):
         parent_path = ""
-        if (self._parent is not None):
+        if self._parent is not None:
             parent_path = self._parent.get_xpath(save_path)
         own_path = self._xpath
-        if (save_path) and (self._xpath_save is not None):
+        if save_path and (self._xpath_save is not None):
            own_path = self._xpath_save
         xpath = parent_path + own_path
         return xpath.format(self.id)

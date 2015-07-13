@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 
+from __future__ import division, absolute_import, print_function
+from future.builtins import super
 import os
 import sys
 
 # For coverage.
-if (__package__ == None):
+if __package__ is None:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
 from unittest import main, TestCase
 
-if (PY_VER_MAJOR == 3):
+if PY_VER_MAJOR == 3:
     from unittest.mock import call, MagicMock, patch
 else:
     from mock import call, MagicMock, patch
@@ -91,7 +93,7 @@ class ClassGetTest(TestCase):
             spec="iris_sdk.utils.config.Config")
 
         get_patched.return_value = ContentStub()
-        get_patched.return_value.content = bytes("jim", encoding="UTF-8")
+        get_patched.return_value.content = bytes("jim").encode(encoding="UTF-8")
 
         _base_resource.client.get = get_patched
         _base_resource._xpath = "fred {}"

@@ -23,7 +23,7 @@ class Client(object):
         """http://foo/bar/// + ///bar/// -> http://foo/bar"""
 
         _section = ""
-        if (section is not None):
+        if section is not None:
             _section = section.lstrip('/').rstrip('/')
 
         res = self.config.url.rstrip('/') + ("" if not _section else '/') + \

@@ -67,7 +67,7 @@ class Account(BaseResource, AccountData):
         return self._users
 
     def __init__(self, parent=None, client=None):
-        if (client is not None):
+        if client is not None:
             self.id = client.config.account_id
         super().__init__(parent, client)
         AccountData.__init__(self)

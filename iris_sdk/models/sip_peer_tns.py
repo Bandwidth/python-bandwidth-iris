@@ -23,7 +23,7 @@ class SipPeerTns(BaseResource, SipPeerTnsData):
         SipPeerTnsData.__init__(self, self)
 
     def get(self, id):
-        retutn = SipPeerTelephoneNumber(self).get(id)
+        return SipPeerTelephoneNumber(self).get(id)
 
     def list(self):
         return self._get_data().sip_peer_telephone_numbers.\

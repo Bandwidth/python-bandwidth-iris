@@ -5,14 +5,14 @@ import os
 import sys
 
 # For coverage.
-if (__package__ == None):
+if __package__ is None:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from iris_sdk.utils.py_compat import PY_VER_MAJOR
 
 from unittest import main, TestCase
 
-if (PY_VER_MAJOR == 3):
+if PY_VER_MAJOR == 3:
     from unittest.mock import mock_open, patch
 else:
     from mock import mock_open, patch
@@ -83,7 +83,7 @@ class ClassLoadConfigTest (TestCase) :
     def setUp(self):
         patcher_isfile = patch("os.path.isfile")
         patcher_getsize = patch("os.path.getsize")
-        if (PY_VER_MAJOR == 3):
+        if PY_VER_MAJOR == 3:
             patcher_config_get = patch(
                 'configparser.ConfigParser.get')
             patcher_config_read = patch(
@@ -113,7 +113,7 @@ class ClassLoadConfigTest (TestCase) :
         from iris_sdk.utils import config
 
         m = mock_open()
-        if (PY_VER_MAJOR == 3):
+        if PY_VER_MAJOR == 3:
             m.return_value = StringIO("foobar")
         else:
             m.return_value = StringIO(unicode("foobar"))

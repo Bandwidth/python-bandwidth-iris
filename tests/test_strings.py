@@ -4,7 +4,7 @@ import os
 import sys
 
 # For coverage.
-if (__package__ == None):
+if __package__ is None:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from unittest import main, TestCase

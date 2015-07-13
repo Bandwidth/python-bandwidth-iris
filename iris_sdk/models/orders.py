@@ -33,6 +33,6 @@ class Orders(BaseResource, OrdersData):
     def create(self, initial_data, save=True):
         order = self.add()
         order.set_from_dict(initial_data)
-        if(save):
+        if save:
             order.save()
         return order

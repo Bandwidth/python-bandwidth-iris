@@ -6,7 +6,6 @@ class AccountMap(BaseMap):
 
     account_id = None
     account_type = None
-    account_type = None
     address = None
     alt_spid = None
     company_name = None

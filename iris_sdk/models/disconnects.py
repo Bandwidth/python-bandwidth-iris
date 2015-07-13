@@ -33,6 +33,6 @@ class Disconnects(BaseResource, DisconnectsData):
     def create(self, initial_data, save=True):
         disconnect = self.add()
         disconnect.set_from_dict(initial_data)
-        if(save):
+        if save:
             disconnect.save()
         return disconnect
