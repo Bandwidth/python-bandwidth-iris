@@ -1,6 +1,6 @@
 import sys
 
-from iris_sdk import Account, Client
+from iris_sdk import Account, Client, RestError
 
 if len(sys.argv) < 3:
     sys.exit("usage: python npa_nxx_search.py [area code] [quantity], e.g.:" +
@@ -8,8 +8,13 @@ if len(sys.argv) < 3:
 
 acc = Account(client=Client(filename="config.cfg"))
 
-available_npa = acc.available_npa_nxx.list(
-    {"areaCode": sys.argv[1], "quantity": sys.argv[2]})
+print("\n")
+
+try:
+    available_npa = acc.available_npa_nxx.list(
+        {"areaCode": sys.argv[1], "quantity": sys.argv[2]})
+except RestError as error:
+    sys.exit(error)
 
 for phone_number in available_npa.items:
     print(" - ")
