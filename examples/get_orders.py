@@ -20,3 +20,17 @@ class GetOrders():
             print("    user: " + (order.user_id or ""))
             print("    type: " + (order.order_type or ""))
             print("    status: " + (order.order_status or ""))
+            print("phones:")
+            for phone in order.tns.list().items:
+                print("    " + (phone or ""))
+
+        order = orders.items[-1]
+        notes = order.notes.list()
+        for note in notes.items:
+            print("\n")
+            print(note.user_id)
+            print(note.description)
+        note = order.notes.add()
+        note.description = "foo"
+        note.save()
+        

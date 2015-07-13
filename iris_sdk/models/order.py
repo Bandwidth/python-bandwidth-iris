@@ -7,6 +7,7 @@ from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.order import OrderData
 from iris_sdk.models.notes import Notes
 from iris_sdk.models.order_response import OrderResponse
+from iris_sdk.models.order_tns import OrderTns
 
 XPATH_ORDER = "/{}"
 
@@ -27,10 +28,15 @@ class Order(BaseResource, OrderData):
     def notes(self):
         return self._notes
 
+    @property
+    def tns(self):
+        return self._tns
+
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         OrderData.__init__(self)
         self._notes = Notes(self, client)
+        self._tns = OrderTns(self, client)
 
     def get(self, id=None):
         order_response = OrderResponse(self._parent)
