@@ -9,12 +9,13 @@ from iris_sdk.models.available_numbers import AvailableNumbers
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.account import AccountData
 from iris_sdk.models.disc_numbers import DiscNumbers
+from iris_sdk.models.disconnects import Disconnects
+from iris_sdk.models.in_service_numbers import InServiceNumbers
+from iris_sdk.models.line_option_orders import LineOptionOrder
+from iris_sdk.models.lnp_checker import LnpChecker
+from iris_sdk.models.orders import Orders
 from iris_sdk.models.reservation import Reservation
 from iris_sdk.models.site_hosts import SiteHosts
-from iris_sdk.models.in_service_numbers import InServiceNumbers
-from iris_sdk.models.orders import Orders
-from iris_sdk.models.disconnects import Disconnects
-from iris_sdk.models.line_option_orders import LineOptionOrder
 from iris_sdk.models.sites import Sites
 
 XPATH_ACCOUNT = "/accounts/{}"
@@ -24,13 +25,6 @@ class Account(BaseResource, AccountData):
     """Iris account"""
 
     _xpath = XPATH_ACCOUNT
-
-    @property
-    def id(self):
-        return self.account_id
-    @id.setter
-    def id(self, id):
-        self.account_id = id
 
     @property
     def available_npa_nxx(self):
@@ -45,24 +39,35 @@ class Account(BaseResource, AccountData):
         return self._disconnected_numbers
 
     @property
+    def disconnects(self):
+        return self._disconnects
+
+    @property
     def hosts(self):
         return self._hosts
+
+    @property
+    def id(self):
+        return self.account_id
+    @id.setter
+    def id(self, id):
+        self.account_id = id
 
     @property
     def in_service_numbers(self):
         return self._in_service_numbers
 
     @property
-    def orders(self):
-        return self._orders
-
-    @property
-    def disconnects(self):
-        return self._disconnects
-
-    @property
     def line_option_orders(self):
         return self._line_option_orders
+
+    @property
+    def lnpchecker(self):
+        return self._lnpchecker
+
+    @property
+    def orders(self):
+        return self._orders
 
     @property
     def sites(self):
@@ -84,11 +89,12 @@ class Account(BaseResource, AccountData):
         self._available_npa_nxx = AvailableNpaNxx(self, client)
         self._available_numbers = AvailableNumbers(self, client)
         self._disconnected_numbers = DiscNumbers(self, client)
+        self._disconnects = Disconnects(self, client)
         self._hosts = SiteHosts(self, client)
         self._in_service_numbers = InServiceNumbers(self, client)
-        self._orders = Orders(self, client)
-        self._disconnects = Disconnects(self, client)
         self._line_option_orders = LineOptionOrder(self, client)
+        self._lnpchecker = LnpChecker(self, client)
+        self._orders = Orders(self, client)
         self._sites = Sites(self, client)
         self._tnreservation = Reservation(self, client)
         self._users = AccountUsers(self, client)

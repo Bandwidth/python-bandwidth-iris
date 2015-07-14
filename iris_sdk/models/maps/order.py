@@ -21,10 +21,10 @@ class OrderMap(BaseMap):
     order_status = None
     order_type = None
     peer_id = None
-    rate_center_search_and_order_type = None
-    reservation_id_list = None
     partial_allowed = None
     quantity = None
+    rate_center_search_and_order_type = None
+    reservation_id_list = None
     site_id = None
     state_search_and_order_type = None
     telephone_number_list = None
