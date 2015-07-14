@@ -43,13 +43,6 @@ try:
         "site_id": sys.argv[2],
         "triggered": "false"
     })
-    # or
-    # portin = acc.portins.add()
-    # portin.billing_telephone_number = sys.argv[1]
-    # portin.add_tn(sys.argv[1])
-    # portin.site_id = sys.argv[2]
-    # ...
-    # portin.save()
 except RestError as error:
     sys.exit(error)
 
