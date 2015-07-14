@@ -8,4 +8,4 @@ from iris_sdk.models.lidb import Lidb
 class LidbsData(LidbsMap, BaseData):
 
     def __init__(self, parent=None):
-        self.order_id_user_id_date = BaseResourceList(Lidb, parent)
+        self.lidb_tn_groups = BaseResourceList(Lidb, parent)

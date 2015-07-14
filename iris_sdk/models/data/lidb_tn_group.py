@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+
+from iris_sdk.models.base_resource import BaseData
+from iris_sdk.models.maps.lidb_tn_group import LidbTnGroupMap
+from iris_sdk.models.data.telephone_number_list import TelephoneNumberList
+
+class LidbTnGroupData(LidbTnGroupMap, BaseData):
+
+    telephone_numbers = TelephoneNumberList()

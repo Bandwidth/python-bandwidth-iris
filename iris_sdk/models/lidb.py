@@ -7,12 +7,14 @@ from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.lidb import LidbData
 from iris_sdk.models.lidb_order_response import LidbOrderResponse
 
+XML_NAME_LIDB = "LidbOrder"
 XPATH_LIDB = "/{}"
 
 class Lidb(BaseResource, LidbData):
 
     """ CNAM Update (LIDB) order """
 
+    _node_name = XML_NAME_LIDB
     _xpath = XPATH_LIDB
 
     @property
@@ -28,14 +30,14 @@ class Lidb(BaseResource, LidbData):
 
     def get(self, id=None, params=None):
         order_response = LidbOrderResponse(self._parent)
-        order_response.lidb = self
+        order_response.lidb_order = self
         return order_response.get(id, params=params)
 
     def save(self):
         str = self._save(True)
         order_response = LidbOrderResponse(self._parent)
         self.clear()
-        order_response.lidb = self
+        order_response.lidb_order = self
         order_response._from_xml(self._element_from_string(str))
         self.order_status = order_response.order_status
         return True
