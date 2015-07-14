@@ -8,6 +8,7 @@ from iris_sdk.models.data.listing_name import ListingName
 
 class DldaTnGroupData(DldaTnGroupMap, BaseData):
 
-    telephone_numbers = TelephoneNumberList()
-    listingName = ListingName()
-    address = Address()
+    def __init__(self):
+        self.telephone_numbers = TelephoneNumberList()
+        self.listingName = ListingName()
+        self.address = Address()
