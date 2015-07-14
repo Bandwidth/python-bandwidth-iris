@@ -12,6 +12,7 @@ BASE_MAP_SUFFIX = "Map"
 BASE_PROP_CLIENT = "client"
 BASE_PROP_ITEMS = "items"
 BASE_PROP_NODE = "_node_name"
+BASE_PROP_NODE_SAVE = "_node_name_save"
 BASE_PROP_XPATH = "xpath"
 BASE_PROP_XPATH_SEPARATOR = "{"
 
@@ -152,6 +153,7 @@ class BaseResource(BaseData):
     _id = None
     _parent = None
     _node_name = None
+    _node_name_save = None
     _save_post = False
     _xpath = ""
     _xpath_save = None
@@ -350,9 +352,14 @@ class BaseResource(BaseData):
 
         # Renaming the root
         node_name = inst.__class__.__name__
+
         if hasattr(inst, BASE_PROP_NODE):
             if inst._node_name is not None:
                 node_name = inst._node_name
+
+        if hasattr(inst, BASE_PROP_NODE_SAVE):
+            if inst._node_name_save is not None:
+                node_name = inst._node_name_save
 
         elem = (Element(node_name) if element is None else element)
 

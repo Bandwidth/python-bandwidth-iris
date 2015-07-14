@@ -2,9 +2,9 @@ import sys
 
 from iris_sdk import Account, Client, RestError
 
-if len(sys.argv) < 2:
-    sys.exit("usage: python portin.py [8183386247], e.g.:" +
-        "\npython portin.py 8183386247")
+if len(sys.argv) < 3:
+    sys.exit("usage: python portin.py [phone number] [site id], e.g.:" +
+        "\npython portin.py 8183386247 2297")
 
 acc = Account(client=Client(filename="config.cfg"))
 port_number = sys.argv[1]
@@ -20,4 +20,33 @@ if port_number not in response.portable_numbers.items:
     sys.exit()
 
 print("Number is portable, creating LNP order")
-print(acc._converter.to_underscore("CountOfTNs"))
+
+try:
+    portin = acc.portins.create({
+        "billing_telephone_number": port_number,
+        "subscriber": {
+            "subscriber_type": "BUSINESS",
+            "business_name": "Acme Corporation",
+            "service_address": {
+                "house_number": "1623",
+                "street_name": "Brockton Ave",
+                "city": "Los Angeles",
+                "state_code": "CA",
+                "zip": "90025",
+                "country": "USA"
+            }
+        },
+        "loa_authorizing_person": "John Doe",
+        "list_of_phone_numbers": {
+            "phone_number": [port_number]
+        },
+        "site_id": str(sys.argv[2]),
+        "triggered": "false"
+    })
+    # or
+    # portin = acc.portins.add()
+    # portin.billing_telephone_number = str(sys.argv[1])
+    # ...
+    # portin.save()
+except RestError as error:
+    sys.exit(error)

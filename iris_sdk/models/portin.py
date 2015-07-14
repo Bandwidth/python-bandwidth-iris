@@ -7,6 +7,7 @@ from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.portin import PortInData
 
 XML_NAME_PORTIN = "LnpOrderResponse"
+XML_NAME_PORTIN_SAVE = "LnpOrder"
 XPATH_PORTIN = "/{}"
 
 class PortIn(BaseResource, PortInData):
@@ -14,6 +15,7 @@ class PortIn(BaseResource, PortInData):
     """Local number portability order"""
 
     _node_name = XML_NAME_PORTIN
+    _node_name_save = XML_NAME_PORTIN_SAVE
     _xpath = XPATH_PORTIN
 
     @property

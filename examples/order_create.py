@@ -25,7 +25,7 @@ try:
     # order = acc.orders.add()
     # order.name = "..."
     # ...
-    # order.add_tn([sys.argv[1])
+    # order.add_tn(sys.argv[1])
     # order.save()
 except RestError as error:
     sys.exit(error)
