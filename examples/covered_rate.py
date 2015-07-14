@@ -15,8 +15,6 @@ try:
 except RestError as error:
     sys.exit(error)
 
-print("total for search: " + (rate_centers.total_count or ""))
-
 for center in rc.items:
     print(center.id or "")
     print("    name: " + (center.name or ""))

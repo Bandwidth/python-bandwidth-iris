@@ -11,7 +11,7 @@ acc = Account(client=Client(filename="config.cfg"))
 print("\n")
 
 try:
-    order = acc.orders.create({
+    order = acc.orders.add({
         "name": "Available telephone number order",
         "site_id": "2297",
         "customer_order_id": "123456789",
@@ -21,12 +21,6 @@ try:
             }
         }
     })
-    # or
-    # order = acc.orders.add()
-    # order.name = "..."
-    # ...
-    # order.add_tn(sys.argv[1])
-    # order.save()
 except RestError as error:
     sys.exit(error)
 

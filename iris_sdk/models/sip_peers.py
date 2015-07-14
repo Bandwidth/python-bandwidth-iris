@@ -26,7 +26,7 @@ class SipPeers(BaseResource, SipPeersData):
         return sip_peer
 
     def get(self, id):
-        return self.add().get(id)
+        return self.add(save=False).get(id)
 
     def list(self):
         return self._get_data().sip_peer

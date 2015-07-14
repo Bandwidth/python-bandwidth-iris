@@ -22,13 +22,13 @@ class Orders(BaseResource, OrdersData):
         OrdersData.__init__(self, self)
 
     def add(self, data=None, save=True):
-        order = Order(self).set_from_dict(initial_data)
+        order = Order(self).set_from_dict(data)
         if save:
             order.save()
         return order
 
     def get(self, id, params=None):
-        return self.add().get(id, params=params)
+        return self.add(save=False).get(id, params=params)
 
     def list(self, params):
         return self._get_data(params=params).order_id_user_id_date
