@@ -62,6 +62,10 @@ class Account(BaseResource, AccountData):
         return self._line_option_orders
 
     @property
+    def lidbs(self):
+        return self._lidbs
+
+    @property
     def lnpchecker(self):
         return self._lnpchecker
 
@@ -95,6 +99,7 @@ class Account(BaseResource, AccountData):
         self._line_option_orders = LineOptionOrder(self, client)
         self._lnpchecker = LnpChecker(self, client)
         self._orders = Orders(self, client)
+        self._lidbs = Lidbs(self, client)
         self._sites = Sites(self, client)
         self._tnreservation = Reservation(self, client)
         self._users = AccountUsers(self, client)
