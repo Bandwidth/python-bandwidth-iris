@@ -17,7 +17,7 @@ except RestError as error:
     sys.exit(error)
 
 if port_number not in response.portable_numbers.items:
-    sys.exit()
+    sys.exit("Number isn't portable")
 
 print("Number is portable, creating LNP order")
 
@@ -40,13 +40,31 @@ try:
         "list_of_phone_numbers": {
             "phone_number": [port_number]
         },
-        "site_id": str(sys.argv[2]),
+        "site_id": sys.argv[2],
         "triggered": "false"
     })
     # or
     # portin = acc.portins.add()
-    # portin.billing_telephone_number = str(sys.argv[1])
+    # portin.billing_telephone_number = sys.argv[1]
+    # portin.add_tn(sys.argv[1])
+    # portin.site_id = sys.argv[2]
     # ...
     # portin.save()
 except RestError as error:
     sys.exit(error)
+
+print("Order created: " + (portin.id or ""))
+
+try:
+    fname = portin.loas.add("loa.pdf", {'content-type': 'application/pdf'})
+except RestError as error:
+    sys.exit(error)
+
+print("LOA uploaded: " + (fname or ""))
+
+try:
+    res=portin.loas.update(fname,"loa.pdf",{'content-type':'application/pdf'})
+except RestError as error:
+    sys.exit(error)
+
+print("LOA successfully updated")

@@ -47,10 +47,10 @@ class OrderData(OrderMap, BaseData):
         self.toll_free_wild_char_search_and_order_type = WildcardSearchOrder()
         self.zip_search_and_order_type = ZipSearchOrder()
 
-    def add_reservation(self, id=None):
+    def add_reservation(self, id):
         return self.existing_telephone_number_order_type.\
             reservation_id_list.add(id)
 
-    def add_tn(self, number=None):
+    def add_tn(self, number):
         return self.existing_telephone_number_order_type.\
             telephone_number_list.add(number)

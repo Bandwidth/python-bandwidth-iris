@@ -15,6 +15,7 @@ BASE_PROP_NODE = "_node_name"
 BASE_PROP_NODE_SAVE = "_node_name_save"
 BASE_PROP_XPATH = "xpath"
 BASE_PROP_XPATH_SEPARATOR = "{"
+HEADER_LOCATION = "location"
 
 class BaseData(object):
 
@@ -58,6 +59,7 @@ class BaseData(object):
 
     def set_from_dict(self, initial_data=None):
         if initial_data is not None and isinstance(initial_data, dict):
+            self.clear()
             for key in initial_data:
                 if hasattr(self, key):
                     if isinstance(initial_data[key], basestring):
@@ -87,6 +89,7 @@ class BaseData(object):
                                 for list_item in initial_data[key]:
                                     attr.add(list_item)
                                 setattr(self, key, attr)
+        return self
 
 class BaseResourceSimpleList(object):
 
@@ -304,6 +307,25 @@ class BaseResource(BaseData):
     def _post(self, xpath, data, params):
         return self._client.post(section=xpath, params=params, data=data)
 
+    def _send_file(self, xpath, filename, headers, id=None):
+
+        request = self._client.post
+        if id is not None:
+            request = self._client.put
+
+        with open(filename, 'rb') as file_data:
+            response = request(section=self.get_xpath(True) + xpath,
+                        data=file_data, headers=headers)
+
+        location = None
+        if HEADER_LOCATION in response.headers:
+            location = response.headers[HEADER_LOCATION]
+
+        if location is not None:
+            return location[location.rfind("/")+1:]
+        else:
+            return response.status_code == HTTP_OK
+
     def _put(self, xpath, data):
         return self._client.put(section=xpath, data=data)
 
@@ -326,7 +348,7 @@ class BaseResource(BaseData):
         if return_content:
             return response.content.decode(encoding="UTF-8")
 
-        location = response.headers["location"]
+        location = response.headers[HEADER_LOCATION]
         res = ""
         if location is not None:
             pos = location.rfind("/")

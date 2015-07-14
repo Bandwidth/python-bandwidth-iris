@@ -22,9 +22,9 @@ class Site(BaseResource, SiteData):
     def orders(self):
         return self._orders
 
-    @property
-    def portins(self):
-        return self._portins
+    #@property
+    #def portins(self):
+    #    return self._portins
 
     @property
     def sip_peers(self):
@@ -38,7 +38,7 @@ class Site(BaseResource, SiteData):
         super().__init__(parent, client)
         SiteData.__init__(self)
         self._orders = Orders(self, client)
-        self._portins = PortIns(self, client)
+        #self._portins = PortIns(self, client)
         self._sip_peers = SipPeers(self, client)
         self._totaltns = SiteTotaltns(self, client)
 

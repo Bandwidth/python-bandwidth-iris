@@ -19,8 +19,11 @@ class Sites(BaseResource, SitesData):
         super().__init__(parent, client)
         SitesData.__init__(self, self)
 
-    def add(self):
-        return Site(self)
+    def add(self, data=None, save=True):
+        site = Site(self).set_from_dict(data)
+        if save:
+            site.save()
+        return site
 
     def get(self, id):
         return self.add().get(id)

@@ -31,11 +31,11 @@ class Client(object):
 
         return res
 
-    def _request(self, method, section=None, params=None, data=None):
+    def _request(self,method,section=None,params=None,data=None,headers=None):
         return self._rest.request(
                     method, url=self._get_uri(section),
                     auth=(self.config.username, self.config.password),
-                    params=params, data=data)
+                    params=params, data=data, headers=headers)
 
     def delete(self, section=None):
         return self._request("DELETE", section)
@@ -43,8 +43,8 @@ class Client(object):
     def get(self, section=None, params=None):
         return self._request("GET", section, params)
 
-    def post(self, section=None, params=None, data=None):
-        return self._request("POST", section, params, data)
+    def post(self, section=None, params=None, data=None, headers=None):
+        return self._request("POST", section, params, data, headers)
 
-    def put(self, section=None, params=None, data=None):
-        return self._request("PUT", section, params, data)
+    def put(self, section=None, params=None, data=None, headers=None):
+        return self._request("PUT", section, params, data, headers)

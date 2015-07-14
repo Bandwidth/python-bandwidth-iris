@@ -20,14 +20,15 @@ class RestClient(object):
     HTTP requests wrapper.
     """
 
-    def request(self, method, url, auth, params=None, data=None):
+    def request(self, method, url, auth, params=None, data=None,headers=None):
 
         assert method in ("GET", "POST", "DELETE", "PUT")
 
         response = None
         try:
             response = requests.request(method, url, auth=auth,
-                headers=HEADERS, data=data, params=params)
+                headers=(HEADERS if headers is None else headers),
+                data=data, params=params)
             response.raise_for_status()
             return response
         except requests.exceptions.HTTPError as http_exception:

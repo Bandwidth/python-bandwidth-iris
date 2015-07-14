@@ -22,3 +22,6 @@ class PortInData(PortInMap, BaseData):
         self.status = Error()
         self.subscriber = Subscriber()
         self.wireless_info = WirelessInfo()
+
+    def add_tn(self, number):
+        return self.list_of_phone_numbers.items.add(number)
