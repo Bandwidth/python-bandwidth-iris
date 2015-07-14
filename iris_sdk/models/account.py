@@ -14,6 +14,8 @@ from iris_sdk.models.in_service_numbers import InServiceNumbers
 from iris_sdk.models.line_option_orders import LineOptionOrder
 from iris_sdk.models.lnpchecker import LnpChecker
 from iris_sdk.models.orders import Orders
+from iris_sdk.models.lidbs import Lidbs
+from iris_sdk.models.portins import PortIns
 from iris_sdk.models.reservation import Reservation
 from iris_sdk.models.site_hosts import SiteHosts
 from iris_sdk.models.sites import Sites
@@ -74,6 +76,10 @@ class Account(BaseResource, AccountData):
         return self._orders
 
     @property
+    def portins(self):
+        return self._portins
+
+    @property
     def sites(self):
         return self._sites
 
@@ -99,6 +105,7 @@ class Account(BaseResource, AccountData):
         self._line_option_orders = LineOptionOrder(self, client)
         self._lnpchecker = LnpChecker(self, client)
         self._orders = Orders(self, client)
+        self._portins = PortIns(self, client)
         self._lidbs = Lidbs(self, client)
         self._sites = Sites(self, client)
         self._tnreservation = Reservation(self, client)
