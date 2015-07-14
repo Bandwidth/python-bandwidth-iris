@@ -12,7 +12,7 @@ from iris_sdk.models.disc_numbers import DiscNumbers
 from iris_sdk.models.disconnects import Disconnects
 from iris_sdk.models.in_service_numbers import InServiceNumbers
 from iris_sdk.models.line_option_orders import LineOptionOrder
-from iris_sdk.models.lnp_checker import LnpChecker
+from iris_sdk.models.lnpchecker import LnpChecker
 from iris_sdk.models.orders import Orders
 from iris_sdk.models.reservation import Reservation
 from iris_sdk.models.site_hosts import SiteHosts
