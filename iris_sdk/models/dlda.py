@@ -6,6 +6,7 @@ from future.builtins import super
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.dlda import DldaData
 from iris_sdk.models.dlda_order_response import DldaOrderResponse
+from iris_sdk.models.history import History
 
 XML_NAME_DLDA = "DldaOrder"
 XPATH_DLDA = "/{}"
@@ -24,9 +25,14 @@ class Dlda(BaseResource, DldaData):
     def id(self, id):
         self.order_id = id
 
+    @property
+    def history(self):
+        return self._history
+
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         DldaData.__init__(self)
+        self._history = History(self, client)
 
     def get(self, id=None, params=None):
         order_response = DldaOrderResponse(self._parent)
