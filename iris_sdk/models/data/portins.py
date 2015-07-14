@@ -2,8 +2,8 @@
 
 from iris_sdk.models.base_resource import BaseData, BaseResourceList
 from iris_sdk.models.data.links import Links
-from iris_sdk.models.data.portin import PortIn
 from iris_sdk.models.maps.portins import PortInsMap
+from iris_sdk.models.portin import PortIn
 
 class PortInsData(PortInsMap, BaseData):
 
