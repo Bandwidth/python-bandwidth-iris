@@ -2,7 +2,7 @@
 
 from iris_sdk.models.maps.base_map import BaseMap
 
-class DldaMap(BaseMap):
+class FeatureDldaMap(BaseMap):
 
     address = None
     list_address = None

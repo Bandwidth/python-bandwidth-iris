@@ -14,7 +14,7 @@ class LidbMap(BaseMap):
     order_date = None
     order_status = None
     order_create_date = None
-    processind_status = None
+    processing_status = None
     created_by_user = None
     order_complete_date = None
     error_list = None
