@@ -11,4 +11,4 @@ class LnpRateCenterList(LnpRateCenterListMap, BaseData):
         return self.rate_center_group.items
 
     def __init__(self):
-        self.rate_center_group = BaseResourceList(RateCenterGroup)
+        self.rate_center_group = BaseResourceList(LnpRateCenter)

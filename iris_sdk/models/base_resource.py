@@ -285,8 +285,8 @@ class BaseResource(BaseData):
             self._from_xml(root)
         return self
 
-    def _post_data(self, response_instance=None):
-        content = self._save(return_content=True)
+    def _post_data(self, response_instance=None, params=None):
+        content = self._save(return_content=True, params=params)
         if content:
             root = self._element_from_string(content)
             if response_instance is not None:
@@ -299,13 +299,13 @@ class BaseResource(BaseData):
     def _get_status(self, id=None, params=None):
         return self._get(id, params).status
 
-    def _post(self, xpath, data):
-        return self._client.post(section=xpath, data=data)
+    def _post(self, xpath, data, params):
+        return self._client.post(section=xpath, params=params, data=data)
 
     def _put(self, xpath, data):
         return self._client.put(section=xpath, data=data)
 
-    def _save(self, return_content=False):
+    def _save(self, return_content=False, params=None):
 
         data = self._serialize()
 
@@ -319,7 +319,7 @@ class BaseResource(BaseData):
         resource = (self if self._save_post else self._parent)
         path = resource.get_xpath(True)
 
-        response = self._post(path, data)
+        response = self._post(path, data, params)
 
         if return_content:
             return response.content.decode(encoding="UTF-8")

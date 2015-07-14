@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from iris_sdk.models.base_resource import BaseData, BaseResourceSimpleList
-from iris_sdk.models.maps.ttn_list import TnListMap
+from iris_sdk.models.maps.tn_list import TnListMap
 
 class TnList(TnListMap, BaseData):
 

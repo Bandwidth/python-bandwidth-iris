@@ -2,7 +2,7 @@
 
 from iris_sdk.models.maps.base_map import BaseMap
 
-class LnpCheckerResponse(BaseMap):
+class LnpCheckerResponseMap(BaseMap):
 
     partner_supported_rate_centers = None
     portable_numbers = None
