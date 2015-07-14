@@ -19,7 +19,7 @@ class LidbOrderResponse(BaseResource, LidbOrderResponseData):
         return self.order.order_id
     @id.setter
     def id(self, order_id):
-        self.order.order_id = order_id
+        self.lidb_order.order_id = order_id
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)

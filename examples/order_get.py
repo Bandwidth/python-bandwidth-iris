@@ -15,7 +15,7 @@ try:
 except RestError as error:
     sys.exit(error)
 
-print((order.name or ""))
+print(order.name or "")
 print("    id: " + (order.id or ""))
 print("    site: " + (order.site_id or ""))
 print("    customer order id: " + (order.customer_order_id or ""))
