@@ -16,10 +16,17 @@ class LidbOrderResponse(BaseResource, LidbOrderResponseData):
 
     @property
     def id(self):
-        return self.order.order_id
+        return self.lidb_order.order_id
     @id.setter
     def id(self, order_id):
         self.lidb_order.order_id = order_id
+
+    @property
+    def lidb_order(self):
+        return self._lidb_order
+    @lidb_order.setter
+    def lidb_order(self, lidb_order):
+        self._lidb_order = lidb_order
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)

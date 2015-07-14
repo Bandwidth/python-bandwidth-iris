@@ -16,10 +16,17 @@ class DldaOrderResponse(BaseResource, DldaOrderResponseData):
 
     @property
     def id(self):
-        return self.order.order_id
+        return self.dlda_order.order_id
     @id.setter
     def id(self, order_id):
         self.dlda_order.order_id = order_id
+
+    @property
+    def dlda_order(self):
+        return self._dlda_order
+    @dlda_order.setter
+    def dlda_order(self, dlda_order):
+        self._dlda_order = dlda_order
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
