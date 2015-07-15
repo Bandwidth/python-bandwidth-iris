@@ -5,7 +5,7 @@ from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.subscription import SubscriptionData
-from iris_sdk.models.subscriptions import Subscriptions
+from iris_sdk.models.subscription_response import SubscriptionResponse
 
 XPATH_SUBSCRIPTION = "/{}"
 
@@ -27,13 +27,13 @@ class Subscription(BaseResource, SubscriptionData):
         SubscriptionData.__init__(self)
 
     def get(self, id=None, params=None):
-        subscription_response = Subscriptions(self._parent)
+        subscription_response = SubscriptionResponse(self._parent)
         subscription_response.subscription = self
         return subscription_response.get(id, params=params)
 
     def save(self):
         str = self._save(True)
-        subscription_response = Subscriptions(self._parent)
+        subscription_response = SubscriptionResponse(self._parent)
         self.clear()
         subscription_response.subscription = self
         return True
