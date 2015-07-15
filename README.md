@@ -81,7 +81,7 @@ for site in sites.items:
 
 ### Pagination
 
-Some API objects provide paginated result sets and require the use of
+Some resources provide paginated result sets and require the use of
 page/size parameters. In these cases a Links object will be provided for
 iterating over the results.
 
@@ -124,3 +124,55 @@ cities.list({"state": "NC"})
 ```
 
 ### Covered rate centers
+
+```python
+from iris_sdk import CoveredRateCenters
+
+rate_centers = CoveredRateCenters(client=client)
+rate_centers.list({"page": page, "size": 10})
+```
+
+### Disconnected numbers
+
+```python
+account.disconnected_numbers.list({"areaCode": 919})
+```
+
+### Disconnecting telephone numbers
+
+The Disconnect object is used to disconnect numbers from an account.
+Creates a disconnect order that can be tracked.
+
+#### Creating disconnect orders
+
+```python
+disconnect = account.disconnects.add({
+    "name": "test disconnect order 4",
+    "customer_order_id": "Disconnect1234",
+    "disconnect_telephone_number_order_type": {
+        "telephone_number_list": {
+            "telephone_number": ["9192755378", "9192755703"]
+        }
+    }
+})
+```
+
+#### Getting an order
+
+```python
+disconnect = account.disconnects.get("b902dee1-0585-4258-becd-5c7e51ccf5e1")
+```
+
+#### Adding notes
+
+```python
+disconnect.notes.add({"user_id": "spam", "description": "ham"})
+```
+
+#### Getting all order's notes
+
+```python
+notes = disconnect.notes.list()
+```
+
+### Dlda
