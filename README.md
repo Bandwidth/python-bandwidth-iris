@@ -129,7 +129,7 @@ cities.list({"state": "NC"})
 from iris_sdk import CoveredRateCenters
 
 rate_centers = CoveredRateCenters(client=client)
-rate_centers.list({"page": page, "size": 10})
+rate_centers.list({"page": 1, "size": 10})
 ```
 
 ### Disconnected numbers
@@ -216,7 +216,7 @@ dlda = account->dldas.add({
                     "zip": "Zip",
                     "plus_four": "PlusFour",
                     "country": "Country",
-                    "address_yype": "AddressType"
+                    "address_type": "AddressType"
                 }
             }
         }]
@@ -293,4 +293,116 @@ lidbs = account.lidbs.list({"last_modified_after": "mm-dd-yy",
 
 ```python
 account.lnpChecker(["4109255199", "9196190594"], "true")
+```
+
+### Phone numbers orders
+
+#### Creating orders
+
+```python
+order = account.orders.add({
+    "name": "Available Telephone Number order",
+    "site_id": "2297",
+    "customer_order_id": "123456789",
+    "existing_telephone_number_order_type": {
+        "TelephoneNumberList": {
+            "TelephoneNumber": ["9193752369", "9193752720", "9193752648"]
+        }
+    }
+})
+```
+
+#### Getting order data
+
+```python
+response = account.orders.get("f30a31a1-1de4-4939-b094-4521bbe5c8df")
+order = response.order
+```
+
+#### Getting a list of orders
+
+```python
+orders = account.orders.list()
+```
+
+#### Adding notes
+
+```python
+order.notes.add({"user_id": "spam", "description": "Test Note"})
+```
+
+#### Getting order's telephone numbers
+
+```python
+order.tns.list()
+```
+
+### Port-ins
+
+#### Creating orders
+
+```python
+portin = account.portins.add({
+    "billing_telephone_number": "6882015002",
+    "subscriber": {
+        "subscriber_type": "BUSINESS",
+        "business_name": "Acme Corporation",
+        "service_address": {
+            "house_number": "1623",
+            "street_name": "Brockton Ave",
+            "city": "Los Angeles",
+            "state_code": "CA",
+            "zip": "90025",
+            "country": "USA"
+        }
+    },
+    "loa_authorizing_person": "John Doe",
+    "list_of_phone_numbers": {
+        "phone_number": ["9882015025", "9882015026"]
+    },
+    "site_id": "365",
+    "triggered": "false"
+})
+```
+
+#### Getting order data
+
+```python
+portin = account.portinsget("d28b36f7-fa96-49eb-9556-a40fca49f7c6")
+```
+
+#### Getting a list of orders
+
+```python
+portins = account.portins.list({"pon": "a pon"})
+```
+
+#### Port-in instance methods and properties
+
+```python
+portin.save()
+portin.delete()
+portin.activation_status
+
+status = portin.activation_status
+status.auto_activation_date = "2014-08-30T18:30:00+03:00"
+status.save()
+
+portin.history
+portin.totals
+portin.notes
+```
+
+#### Port-in File Management
+
+```python
+portin.loas.list({"metadata": "true"})
+fname = portin.loas.add("loa.pdf", {'content-type': 'application/pdf'})
+portin.loas.update(fname, "loa.pdf", {'content-type':'application/pdf'})
+portin.loas.delete(fname)
+portin.loas.metadata.get(fname)
+portin.loas.metadata.document_name = "text.txt"
+portin.loas.metadata.document_type = "invoice"
+portin.loas.metadata.save()
+portin.loas.metadata.delete()
 ```
