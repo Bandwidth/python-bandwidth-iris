@@ -13,7 +13,7 @@
 
 ## Install
 ```console
-pip install -e git+https://github.com/scottbarstow/iris-python#egg=iris_sdk
+pip install --user -e git+https://github.com/scottbarstow/iris-python#egg=iris_sdk
 ```
 
 ## Testing
@@ -44,7 +44,7 @@ username   = spam
 password   = ham
 
 [rest]
-url = http://foo.bar
+url = https://api.inetwork.com/v1.0
 ```
 
 ## Examples
