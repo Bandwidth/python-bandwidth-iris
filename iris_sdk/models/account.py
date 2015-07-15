@@ -18,6 +18,7 @@ from iris_sdk.models.lidbs import Lidbs
 from iris_sdk.models.dldas import Dldas
 #from iris_sdk.models.subscriptions import Subscriptions
 from iris_sdk.models.portins import PortIns
+from iris_sdk.models.portouts import PortOuts
 from iris_sdk.models.reservation import Reservation
 from iris_sdk.models.site_hosts import SiteHosts
 from iris_sdk.models.sites import Sites
@@ -47,6 +48,10 @@ class Account(BaseResource, AccountData):
         return self._disconnects
 
     @property
+    def dldas(self):
+        return self._dldas
+
+    @property
     def hosts(self):
         return self._hosts
 
@@ -62,20 +67,12 @@ class Account(BaseResource, AccountData):
         return self._in_service_numbers
 
     @property
-    def line_option_orders(self):
-        return self._line_option_orders
-
-    @property
     def lidbs(self):
         return self._lidbs
 
     @property
-    def dldas(self):
-        return self._dldas
-
-    @property
-    def subscriptions(self):
-        return self._subscriptions
+    def line_option_orders(self):
+        return self._line_option_orders
 
     @property
     def lnpchecker(self):
@@ -90,8 +87,16 @@ class Account(BaseResource, AccountData):
         return self._portins
 
     @property
+    def portouts(self):
+        return self._portouts
+
+    @property
     def sites(self):
         return self._sites
+
+    @property
+    def subscriptions(self):
+        return self._subscriptions
 
     @property
     def tnreservation(self):
@@ -116,6 +121,7 @@ class Account(BaseResource, AccountData):
         self._lnpchecker = LnpChecker(self, client)
         self._orders = Orders(self, client)
         self._portins = PortIns(self, client)
+        self._portouts = PortOuts(self, client)
         self._lidbs = Lidbs(self, client)
         self._dldas = Dldas(self, client)
         #self._subscriptions = Subscriptions(self, client)

@@ -7,7 +7,7 @@ from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.tn_history import TnHistoryData
 
 XML_NAME_HISTORY_TN = "TelephoneNumberStatuses"
-XPATH_HISTORY_TN = "/sites"
+XPATH_HISTORY_TN = "/history"
 
 class TnHistory(BaseResource, TnHistoryData):
 

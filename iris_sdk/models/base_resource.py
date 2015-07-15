@@ -58,37 +58,41 @@ class BaseData(object):
                 setattr(self, prop, None)
 
     def set_from_dict(self, initial_data=None):
-        if initial_data is not None and isinstance(initial_data, dict):
-            self.clear()
-            for key in initial_data:
-                if hasattr(self, key):
-                    if isinstance(initial_data[key], basestring):
-                        setattr(self, key, initial_data[key])
-                    else:
+
+        if (initial_data is None) or (not isinstance(initial_data, dict)):
+            return self
+
+        self.clear()
+
+        for key in initial_data:
+
+            if not hasattr(self, key):
+                continue
+
+            if isinstance(initial_data[key], basestring):
+                setattr(self, key, initial_data[key])
+            else:
+
+                attr = getattr(self, key)
+                if isinstance(initial_data[key], dict):
+                    if attr is None:
+                        # attr should be already not None by the
+                        # moment of calling set_from_dict,
+                        # but just in case
+                        attr = BaseResource()
+                        attr.set_from_dict(initial_data[key])
+                        setattr(self, key, attr)
+                    elif isinstance(attr, BaseData):
+                        attr.set_from_dict(initial_data[key])
+                elif isinstance(initial_data[key], list):
+                    if attr is None:
+                        setattr(self, key, BaseResourceList(BaseResource))
                         attr = getattr(self, key)
-                        if isinstance(initial_data[key], dict):
-                            if attr is None:
-                                """ attr should be already not None by the
-                                moment of calling set_from_dict,
-                                but just in case: """
-                                attr = BaseResource()
-                                attr.set_from_dict(initial_data[key])
-                                setattr(self, key, attr)
-                            elif isinstance(attr, BaseData):
-                                attr.set_from_dict(initial_data[key])
-                        elif isinstance(initial_data[key], list):
-                            if attr is None:
-                                """ attr should be already not None by the
-                                moment of calling set_from_dict,
-                                but just in case: """
-                                setattr(self, key,
-                                    BaseResourceList(BaseResource))
-                                attr = getattr(self, key)
-                            if isinstance(attr, BaseResourceSimpleList):
-                                attr.clear()
-                                for list_item in initial_data[key]:
-                                    attr.add(list_item)
-                                setattr(self, key, attr)
+                    if isinstance(attr, BaseResourceSimpleList):
+                        attr.clear()
+                        for list_item in initial_data[key]:
+                            attr.add(list_item)
+                        setattr(self, key, attr)
         return self
 
 class BaseResourceSimpleList(object):
@@ -185,6 +189,15 @@ class BaseResource(BaseData):
         self._client = client
         if (client is None) and (parent is not None):
             self._client = parent.client
+
+    def _delete_file(self):
+        if id is None:
+            raise ValueError("No id specified")
+        path = ""
+        if xpath is not None:
+            path = xpath.format(id)
+        response = self._client.delete(section=self.get_xpath() + path)
+        return response.status_code == HTTP_OK
 
     def _element_from_string(self, str):
         return fromstring(str)
@@ -290,6 +303,20 @@ class BaseResource(BaseData):
             self._from_xml(root)
         return self
 
+    def _get_file(self, xpath, id):
+        if id is None:
+            raise ValueError("No id specified")
+        path = ""
+        if xpath is not None:
+            path = xpath.format(id)
+        return self._client.get(section=self.get_xpath() + path)
+
+    def _get_status(self, id=None, params=None):
+        return self._get(id, params).status
+
+    def _post(self, xpath, data, params):
+        return self._client.post(section=xpath, params=params, data=data)
+
     def _post_data(self, response_instance=None, params=None):
         content = self._save(return_content=True, params=params)
         if content:
@@ -300,31 +327,6 @@ class BaseResource(BaseData):
             else:
                 self._from_xml(root)
         return self
-
-    def _get_status(self, id=None, params=None):
-        return self._get(id, params).status
-
-    def _post(self, xpath, data, params):
-        return self._client.post(section=xpath, params=params, data=data)
-
-    def _send_file(self, xpath, filename, headers, id=None):
-
-        request = self._client.post
-        if id is not None:
-            request = self._client.put
-
-        with open(filename, 'rb') as file_data:
-            response = request(section=self.get_xpath(True) + xpath,
-                        data=file_data, headers=headers)
-
-        location = None
-        if HEADER_LOCATION in response.headers:
-            location = response.headers[HEADER_LOCATION]
-
-        if location is not None:
-            return location[location.rfind("/")+1:]
-        else:
-            return response.status_code == HTTP_OK
 
     def _put(self, xpath, data):
         return self._client.put(section=xpath, data=data)
@@ -356,6 +358,28 @@ class BaseResource(BaseData):
 
         self.id = (res if res else self.id)
         return True
+
+    def _send_file(self, xpath, filename, headers, id=None):
+
+        path = ""
+        request = self._client.post
+        if id is not None:
+            if xpath is not None:
+                path = xpath.format(id)
+            request = self._client.put
+
+        with open(filename, 'rb') as file_data:
+            response = request(section=self.get_xpath() + path,
+                        data=file_data, headers=headers)
+
+        location = None
+        if HEADER_LOCATION in response.headers:
+            location = response.headers[HEADER_LOCATION]
+
+        if location is not None:
+            return location[location.rfind("/")+1:]
+        else:
+            return response.status_code == HTTP_OK
 
     def _serialize(self):
         root = ElementTree(self._to_xml())
