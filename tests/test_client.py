@@ -116,29 +116,31 @@ class ClassClientRequests(TestCase):
     def test_client_delete(self):
         res = self._client.delete("qux")
         self._request.assert_called_once_with("DELETE",
-            url="foo/qux", data=None,
+            url="foo/qux",
             auth=(self._user.return_value, self._pass.return_value),
-            params=None)
+            params=None, data=None, headers=None)
 
     def test_client_get(self):
         res = self._client.get("", "qux")
-        self._request.assert_called_once_with("GET", data=None,
+        self._request.assert_called_once_with("GET",
+            url=self._url.return_value,
             auth=(self._user.return_value, self._pass.return_value),
-            params="qux", url=self._url.return_value,)
+            params="qux", data=None, headers=None)
 
     def test_client_post(self):
         res = self._client.post("", "qux", "quux")
         self._request.assert_called_once_with("POST",
+            url=self._url.return_value,
             auth=(self._user.return_value, self._pass.return_value),
-            url=self._url.return_value, params="qux", data="quux")
+            params="qux", data="quux", headers=None)
 
     def test_client_put(self):
         self._request.return_value.status_code = 200
         res = self._client.put("", "qux", "quux")
         self._request.assert_called_once_with("PUT",
-            url=self._url.return_value, data="quux", 
+            url=self._url.return_value, 
             auth=(self._user.return_value, self._pass.return_value),
-            params="qux")
+            params="qux", data="quux", headers=None)
 
 if __name__ == "__main__":
     main()

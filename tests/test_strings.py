@@ -13,7 +13,7 @@ from iris_sdk.utils.strings import Converter
 
 class ClassStringsConverterTest(TestCase):
 
-    """Test HTTP requests."""
+    """Test string conversion"""
 
     @classmethod
     def setUp(cls):
@@ -25,20 +25,21 @@ class ClassStringsConverterTest(TestCase):
 
     def test_to_camelcase(self):
         tests = [
-            ('foo_bar', 'FooBar'),
-            ('FooBar', 'FooBar'),
-            ('_foo_bar', 'FooBar'),
-            ('_foo__bar', 'Foo_Bar')]
+            ("foo_bar", "FooBar"),
+            ("FooBar", "FooBar"),
+            ("_foo_bar", "FooBar"),
+            ("_foo__bar", "Foo_Bar")]
 
         for input, output in tests:
             self.assertEqual(self._converter.to_camelcase(input), output)
 
     def test_to_underscore(self):
         tests = [
-            ('foobar', 'foobar'),
-            ('foo_bar', 'foo_bar'),
-            ('FooBar', 'foo_bar'),
-            ('_foo__bar', '_foo__bar')]
+            ("foobar", "foobar"),
+            ("foo_bar", "foo_bar"),
+            ("FooBar", "foo_bar"),
+            ("_foo__bar", "_foo__bar"),
+            ("FOOBAR", "foobar")]
 
         for input, output in tests:
             self.assertEqual(self._converter.to_underscore(input), output)

@@ -34,8 +34,8 @@ class RestClient(object):
         except requests.exceptions.HTTPError as http_exception:
             # Logical errors in response body
             if (response is not None and
-                not response.content == b"" and
-                response.status_code>HTTP_OK_MAX):
+                    not response.content == b"" and
+                    response.status_code > HTTP_OK_MAX):
                 error_msg = None
                 try:
                     root = ElementTree.fromstring(response.content)
