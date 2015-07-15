@@ -180,49 +180,48 @@ notes = disconnect.notes.list()
 #### Creating orders
 
 ```python
-dlda = account->dldas.add(
-    order_data = {
-        "customer_order_id": "123",
-        "dlda_tn_groups": {
-            "dlda_tn_group": [{
-                "telephone_numbers": {
-                    "telephone_number": ["4352154856"]
-                    "account_type": "RESIDENTIAL",
-                    "listing_type": "LISTED",
-                    "list_address": "true",
-                    "listing_name": {
-                        "first_name": "FirstName",
-                        "first_name2": "FirstName2",
-                        "last_name": "LastName",
-                        "designation": "Designation",
-                        "title_of_lineage": "TitleOfLineage",
-                        "title_of_address": "TitleOfAddress",
-                        "title_of_address2": "TitleOfAddress2",
-                        "title_of_lineage_name2": "TitleOfLineageName2",
-                        "title_of_address_name2": "TitleOfAddressName2",
-                        "title_of_address2_name2": "TitleOfAddress2Name2",
-                        "place_listing_as": "PlaceListingAs",
-                    },
-                    "address": {
-                        "house_prefix": "HousePrefix",
-                        "house_number": "915",
-                        "house_suffix": "HouseSuffix",
-                        "pre_directional": "PreDirectional",
-                        "street_name": "StreetName",
-                        "street_suffix": "StreetSuffix",
-                        "post_directional": "PostDirectional",
-                        "address_line2": "AddressLine2",
-                        "city": "City",
-                        "state_code": "StateCode",
-                        "zip": "Zip",
-                        "plus_four": "PlusFour",
-                        "country": "Country",
-                        "address_yype": "AddressType"
-                    }
+dlda = account->dldas.add({
+    "customer_order_id": "123",
+    "dlda_tn_groups": {
+        "dlda_tn_group": [{
+            "telephone_numbers": {
+                "telephone_number": ["4352154856"]
+                "account_type": "RESIDENTIAL",
+                "listing_type": "LISTED",
+                "list_address": "true",
+                "listing_name": {
+                    "first_name": "FirstName",
+                    "first_name2": "FirstName2",
+                    "last_name": "LastName",
+                    "designation": "Designation",
+                    "title_of_lineage": "TitleOfLineage",
+                    "title_of_address": "TitleOfAddress",
+                    "title_of_address2": "TitleOfAddress2",
+                    "title_of_lineage_name2": "TitleOfLineageName2",
+                    "title_of_address_name2": "TitleOfAddressName2",
+                    "title_of_address2_name2": "TitleOfAddress2Name2",
+                    "place_listing_as": "PlaceListingAs",
+                },
+                "address": {
+                    "house_prefix": "HousePrefix",
+                    "house_number": "915",
+                    "house_suffix": "HouseSuffix",
+                    "pre_directional": "PreDirectional",
+                    "street_name": "StreetName",
+                    "street_suffix": "StreetSuffix",
+                    "post_directional": "PostDirectional",
+                    "address_line2": "AddressLine2",
+                    "city": "City",
+                    "state_code": "StateCode",
+                    "zip": "Zip",
+                    "plus_four": "PlusFour",
+                    "country": "Country",
+                    "address_yype": "AddressType"
                 }
-            }]
-        }
+            }
+        }]
     }
+})
 ```
 
 #### Getting order data
