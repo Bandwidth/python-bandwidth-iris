@@ -40,8 +40,8 @@ client = Client(filename=<path to config>)
 ```ini
 [account]
 account_id = 123456789
-username   = foo
-password   = bar
+username   = spam
+password   = ham
 
 [rest]
 url = http://foo.bar
@@ -94,9 +94,9 @@ page = None
 
 while total_displayed <= total:
     if page is not None:
-        in_service_numbers = acc.in_service_numbers.list(
+        in_service_numbers = account.in_service_numbers.list(
             {"page": page, "size": 10})
-    page = acc.in_service_numbers.links.next
+    page = account.in_service_numbers.links.next
     for phone_number in in_service_numbers.items:
         print(phone_number)
     total_displayed += len(in_service_numbers.items)
@@ -393,7 +393,7 @@ portin.totals
 portin.notes
 ```
 
-#### Port-in File Management
+#### Port-in file management
 
 ```python
 portin.loas.list({"metadata": "true"})
@@ -405,4 +405,238 @@ portin.loas.metadata.document_name = "text.txt"
 portin.loas.metadata.document_type = "invoice"
 portin.loas.metadata.save()
 portin.loas.metadata.delete()
+```
+
+### Rate Centers
+
+```python
+from iris_sdk import RateCenters
+rc = RateCenters(client=client)
+centers = rc.list({"state": "CA", "available": "true"})
+```
+
+### SIP Peers
+
+#### Creating a SIP peer
+
+```python
+sip_peer = account.sites.list().items[0].sip_peers.add({
+        "peer_name": name,
+        "is_default_peer": "true",
+        "short_messaging_protocol": "SMPP",
+        "voice_hosts": {
+            "host": [{
+                "host_name": "92.168.181.95"
+            }]
+        },
+        "sms_hosts": {
+            "host": [{
+                "host_name": "92.168.181.95"
+            }]
+        },
+        "termination_hosts": {
+            "termination_host": [{
+                "host_name": "92.168.181.95",
+                "port": "0",
+                "customer_traffic_allowed": "DOMESTIC",
+                "data_allowed": "true"
+            }]
+        }
+    })
+```
+
+#### Getting a peer
+
+```python
+sip_peer = account.sites.list().items[0].sip_peers.get("500651")
+```
+
+#### Getting a list of SIP peers
+
+```python
+$sip_peers = account.sites.list().items[0].sip_peers.list()
+```
+
+#### Deleting SIP peers
+
+```python
+sip_peer.delete()
+```
+
+#### Moving telephone numbers
+
+```python
+sip_peer.movetns.add("9192000046")
+sip_peer.movetns()
+```
+
+#### Getting peer telephone numbers
+ 
+```python
+tns = sip_peer->tns.list()
+```
+
+#### Getting a single phone number
+
+```python
+tn = sip_peer.tns.get("8183386251")
+```
+
+#### Getting total number of numbers for a SIP peer
+
+```python
+count = sip_peer.totaltns.get()
+```
+
+#### Setting telephone number options
+
+```python
+tn = sip_peer->tns.get("8183386251").rpid_format = "e164"
+tn.save()
+```
+
+### Sites
+
+#### Creating a site
+
+```python
+site = acc.sites.add({
+    "name": "test123456",
+    "address": {
+        "city": "Raleigh",
+        "address_type": "Service",
+        "house_number": "1",
+        "street_name": "Avenue",
+        "state_code": "NC"
+    }
+})
+```
+
+#### Updating a site
+
+```python
+site.name = "New Name"
+site->save()
+```
+
+#### Deleting a site
+
+```python
+site.delete()
+```
+
+#### Getting a list of sites
+
+```python
+sites = account.sites.list()
+```
+
+#### Getting a list of site orders
+
+```python
+site.orders.list({"status": "disabled"})
+```
+
+#### Getting the total number of telephone numbers for a site
+
+```python
+site.totaltns.get()
+```
+
+#### Getting a list of site's port-in orders
+
+```python
+site.portins().list({"status": "disabled"})
+```
+
+### Subscriptions
+
+#### Creating subscriptions
+
+```python
+subscription = account->subscriptions.add({
+    "order_type": "portins",
+    "order_id": "98939562-90b0-40e9-8335-5526432d9741",
+    "email_subscription": {
+        "email": "test@test.com",
+        "digest_requested": "DAILY"
+    }
+})
+```
+
+#### Getting subscription information
+
+```python
+subscription = account->subscriptions.get(id)
+```
+
+#### Getting a list of subscriptions
+
+```python
+account.subscriptions.list({"orderType": "portins"})
+```
+
+#### Updating a subscription
+
+```python
+subscription.order_type = "portins"
+subscription.save()
+```
+
+#### Deleting a subscription
+
+```python
+subscription.delete()
+```
+
+### TNs
+
+#### Getting a phone number
+
+```python
+from iris_sdk import Tns
+
+tns = Tns(client=client)
+tn = tns.get(id)
+```
+
+#### Getting a list of TNs
+
+```python
+tns.list({"page": 1, "size": 10 })
+```
+
+#### Telephone number instance methods and properties
+
+```python
+tn = tns.get("7576768750")
+site = tn.site.get()
+sip_peer = tn.sip_peer.get()
+tnreservation = tn.tnreservation
+tn.tndetails.get()
+rc = tn.tn_rate_center.get()
+lata = tn.tn_lata.get()
+lca = tn.lca.get()
+history = tn.history.list()
+```
+
+### Reserving phone numbers
+
+#### Create a reservation
+
+```python
+account.tnreservation.reserved_tn = "2512027430"
+account.tnreservation.save()
+```
+
+#### Getting reservation info
+
+```python
+reservation =account.tnreservation.get("0099ff73-da96-4303-8a0a-00ff316c07aa")
+```
+
+#### Deleting a reservation
+
+```python
+reservation.delete()
 ```
