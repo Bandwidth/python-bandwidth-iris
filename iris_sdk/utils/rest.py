@@ -42,6 +42,12 @@ class RestClient(object):
                     msg_node = root
                     # Data responses
                     el = root.find(ERROR_TAG)
+                    if el is None:
+                        children = root.getchildren()
+                        for elem in children:
+                            el = elem.find(ERROR_TAG)
+                            if el is not None:
+                                break
                     msg_node = (el if el is not None else msg_node)
                     error_msg = ERROR_TEMPLATE.format(
                         msg_node[0][0].text, msg_node[0][1].text)
