@@ -58,12 +58,12 @@ e.g.,
 python available_numbers.py
 ```
 
-If an example take command line parameters, you will get the usage info by
+If an example takes command line parameters, you will get the usage info by
 just executing it.
 
-"" API objects
+## API objects
 
-""" General principles
+### General principles
 
 In most cases you should use an Account object as a starting point.
 
@@ -79,7 +79,7 @@ for site in sites.items:
    pass
 ```
 
-""" Pagination
+### Pagination
 
 Some API objects provide paginated result sets and require the use of
 page/size parameters. In these cases a Links object will be provided for
@@ -102,19 +102,19 @@ while total_displayed <= total:
     total_displayed += len(in_service_numbers.items)
 ```
 
-""" Available numbers
+### Available numbers
 
 ```python
 account.available_numbers.list({"areaCode": 818})
 ```
 
-""" Available Npa-Nxx
+### Available Npa-Nxx
 
 ```python
 account.available_npa_nxx.list({"state": "NJ"})
 ```
 
-""" Cities
+### Cities
 
 ```python
 from iris_sdk import Cities
@@ -123,4 +123,4 @@ cities = Cities(client=client)
 cities.list({"state": "NC"})
 ```
 
-""" Covered rate centers
+### Covered rate centers
