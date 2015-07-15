@@ -71,7 +71,7 @@ In most cases you should use an Account object as a starting point.
 account = Account(client=client)
 ```
 
-Account has related entities such Orders, Sites, etc.
+Account has related entities such as Orders, Sites, etc.
 
 ```python
 sites = account.sites.list()
@@ -140,9 +140,6 @@ account.disconnected_numbers.list({"areaCode": 919})
 
 ### Disconnecting telephone numbers
 
-The Disconnect object is used to disconnect numbers from an account.
-Creates a disconnect order that can be tracked.
-
 #### Creating disconnect orders
 
 ```python
@@ -180,7 +177,7 @@ notes = disconnect.notes.list()
 #### Creating orders
 
 ```python
-dlda = account->dldas.add({
+dlda = account.dldas.add({
     "customer_order_id": "123",
     "dlda_tn_groups": {
         "dlda_tn_group": [{
@@ -454,7 +451,7 @@ sip_peer = account.sites.list().items[0].sip_peers.get("500651")
 #### Getting a list of SIP peers
 
 ```python
-$sip_peers = account.sites.list().items[0].sip_peers.list()
+sip_peers = account.sites.list().items[0].sip_peers.list()
 ```
 
 #### Deleting SIP peers
@@ -473,7 +470,7 @@ sip_peer.movetns()
 #### Getting peer telephone numbers
  
 ```python
-tns = sip_peer->tns.list()
+tns = sip_peer.tns.list()
 ```
 
 #### Getting a single phone number
@@ -491,7 +488,8 @@ count = sip_peer.totaltns.get()
 #### Setting telephone number options
 
 ```python
-tn = sip_peer->tns.get("8183386251").rpid_format = "e164"
+tn = sip_peer.tns.get("8183386251")
+tn.rpid_format = "e164"
 tn.save()
 ```
 
@@ -516,7 +514,7 @@ site = acc.sites.add({
 
 ```python
 site.name = "New Name"
-site->save()
+site.save()
 ```
 
 #### Deleting a site
@@ -546,7 +544,7 @@ site.totaltns.get()
 #### Getting a list of site's port-in orders
 
 ```python
-site.portins().list({"status": "disabled"})
+site.portins.list({"status": "disabled"})
 ```
 
 ### Subscriptions
@@ -554,7 +552,7 @@ site.portins().list({"status": "disabled"})
 #### Creating subscriptions
 
 ```python
-subscription = account->subscriptions.add({
+subscription = account.subscriptions.add({
     "order_type": "portins",
     "order_id": "98939562-90b0-40e9-8335-5526432d9741",
     "email_subscription": {
@@ -567,7 +565,7 @@ subscription = account->subscriptions.add({
 #### Getting subscription information
 
 ```python
-subscription = account->subscriptions.get(id)
+subscription = account.subscriptions.get(id)
 ```
 
 #### Getting a list of subscriptions
