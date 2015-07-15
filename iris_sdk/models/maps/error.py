@@ -6,4 +6,5 @@ class ErrorMap(BaseMap):
 
     code = None
     description = None
+    error_code = None
     telephone_number = None

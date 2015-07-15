@@ -21,7 +21,7 @@ class SipPeers(BaseResource, SipPeersData):
 
     def add(self, data=None, save=True):
         sip_peer = SipPeer(self).set_from_dict(data)
-        if save:
+        if save and (data is not None):
             sip_peer.save()
         return sip_peer
 

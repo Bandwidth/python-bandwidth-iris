@@ -23,7 +23,7 @@ class Orders(BaseResource, OrdersData):
 
     def add(self, data=None, save=True):
         order = Order(self).set_from_dict(data)
-        if save:
+        if save and (data is not None):
             order.save()
         return order
 

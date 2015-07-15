@@ -21,7 +21,7 @@ class Sites(BaseResource, SitesData):
 
     def add(self, data=None, save=True):
         site = Site(self).set_from_dict(data)
-        if save:
+        if save and (data is not None):
             site.save()
         return site
 
