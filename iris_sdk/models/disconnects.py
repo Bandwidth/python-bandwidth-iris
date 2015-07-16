@@ -21,18 +21,14 @@ class Disconnects(BaseResource, DisconnectsData):
         super().__init__(parent, client)
         DisconnectsData.__init__(self, self)
 
-    def add(self):
-        return Disconnect(self)
+    def create(self, data=None, save=True):
+        disconnect = Disconnect(self).set_from_dict(data)
+        if save and (data is not None):
+            disconnect.save()
+        return disconnect
 
     def get(self, id, params=None):
         return self.add().get(id, params=params)
 
     def list(self, params):
         return self._get_data(params=params).order_id_user_id_date
-
-    def create(self, initial_data, save=True):
-        disconnect = self.add()
-        disconnect.set_from_dict(initial_data)
-        if save:
-            disconnect.save()
-        return disconnect

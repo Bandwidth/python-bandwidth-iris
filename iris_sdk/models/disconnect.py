@@ -6,7 +6,7 @@ from future.builtins import super
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.disconnect import DisconnectData
 from iris_sdk.models.notes import Notes
-from iris_sdk.models.order_response import OrderResponse
+from iris_sdk.models.disconnect_order_response import DisconnectOrderResponse
 
 XML_NAME_DISCONNECT = "DisconnectTelephoneNumberOrder"
 XPATH_DISCONNECT = "/{}"
@@ -19,10 +19,10 @@ class Disconnect(BaseResource, DisconnectData):
 
     @property
     def id(self):
-        return self.disconnect_id
+        return self.order_id
     @id.setter
     def id(self, id):
-        self.disconnect_id = id
+        self.order_id = id
 
     @property
     def notes(self):
@@ -34,14 +34,15 @@ class Disconnect(BaseResource, DisconnectData):
         self._notes = Notes(self, client)
 
     def get(self, id=None, params=None):
-        order_response = OrderResponse(self._parent)
-        order_response.order = self
+        order_response = DisconnectOrderResponse(self._parent)
+        order_response.order_request = self
         return order_response.get(id, params=params)
 
     def save(self):
         str = self._save(True)
-        order_response = OrderResponse(self._parent)
-        order_response.order = self
+        order_response = DisconnectOrderResponse(self._parent)
+        self.clear()
+        order_response.order_request = self
         order_response._from_xml(self._element_from_string(str))
         self.order_status = order_response.order_status
         return True

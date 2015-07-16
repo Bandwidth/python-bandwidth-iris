@@ -4,6 +4,7 @@ from iris_sdk.models.maps.base_map import BaseMap
 
 class DisconnectMap(BaseMap):
 
+    count_of_t_ns = None
     disconnect_telephone_number_order_type = None
     telephone_number_details = None
     customer_order_id = None
