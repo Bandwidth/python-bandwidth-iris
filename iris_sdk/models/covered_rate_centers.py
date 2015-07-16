@@ -11,7 +11,7 @@ XPATH_COVERED_RATE_CENTERS = "/coveredratecenters"
 
 class CoveredRateCenters(BaseResource, CoveredRateCentersData):
 
-    """In-service numbers for account"""
+    """Covered rate centers"""
 
     _xpath = XPATH_COVERED_RATE_CENTERS
 
@@ -23,5 +23,4 @@ class CoveredRateCenters(BaseResource, CoveredRateCentersData):
         return RateCenter(self).get(id)
 
     def list(self, params):
-        self._get_data(params=params)
         return self._get_data(params=params).covered_rate_center

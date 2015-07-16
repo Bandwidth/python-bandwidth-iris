@@ -5,7 +5,7 @@ from iris_sdk.utils.rest import RestClient
 
 class Client(object):
 
-    """Data fetching"""
+    """HTTP requests"""
 
     @property
     def config(self):

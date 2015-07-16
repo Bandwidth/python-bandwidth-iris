@@ -19,15 +19,14 @@ else:
 from requests.exceptions import HTTPError
 
 from iris_sdk.utils.rest import ERROR_TAG, ERROR_TEMPLATE, HEADERS, HTTP_OK,\
-    RestClient
-from iris_sdk.utils.rest import RestError
+    RestClient, RestError
 
 class HttpErrorStub(HTTPError):
     pass
 
 class ClassRestRequestTest(TestCase):
 
-    """Test HTTP requests."""
+    """Test HTTP requests"""
 
     def raise_for_status_stub(self):
         raise HttpErrorStub("foo")
@@ -78,6 +77,18 @@ class ClassRestRequestTest(TestCase):
     @patch("xml.etree.ElementTree.fromstring", return_value = "foo")
     def test_rest_client_exception(self, _fromstring):
 
+        class XmlElem(object):
+            def __init__(self):
+                self.find_res = None
+                self.children = []
+                self.tag = None
+                self.text = None
+            def find(self, str):
+                self._call_arg = str
+                return self.find_res
+            def getchildren(self):
+                return self.children
+
         self._mock_req_res.content = b""
         self._mock_req_res.status_code = 300
         self._mock_req_res.raise_for_status = self.raise_for_status_stub
@@ -88,13 +99,29 @@ class ClassRestRequestTest(TestCase):
         self._mock_req_res.content =b"<something><foo>bar</foo><baz>qux</baz>"
 
         _mock = [[0 for i in range(2)] for i in range(1)]
-        _m = MagicMock("xml.etree.ElementTree.Element")
-        _n = MagicMock("xml.etree.ElementTree.Element")
+
+        _m = XmlElem()
+        _n = XmlElem()
         _m.text = "bar"
         _n.text = "qux"
         _mock[0][0] = _m
         _mock[0][1] = _n
-        _fromstring.return_value = _mock
+
+        root = XmlElem()
+        root.find_res = _mock
+        _fromstring.return_value = root
+
+        if PY_VER_MAJOR == 3:
+            with self.assertRaisesRegex(RestError,
+                    ERROR_TEMPLATE.format("bar", "qux")):
+                self._rest_client.request("GET","foo","bar","baz","qux")
+        else:
+            with self.assertRaisesRegexp(RestError,
+                    ERROR_TEMPLATE.format("bar", "qux")):
+                self._rest_client.request("GET","foo","bar","baz","qux")
+
+        root.find_res = None
+        root.children = [_m, _n]
 
         if PY_VER_MAJOR == 3:
             with self.assertRaisesRegex(RestError,
@@ -103,6 +130,17 @@ class ClassRestRequestTest(TestCase):
         else:
             with self.assertRaisesRegexp(RestError,
                     "<something><foo>bar</foo><baz>qux</baz>"):
+                self._rest_client.request("GET","foo","bar","baz","qux")
+
+        _m.find_res = _mock
+
+        if PY_VER_MAJOR == 3:
+            with self.assertRaisesRegex(RestError,
+                    ERROR_TEMPLATE.format("bar", "qux")):
+                self._rest_client.request("GET","foo","bar","baz","qux")
+        else:
+            with self.assertRaisesRegexp(RestError,
+                    ERROR_TEMPLATE.format("bar", "qux")):
                 self._rest_client.request("GET","foo","bar","baz","qux")
 
 if __name__ == "__main__":

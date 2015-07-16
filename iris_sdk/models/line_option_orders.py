@@ -12,15 +12,19 @@ XPATH_LINE_OPTION_ORDERS = "/lineOptionOrders"
 
 class LineOptionOrder(BaseResource, LineOptionOrderData):
 
-    """ Establish Calling Name Display settings for a collection of TNs at a time """
+    """
+    Establish Calling Name Display settings for a collection of TNs at a time
+    """
 
     _node_name = XML_NAME_LINE_OPTION_ORDERS
+    _save_post = True
     _xpath = XPATH_LINE_OPTION_ORDERS
+    _xpath_save = _xpath
 
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         LineOptionOrderData.__init__(self)
 
-    def post(self):
-        _response = LineOptionOrderResponse(self._parent)
-        return self._post_data(_response)
+    def save(self):
+        response = LineOptionOrderResponse(self._parent)
+        return self._post_data(response)

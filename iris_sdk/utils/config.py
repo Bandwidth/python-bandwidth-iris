@@ -55,7 +55,7 @@ class ConfigData(object):
 
 class Config(ConfigData):
 
-    """Reads config settings"""
+    """Connection and auth settings"""
 
     def __init__(
             self, url=None, account_id=None, username=None, password=None,
@@ -81,7 +81,6 @@ class Config(ConfigData):
       See the default file for structure.
       Configs larger than MAX_FILE_SIZE are skipped.
       Leading and trailing whitespace is removed.
-      If no file is specified, CONFIG_VAR is read instead.
 
       Args:
           filename: a UTF-8 config file.

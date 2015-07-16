@@ -19,9 +19,9 @@ else:
 
 from iris_sdk.utils.config import *
 
-class ClassPropsTest(TestCase):
+class ClassConfigPropsTest(TestCase):
 
-    """Test class properties."""
+    """Test class properties"""
 
     @classmethod
     def setUpClass(cls):
@@ -51,9 +51,9 @@ class ClassPropsTest(TestCase):
         self.assertEqual(self._config._username, self._config.username)
         self.assertEqual(self._config._username, "qux")
 
-class ClassInitializationTest (TestCase) :
+class ClassConfigInitializationTest (TestCase) :
 
-    """Test class initialization."""
+    """Test class initialization"""
 
     def setUp(self):
         patcher = patch("iris_sdk.utils.config.Config.load_from_file")
@@ -76,9 +76,9 @@ class ClassInitializationTest (TestCase) :
         self.assertEqual(self._config.username, None )
         self._patch.assert_called_once_with("quux")
 
-class ClassLoadConfigTest (TestCase) :
+class ClassConfigLoadConfigTest (TestCase) :
 
-    """Test file loading."""
+    """Test file loading"""
 
     def setUp(self):
         patcher_isfile = patch("os.path.isfile")

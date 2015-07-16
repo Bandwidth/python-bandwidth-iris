@@ -23,7 +23,7 @@ class AvailableNumbers(BaseResource, AvailableNumbersData):
 
     def list(self, params):
         self.get(params=params)
-        if params.get(XML_PARAM_TN_DETAIL.lower(), "") == XML_TRUE:
+        if params.get(XML_PARAM_TN_DETAIL, "") == XML_TRUE:
             return self.telephone_number_detail_list.telephone_number_detail
         else:
             return self.telephone_number_list.telephone_number

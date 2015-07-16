@@ -10,7 +10,9 @@ XPATH_LINE_OPTION_ORDER_RESPONSE = "/{}"
 
 class LineOptionOrderResponse(BaseResource, LineOptionOrderResponseData):
 
-    """ Establish Calling Name Display settings for a collection of TNs at a time """
+    """
+    Establish Calling Name Display settings for a collection of TNs at a time
+    """
 
     _xpath = XPATH_LINE_OPTION_ORDER_RESPONSE
 

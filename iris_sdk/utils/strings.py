@@ -4,9 +4,7 @@ from re import sub
 
 class Converter(object):
 
-    """
-    String manipulation
-    """
+    """String case conversions"""
 
     def to_camelcase(self, string):
         str = sub(r'_([a-zA-Z])', lambda m: m.group(1).upper(), string)
