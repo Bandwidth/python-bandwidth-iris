@@ -13,114 +13,131 @@ import requests
 import requests_mock
 
 from iris_sdk.client import Client
-from iris_sdk.models.covered_rate_centers import CoveredRateCenters
-from iris_sdk.models.rate_center import RateCenter
+from iris_sdk.models.account import Account
 
-XML_RESPONSE_CRC_GET = (
-    b"<CoveredRateCenter>"
-    b"    <Name>LOMITA</Name>"
-    b"    <Abbreviation>LOMITA</Abbreviation>"
-    b"    <State>CA</State>"
-    b"    <Lata>730</Lata>"
-    b"    <AvailableNumberCount>5536</AvailableNumberCount>"
-    b"    <ZipCodes>"
-    b"        <ZipCode>90044</ZipCode>"
-    b"        <ZipCode>90059</ZipCode>"
-    b"        <ZipCode>90061</ZipCode>"
-    b"        <ZipCode>90247</ZipCode>"
-    b"        <ZipCode>90248</ZipCode>"
-    b"        <ZipCode>90249</ZipCode>"
-    b"        <ZipCode>90717</ZipCode>"
-    b"        <ZipCode>90802</ZipCode>"
-    b"        <ZipCode>90813</ZipCode>"
-    b"        <ZipCode>90822</ZipCode>"
-    b"        <ZipCode>90831</ZipCode>"
-    b"        <ZipCode>90834</ZipCode>"
-    b"    </ZipCodes>"
-    b"    <Cities>"
-    b"        <City>GARDENA</City>"
-    b"        <City>LOMITA</City>"
-    b"        <City>LONG BEACH</City>"
-    b"        <City>LOS ANGELES</City>"
-    b"    </Cities>"
-    b"    <Tiers>"
-    b"        <Tier>0</Tier>"
-    b"    </Tiers>"
-    b"    <NpaNxxXs>"
-    b"        <NpaNxxX>3102570</NpaNxxX>"
-    b"        <NpaNxxX>3102571</NpaNxxX>"
-    b"    </NpaNxxXs>"
-    b"    <Id>1</Id>"
-    b"    <LocalRateCenters>"
-    b"        <RateCenterId>369</RateCenterId>"
-    b"        <RateCenterId>7843</RateCenterId>"
-    b"        <RateCenterId>7945</RateCenterId>"
-    b"    </LocalRateCenters>"
-    b"</CoveredRateCenter>"
+XML_RESPONSE_DISCONNECT_GET = (
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    "<DisconnectTelephoneNumberOrderResponse>    <ErrorList>        "
+    "<Error>            <Code>5006</Code>            "
+    "<Description>Telephone number could not be disconnected since it is \
+    not associated with your account</Description>            "
+    "<TelephoneNumber>9192755703</TelephoneNumber>        </Error>        "
+    "<Error>            <Code>5006</Code>            "
+    "<Description>Telephone number could not be disconnected since it is \
+    not associated with your account</Description>            "
+    "<TelephoneNumber>9192755378</TelephoneNumber>        </Error>    "
+    "</ErrorList>    <orderRequest>        "
+    "<CustomerOrderId>Disconnect1234</CustomerOrderId>        "
+    "<OrderCreateDate>2015-06-17T18:14:08.683Z</OrderCreateDate>        "
+    "<id>b902dee1-0585-4258-becd-5c7e51ccf5e1</id>        "
+    "<DisconnectTelephoneNumberOrderType>            "
+    "<TelephoneNumberList>                "
+    "<TelephoneNumber>9192755378</TelephoneNumber>                "
+    "<TelephoneNumber>9192755703</TelephoneNumber>            "
+    "</TelephoneNumberList>            "
+    "<DisconnectMode>normal</DisconnectMode>        "
+    "</DisconnectTelephoneNumberOrderType>    </orderRequest>    "
+    "<OrderStatus>FAILED</OrderStatus>"
+    "</DisconnectTelephoneNumberOrderResponse>"
 )
 
-XML_RESPONSE_CRC_LIST_GET = (
-    b"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-    b"<CoveredRateCenters>"
-    b"    <Links>"
-    b"        <first></first>"
-    b"    </Links>"
-    b"    <CoveredRateCenter>"
-    b"        <Id>2805</Id>"
-    b"        <Name>CARY</Name>"
-    b"        <Abbreviation>CARY</Abbreviation>"
-    b"        <State>NC</State>"
-    b"        <Lata>426</Lata>"
-    b"        <Tiers>"
-    b"            <Tier>0</Tier>"
-    b"        </Tiers>"
-    b"    </CoveredRateCenter>"
-    b"    <CoveredRateCenter>"
-    b"        <Id>2807</Id>"
-    b"        <Name>CARY-RESEARCH TRIANGLE PARK</Name>"
-    b"        <Abbreviation>CARY-RTP</Abbreviation>"
-    b"        <State>NC</State>"
-    b"        <Lata>426</Lata>"
-    b"        <Tiers>"
-    b"            <Tier>0</Tier>"
-    b"        </Tiers>"
-    b"    </CoveredRateCenter>"
-    b"</CoveredRateCenters>"
+XML_RESPONSE_DISCONNECT_POST = (
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    "<DisconnectTelephoneNumberOrderResponse> <orderRequest>  "
+    "<CustomerOrderId>Disconnect1234</CustomerOrderId>  "
+    "<OrderCreateDate>2015-06-17T18:14:08.683Z</OrderCreateDate>  "
+    "<id>b902dee1-0585-4258-becd-5c7e51ccf5e1</id>  "
+    "<DisconnectTelephoneNumberOrderType>   <TelephoneNumberList>    "
+    "<TelephoneNumber>9192755378</TelephoneNumber>    "
+    "<TelephoneNumber>9192755703</TelephoneNumber>   "
+    "</TelephoneNumberList>   <DisconnectMode>normal</DisconnectMode>  "
+    "</DisconnectTelephoneNumberOrderType> </orderRequest> "
+    "<OrderStatus>RECEIVED</OrderStatus>"
+    "</DisconnectTelephoneNumberOrderResponse>"
 )
 
-class ClassCoveredRateCentersTest(TestCase):
+XML_RESPONSE_DISCONNECTS_LIST = (
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    "<ResponseSelectWrapper><ListOrderIdUserIdDate><TotalCount>7</TotalCount>"
+    "<Links></Links><OrderIdUserIdDate><CountOfTNs>1</CountOfTNs>"
+    "<userId>smckinnon</userId>"
+    "<lastModifiedDate>2014-01-10T17-34-15Z</lastModifiedDate>"
+    "<OrderId>6d7da966-e071-4741-b31c-1d8932f4b8da</OrderId>"
+    "<OrderType>disconnect</OrderType>"
+    "<OrderDate>2014-01-10T17-34-15.797Z</OrderDate>"
+    "<OrderStatus>COMPLETE</OrderStatus><TelephoneNumberDetails>"
+    "</TelephoneNumberDetails></OrderIdUserIdDate><OrderIdUserIdDate>"
+    "<CountOfTNs>1</CountOfTNs><userId>jbm</userId>"
+    "<lastModifiedDate>2013-12-04T21-59-32Z</lastModifiedDate>"
+    "<OrderId>4ffe9262-1965-4479-a1d5-b8584440667d</OrderId>"
+    "<OrderType>disconnect</OrderType>"
+    "<OrderDate>2013-12-04T21-59-32.243Z</OrderDate>"
+    "<OrderStatus>COMPLETE</OrderStatus><TelephoneNumberDetails>"
+    "</TelephoneNumberDetails></OrderIdUserIdDate></ListOrderIdUserIdDate>"
+    "</ResponseSelectWrapper>"
+)
 
-    """Test the covered rate centers directory mapping"""
+class ClassDisconnectsTest(TestCase):
+
+    """Test phone disconnect orders"""
 
     @classmethod
     def setUpClass(cls):
         cls._client = Client("http://foo", "bar", "bar", "qux")
-        cls._crc = CoveredRateCenters(client=cls._client)
+        cls._account = Account(client=cls._client)
 
     @classmethod
     def tearDownClass(cls):
         del cls._client
-        del cls._crc
+        del cls._account
 
-    def test_rate_center_get(self):
-        url = self._crc.client.config.url +\
-            self._crc.get_xpath() + RateCenter._xpath.format("1")
+    def test_disconnect_create(self):
+        self.assertEquals(self._account.disconnects.get_xpath(),
+            self._account.get_xpath() + self._account.disconnects._xpath)
+        url = self._client.config.url + self._account.disconnects.get_xpath()
         with requests_mock.Mocker() as m:
-            m.get(url, content=XML_RESPONSE_CRC_GET)
-            center = self._crc.get(1)
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(center.lata, "730")
-            self.assertEquals(center.cities.city.items[2], "LONG BEACH")
+            m.post(url, content=XML_RESPONSE_DISCONNECT_POST)
+            disconnect = self._account.disconnects.create({
+                "name": "test disconnect order 4",
+                "customer_order_id": "Disconnect1234",
+                "disconnect_telephone_number_order_type": {
+                    "telephone_number_list": {
+                        "telephone_number": ["9192755378", "9192755703"]
+                    }
+                }
+            })
+            self.assertEquals(m.request_history[0].method, "POST")
+            self.assertEquals(disconnect.id,
+                "b902dee1-0585-4258-becd-5c7e51ccf5e1")
+            self.assertEquals(disconnect.order_id, disconnect.id)
+            self.assertEquals(disconnect.customer_order_id, "Disconnect1234")
+            self.assertEquals(disconnect.order_create_date,
+                "2015-06-17T18:14:08.683Z")
+            order_type = disconnect.disconnect_telephone_number_order_type
+            self.assertEquals(
+                order_type.telephone_number_list.telephone_number.items,
+                ["9192755378", "9192755703"])
+            self.assertEquals(order_type.disconnect_mode, "normal")
+            self.assertEquals(disconnect.order_status, "RECEIVED")
 
-    def test_rate_centers_list(self):
-        self.assertEquals(self._crc.get_xpath(), self._crc._xpath)
+    def test_disconnects_get(self):
+        self.assertEquals(self._account.disconnects.get_xpath(),
+            self._account.get_xpath() + self._account.disconnects._xpath)
+        url = self._client.config.url + self._account.disconnects.get_xpath()
         with requests_mock.Mocker() as m:
-            m.get(self._crc.client.config.url + self._crc.get_xpath(),
-                content=XML_RESPONSE_CRC_LIST_GET)
-            centers = self._crc.list({"page": 1, "size": 2})
+            m.get(url, content=XML_RESPONSE_DISCONNECTS_LIST)
+            disconnects = self._account.disconnects.list({"page":1,"size":5})
             self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(len(centers.items), 2)
-            self.assertEquals(centers.items[0].tiers.tier.items[0], "0")
+            self.assertEquals(len(disconnects.items), 2)
+            disc = disconnects.items[0]
+            self.assertEquals(disc.count_of_tns, "1")
+            self.assertEquals(disc.user_id, "smckinnon")
+            self.assertEquals(disc.last_modified_date, "2014-01-10T17-34-15Z")
+            self.assertEquals(disc.order_id,
+                "6d7da966-e071-4741-b31c-1d8932f4b8da")
+            self.assertEquals(disc.order_type, "disconnect")
+            self.assertEquals(disc.order_date, "2014-01-10T17-34-15.797Z")
+            self.assertEquals(disc.order_status, "COMPLETE")
 
 if __name__ == "__main__":
     main()
