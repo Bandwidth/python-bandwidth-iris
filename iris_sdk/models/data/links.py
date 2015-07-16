@@ -27,7 +27,10 @@ class Links(LinksMap, BaseData):
             return
         url =(first or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]
         params = parse_qs(urlparse(url).query)
-        self._first = params[XML_PARAM_PAGE]
+        try:
+            self._first = params[XML_PARAM_PAGE]
+        except:
+            self._first = None
 
     @property
     def next(self):
@@ -39,4 +42,7 @@ class Links(LinksMap, BaseData):
             return
         url = (next or "").partition(LINK_PREFIX)[2].partition(LINK_SUFFIX)[0]
         params = parse_qs(urlparse(url).query)
-        self._next = params[XML_PARAM_PAGE]
+        try:
+            self._next = params[XML_PARAM_PAGE]
+        except:
+            self._next = None
