@@ -17,75 +17,49 @@ from iris_sdk.models.covered_rate_centers import CoveredRateCenters
 from iris_sdk.models.rate_center import RateCenter
 
 XML_RESPONSE_CRC_GET = (
-    b"<CoveredRateCenter>"
-    b"    <Name>LOMITA</Name>"
-    b"    <Abbreviation>LOMITA</Abbreviation>"
-    b"    <State>CA</State>"
-    b"    <Lata>730</Lata>"
-    b"    <AvailableNumberCount>5536</AvailableNumberCount>"
-    b"    <ZipCodes>"
-    b"        <ZipCode>90044</ZipCode>"
-    b"        <ZipCode>90059</ZipCode>"
-    b"        <ZipCode>90061</ZipCode>"
-    b"        <ZipCode>90247</ZipCode>"
-    b"        <ZipCode>90248</ZipCode>"
-    b"        <ZipCode>90249</ZipCode>"
-    b"        <ZipCode>90717</ZipCode>"
-    b"        <ZipCode>90802</ZipCode>"
-    b"        <ZipCode>90813</ZipCode>"
-    b"        <ZipCode>90822</ZipCode>"
-    b"        <ZipCode>90831</ZipCode>"
-    b"        <ZipCode>90834</ZipCode>"
-    b"    </ZipCodes>"
-    b"    <Cities>"
-    b"        <City>GARDENA</City>"
-    b"        <City>LOMITA</City>"
-    b"        <City>LONG BEACH</City>"
-    b"        <City>LOS ANGELES</City>"
-    b"    </Cities>"
-    b"    <Tiers>"
-    b"        <Tier>0</Tier>"
-    b"    </Tiers>"
-    b"    <NpaNxxXs>"
-    b"        <NpaNxxX>3102570</NpaNxxX>"
-    b"        <NpaNxxX>3102571</NpaNxxX>"
-    b"    </NpaNxxXs>"
-    b"    <Id>1</Id>"
-    b"    <LocalRateCenters>"
-    b"        <RateCenterId>369</RateCenterId>"
-    b"        <RateCenterId>7843</RateCenterId>"
-    b"        <RateCenterId>7945</RateCenterId>"
-    b"    </LocalRateCenters>"
-    b"</CoveredRateCenter>"
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> "
+    "<CoveredRateCenters><CoveredRateCenter><Name>AVALON</Name>"
+    "<Abbreviation>AVALON</Abbreviation> <State>CA</State><Lata>730</Lata> "
+    "<AvailableNumberCount>1</AvailableNumberCount> <ZipCodes>"
+    "<ZipCode>90731</ZipCode> </ZipCodes><Cities><City>SAN PEDRO</City> "
+    "</Cities><Tiers> <Tier>0</Tier></Tiers> <NpaNxxXs>"
+    "<NpaNxxX>3105100</NpaNxxX> <NpaNxxX>3105101</NpaNxxX> "
+    "<NpaNxxX>3109498</NpaNxxX> <NpaNxxX>3109499</NpaNxxX> "
+    "<NpaNxxX>4242260</NpaNxxX></NpaNxxXs><Id>1</Id> "
+    "</CoveredRateCenter></CoveredRateCenters>"
 )
 
 XML_RESPONSE_CRC_LIST_GET = (
-    b"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-    b"<CoveredRateCenters>"
-    b"    <Links>"
-    b"        <first></first>"
-    b"    </Links>"
-    b"    <CoveredRateCenter>"
-    b"        <Id>2805</Id>"
-    b"        <Name>CARY</Name>"
-    b"        <Abbreviation>CARY</Abbreviation>"
-    b"        <State>NC</State>"
-    b"        <Lata>426</Lata>"
-    b"        <Tiers>"
-    b"            <Tier>0</Tier>"
-    b"        </Tiers>"
-    b"    </CoveredRateCenter>"
-    b"    <CoveredRateCenter>"
-    b"        <Id>2807</Id>"
-    b"        <Name>CARY-RESEARCH TRIANGLE PARK</Name>"
-    b"        <Abbreviation>CARY-RTP</Abbreviation>"
-    b"        <State>NC</State>"
-    b"        <Lata>426</Lata>"
-    b"        <Tiers>"
-    b"            <Tier>0</Tier>"
-    b"        </Tiers>"
-    b"    </CoveredRateCenter>"
-    b"</CoveredRateCenters>"
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    "<CoveredRateCenters><TotalCount>18</TotalCount> <Links>"
+    "<first>Link=&lt;https://api.inetwork.com:443/v1.0/coveredRateCenters?"
+    "npa=310&amp;size=10&amp;e mbed=Cities&amp;embed=ZipCodes&amp;embed="
+    "NpaNxxX&amp;page=1&gt;;rel=\"first\";</first><next>Link=&lt;"
+    "https://api.inetwork.com:443/v1.0/coveredRateCenters?npa=310&amp;"
+    "size=10&amp;e mbed=Cities&amp;embed=ZipCodes&amp;embed=NpaNxxX&amp; "
+    "page=5&gt;;rel=\"next\";</next></Links> <CoveredRateCenter>"
+    "<Name>AVALON</Name><Abbreviation>AVALON</Abbreviation> "
+    "<State>CA</State><Lata>730</Lata> "
+    "<AvailableNumberCount>1</AvailableNumberCount> <ZipCodes>"
+    "<ZipCode>90731</ZipCode> </ZipCodes><Cities><City>SAN PEDRO</City> "
+    "</Cities><Tiers> <Tier>0</Tier></Tiers> <NpaNxxXs>"
+    "<NpaNxxX>3105100</NpaNxxX> <NpaNxxX>3105101</NpaNxxX> "
+    "<NpaNxxX>3109498</NpaNxxX> <NpaNxxX>3109499</NpaNxxX> "
+    "<NpaNxxX>4242260</NpaNxxX></NpaNxxXs><Id>1</Id> "
+    "</CoveredRateCenter> <CoveredRateCenter><Name>BEVERLY HILLS</Name> "
+    "<Abbreviation>BEVERLYHLS</Abbreviation> <State>CA</State>"
+    "<Lata>730</Lata><AvailableNumberCount>25</AvailableNumberCount> "
+    "<ZipCodes><ZipCode>90013</ZipCode> <ZipCode>90014</ZipCode> "
+    "<ZipCode>90015</ZipCode><ZipCode>91504</ZipCode>"
+    "<ZipCode>91505</ZipCode> </ZipCodes><Cities>"
+    "<City>BEVERLY HILLS</City> <City>BURBANK</City> <City>GARDENA</City> "
+    "<City>LOS ANGELES</City> <City>SHERMAN OAKS</City> "
+    "<City>SUN VALLEY</City> <City>VAN NUYS</City></Cities> "
+    "<Tiers><Tier>0</Tier> </Tiers><NpaNxxXs> <NpaNxxX>3102010</NpaNxxX>"
+    "<NpaNxxX>3102011</NpaNxxX><NpaNxxX>3102012</NpaNxxX>"
+    "<NpaNxxX>4247777</NpaNxxX> <NpaNxxX>4247778</NpaNxxX> "
+    "<NpaNxxX>4247779</NpaNxxX></NpaNxxXs><Id>3</Id> "
+    "</CoveredRateCenter></CoveredRateCenters>"
 )
 
 class ClassCoveredRateCentersTest(TestCase):
@@ -109,8 +83,16 @@ class ClassCoveredRateCentersTest(TestCase):
             m.get(url, content=XML_RESPONSE_CRC_GET)
             center = self._crc.get(1)
             self.assertEquals(m.request_history[0].method, "GET")
+            self.assertEquals(center.name, "AVALON")
+            self.assertEquals(center.abbreviation, "AVALON")
+            self.assertEquals(center.state, "CA")
             self.assertEquals(center.lata, "730")
-            self.assertEquals(center.cities.city.items[2], "LONG BEACH")
+            self.assertEquals(center.available_number_count, "1")
+            self.assertEquals(center.zip_codes.zip_code.items[0], "90731")
+            self.assertEquals(center.cities.city.items[0], "SAN PEDRO")
+            self.assertEquals(center.tiers.tier.items[0], "0")
+            self.assertEquals(center.npa_nxx_xs.npa_nxx_x.items,
+                ["3105100","3105101","3109498","3109499","4242260"])
 
     def test_rate_centers_list(self):
         self.assertEquals(self._crc.get_xpath(), self._crc._xpath)
@@ -120,7 +102,18 @@ class ClassCoveredRateCentersTest(TestCase):
             centers = self._crc.list({"page": 1, "size": 2})
             self.assertEquals(m.request_history[0].method, "GET")
             self.assertEquals(len(centers.items), 2)
-            self.assertEquals(centers.items[0].tiers.tier.items[0], "0")
+            item = centers.items[0]
+            self.assertEquals(item.name, "AVALON")
+            self.assertEquals(item.abbreviation, "AVALON")
+            self.assertEquals(item.state, "CA")
+            self.assertEquals(item.lata, "730")
+            self.assertEquals(item.available_number_count, "1")
+            self.assertEquals(item.zip_codes.zip_code.items[0], "90731")
+            self.assertEquals(item.cities.city.items[0], "SAN PEDRO")
+            self.assertEquals(item.tiers.tier.items[0], "0")
+            self.assertEquals(item.npa_nxx_xs.npa_nxx_x.items,
+                ["3105100","3105101","3109498","3109499","4242260"])
+            self.assertEquals(item.id, "1")
 
 if __name__ == "__main__":
     main()
