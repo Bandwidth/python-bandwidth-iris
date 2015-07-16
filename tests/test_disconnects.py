@@ -120,6 +120,39 @@ class ClassDisconnectsTest(TestCase):
             self.assertEquals(order_type.disconnect_mode, "normal")
             self.assertEquals(disconnect.order_status, "RECEIVED")
 
+    def test_disconnect_get(self):
+        disconnect = self._account.disconnects.create({"order_id":
+            "b902dee1-0585-4258-becd-5c7e51ccf5e1"}, False)
+        self.assertEquals(disconnect.get_xpath(),
+            self._account.get_xpath() + self._account.disconnects._xpath +
+                disconnect._xpath.format(disconnect.id))
+        url = self._client.config.url + disconnect.get_xpath()
+        with requests_mock.Mocker() as m:
+            m.get(url, content=XML_RESPONSE_DISCONNECT_GET)
+            resp = disconnect.get({"tndetail": "true"})
+            req = resp.order_request
+            self.assertEquals(m.request_history[0].method, "GET")
+            self.assertEquals(req.id, "b902dee1-0585-4258-becd-5c7e51ccf5e1")
+            self.assertEquals(req.customer_order_id, "Disconnect1234")
+            order_type = req.disconnect_telephone_number_order_type
+            self.assertEquals(
+                order_type.telephone_number_list.telephone_number.items,
+                ["9192755378","9192755703"])
+            self.assertEquals(order_type.disconnect_mode, "normal")
+            self.assertEquals(req.order_create_date,
+                "2015-06-17T18:14:08.683Z")
+
+            error = resp.error_list.error.items[0]
+            self.assertEquals(error.code, "5006")
+            self.assertEquals(error.telephone_number, "9192755703")
+            self.assertTrue(error.description.startswith(
+                "Telephone number could not be disconnected"))
+            error = resp.error_list.error.items[1]
+            self.assertEquals(error.code, "5006")
+            self.assertEquals(error.telephone_number, "9192755378")
+            self.assertTrue(error.description.startswith(
+               "Telephone number could not be disconnected"))
+
     def test_disconnects_get(self):
         self.assertEquals(self._account.disconnects.get_xpath(),
             self._account.get_xpath() + self._account.disconnects._xpath)

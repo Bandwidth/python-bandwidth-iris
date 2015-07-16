@@ -28,7 +28,7 @@ class Disconnects(BaseResource, DisconnectsData):
         return disconnect
 
     def get(self, id, params=None):
-        return self.add().get(id, params=params)
+        return Disconnect(self).get(id, params=params)
 
     def list(self, params):
         return self._get_data(params=params).order_id_user_id_date

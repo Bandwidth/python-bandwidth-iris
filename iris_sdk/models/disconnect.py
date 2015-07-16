@@ -15,6 +15,7 @@ class Disconnect(BaseResource, DisconnectData):
 
     """Disconnect telephone numbers order for account"""
 
+    _node_name = XML_NAME_DISCONNECT
     _xpath = XPATH_DISCONNECT
 
     @property
@@ -33,10 +34,12 @@ class Disconnect(BaseResource, DisconnectData):
         DisconnectData.__init__(self)
         self._notes = Notes(self, client)
 
-    def get(self, id=None, params=None):
+    def get(self, params=None):
+        _id = self.id
         order_response = DisconnectOrderResponse(self._parent)
+        self.clear()
         order_response.order_request = self
-        return order_response.get(id, params=params)
+        return order_response.get(_id, params=params)
 
     def save(self):
         str = self._save(True)

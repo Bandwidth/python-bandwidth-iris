@@ -18,10 +18,10 @@ class DisconnectOrderResponse(BaseResource, OrderResponseData):
 
     @property
     def id(self):
-        return self.order.order_id
+        return self.order_request.order_id
     @id.setter
     def id(self, order_id):
-        self.order.order_id = order_id
+        self.order_request.order_id = order_id
 
     @property
     def order_request(self):
