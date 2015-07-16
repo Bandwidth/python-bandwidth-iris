@@ -36,6 +36,7 @@ class Dlda(BaseResource, DldaData):
 
     def get(self, id=None, params=None):
         order_response = DldaOrderResponse(self._parent)
+        self.clear()
         order_response.dlda_order = self
         return order_response.get(id, params=params)
 
@@ -45,5 +46,4 @@ class Dlda(BaseResource, DldaData):
         self.clear()
         order_response.dlda_order = self
         order_response._from_xml(self._element_from_string(str))
-        self.order_status = order_response.order_status
         return True

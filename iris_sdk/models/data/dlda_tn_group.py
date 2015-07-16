@@ -10,5 +10,5 @@ class DldaTnGroupData(DldaTnGroupMap, BaseData):
 
     def __init__(self):
         self.telephone_numbers = TelephoneNumberList()
-        self.listingName = ListingName()
+        self.listing_name = ListingName()
         self.address = Address()

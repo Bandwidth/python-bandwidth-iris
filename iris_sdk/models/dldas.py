@@ -12,7 +12,7 @@ XPATH_DLDAS = "/dldas"
 
 class Dldas(BaseResource, DldasData):
 
-    """ DLDA order """
+    """ DLDA orders """
 
     _node_name = XML_NAME_DLDAS
     _xpath = XPATH_DLDAS
@@ -21,18 +21,14 @@ class Dldas(BaseResource, DldasData):
         super().__init__(parent, client)
         DldasData.__init__(self, self)
 
-    def add(self):
-        return Dlda(self)
-
-    def get(self, id, params=None):
-        return self.add().get(id, params=params)
-
-    def list(self, params):
-        return self._get_data(params=params).order_id_user_id_date
-
-    def create(self, initial_data, save=True):
-        dlda = self.add()
-        dlda.set_from_dict(initial_data)
-        if save:
+    def create(self, data=None, save=True):
+        dlda = Dlda(self).set_from_dict(data)
+        if save and (data is not None):
             dlda.save()
         return dlda
+
+    def get(self, id, params=None):
+        return Dlda(self).get(id, params=params)
+
+    def list(self, params=None):
+        return self._get_data(params=params).order_id_user_id_date
