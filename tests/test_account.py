@@ -162,36 +162,62 @@ XML_RESPONSE_LINE_OPTION_ORDER = (
 )
 
 XML_RESPONSE_LNP_CHECKER = (
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?><NumberPortabilityResponse>"
-    "<SupportedRateCenters />   <UnsupportedRateCenters>      "
-    "<RateCenterGroup>         <RateCenter>BALTIMORE</RateCenter>         "
-    "<City>BALTIMORE</City>         <State>MD</State>         "
-    "<LATA>238</LATA>         <TnList>            "
-    "<Tn>4109255199</Tn>            <Tn>4104685864</Tn>         "
-    "</TnList>      </RateCenterGroup>      <RateCenterGroup>"
-    "    <RateCenter>SPARKSGLNC</RateCenter>         "
-    "<City>SPARKS GLENCOE</City>         <State>MD</State>"
-    "<LATA>238</LATA>         <TnList>            "
-    "<Tn>4103431313</Tn>            <Tn>4103431561</Tn>         "
-    "</TnList>      </RateCenterGroup>   </UnsupportedRateCenters>   "
-    "<PartnerSupportedRateCenters>      "
-    "<RateCenterGroup>         <RateCenter>FT COLLINS</RateCenter>         "
-    "<City>FORT COLLINS</City>         <State>CO</State>         "
-    "<LATA>656</LATA>         <Tiers>            <Tier>1</Tier>         "
-    "</Tiers>         <TnList>            <Tn>4109235436</Tn>         "
-    "</TnList>      </RateCenterGroup>   </PartnerSupportedRateCenters>   "
-    "<SupportedLosingCarriers>      <LosingCarrierTnList>         "
-    "<LosingCarrierSPID>9998</LosingCarrierSPID>         "
-    "<LosingCarrierName>Test Losing Carrier L3</LosingCarrierName>         "
-    "<LosingCarrierIsWireless>false</LosingCarrierIsWireless>         "
-    "<LosingCarrierAccountNumberRequired>false</LosingCarrierAccount\
-    NumberRequired>         "
-    "<LosingCarrierMinimumPortingInterval>5</LosingCarrierMinimumPorting\
-    Interval>         <TnList>            <Tn>4109255199</Tn>            "
-    "<Tn>4104685864</Tn>            <Tn>4103431313</Tn>            "
-    "<Tn>4103431561</Tn>         </TnList>      </LosingCarrierTnList>   "
-    "</SupportedLosingCarriers>   <UnsupportedLosingCarriers />"
-    "</NumberPortabilityResponse>"
+    b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    b"<NumberPortabilityResponse>"
+    b"    <SupportedRateCenters />"
+    b"    <UnsupportedRateCenters>"
+    b"        <RateCenterGroup>"
+    b"            <RateCenter>BALTIMORE</RateCenter>"
+    b"            <City>BALTIMORE</City>"
+    b"            <State>MD</State>"
+    b"            <LATA>238</LATA>"
+    b"            <TnList>"
+    b"                <Tn>4109255199</Tn>"
+    b"                <Tn>4104685864</Tn>"
+    b"            </TnList>"
+    b"        </RateCenterGroup>"
+    b"        <RateCenterGroup>"
+    b"            <RateCenter>SPARKSGLNC</RateCenter>"
+    b"            <City>SPARKS GLENCOE</City>"
+    b"            <State>MD</State>"
+    b"            <LATA>238</LATA>"
+    b"            <TnList>"
+    b"                <Tn>4103431313</Tn>"
+    b"                <Tn>4103431561</Tn>"
+    b"            </TnList>"
+    b"        </RateCenterGroup>"
+    b"    </UnsupportedRateCenters>"
+    b"    <PartnerSupportedRateCenters>"
+    b"        <RateCenterGroup>"
+    b"            <RateCenter>FT COLLINS</RateCenter>"
+    b"            <City>FORT COLLINS</City>"
+    b"            <State>CO</State>"
+    b"            <LATA>656</LATA>"
+    b"            <Tiers>"
+    b"                <Tier>1</Tier>"
+    b"            </Tiers>"
+    b"            <TnList>"
+    b"                <Tn>4109235436</Tn>"
+    b"            </TnList>"
+    b"        </RateCenterGroup>"
+    b"    </PartnerSupportedRateCenters>"
+    b"    <SupportedLosingCarriers>"
+    b"        <LosingCarrierTnList>"
+    b"            <LosingCarrierSPID>9998</LosingCarrierSPID>"
+    b"            <LosingCarrierName>Carrier L3</LosingCarrierName>"
+    b"            <LosingCarrierIsWireless>false</LosingCarrierIsWireless>"
+    b"            <LosingCarrierAccountNumberRequired>false</LosingCarrierAccountNumberRequired>"
+    b"            <LosingCarrierMinimumPortingInterval>5</LosingCarrierMinimumPortingInterval>"
+    b"            <TnList>"
+    b"                <Tn>4109255199</Tn>"
+    b"                <Tn>4104685864</Tn>"
+    b"                <Tn>4103431313</Tn>"
+    b"                <Tn>4103431561</Tn>"
+    b"            </TnList>"
+    b"        </LosingCarrierTnList>"
+    b"    </SupportedLosingCarriers>"
+    b"    <UnsupportedLosingCarriers />"
+    b"</NumberPortabilityResponse>"
 )
 
 XML_RESPONSE_TN_RESERVATION_GET = (
@@ -376,27 +402,28 @@ class ClassAccountTest(TestCase):
             self.assertEquals(grp.city, "BALTIMORE")
             self.assertEquals(grp.state, "MD")
             self.assertEquals(grp.lata, "238")
-            self.assertEquals(grp.tnlist.tn.items,["4109255199","4104685864"])
+            self.assertEquals(grp.tn_list.tn.items,
+                ["4109255199","4104685864"])
             grp = response.unsupported_rate_centers.rate_center_group.items[1]
             self.assertEquals(grp.rate_center, "SPARKSGLNC")
             self.assertEquals(grp.city, "SPARKS GLENCOE")
             self.assertEquals(grp.state, "MD")
             self.assertEquals(grp.lata, "238")
-            self.assertEquals(grp.tnlist.tn.items,["4103431313","4103431561"])
+            self.assertEquals(grp.tn_list.tn.items,
+                ["4103431313","4103431561"])
             grp = response.partner_supported_rate_centers.rate_center_group.\
                 items[0]
             self.assertEquals(grp.rate_center, "FT COLLINS")
             self.assertEquals(grp.city, "FORT COLLINS")
             self.assertEquals(grp.state, "CO")
             self.assertEquals(grp.lata, "656")
-            self.assertEquals(grp.tnlist.tn.items, ["4109235436"])
-            self.assertEquals(grp.tiers.tier.items, "0")
+            self.assertEquals(grp.tn_list.tn.items, ["4109235436"])
+            self.assertEquals(grp.tiers.tier.items, ["1"])
             grp = response.supported_losing_carriers.losing_carrier_tn_list
             self.assertEquals(grp.losing_carrier_spid, "9998")
-            self.assertEquals(grp.losing_carrier_name,
-                "Test Losing Carrier L3")
+            self.assertEquals(grp.losing_carrier_name, "Carrier L3")
             self.assertEquals(grp.losing_carrier_is_wireless, "false")
-            self.assertEquals(grp.losing_carrier_name_account_number_required,
+            self.assertEquals(grp.losing_carrier_account_number_required,
                 "false")
             self.assertEquals(grp.losing_carrier_minimum_porting_interval,"5")
             self.assertEquals(grp.tn_list.tn.items,
