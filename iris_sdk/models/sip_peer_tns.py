@@ -22,6 +22,12 @@ class SipPeerTns(BaseResource, SipPeerTnsData):
         super().__init__(parent, client)
         SipPeerTnsData.__init__(self, self)
 
+    def create(self, data=None, save=True):
+        tn = SipPeerTelephoneNumber(self).set_from_dict(data)
+        if save and (data is not None):
+            tn.save()
+        return tn
+
     def get(self, id):
         return SipPeerTelephoneNumber(self).get(id)
 
