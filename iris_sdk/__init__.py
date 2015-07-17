@@ -8,4 +8,4 @@ from iris_sdk.models.users import Users
 from iris_sdk.utils.rest import RestError
 
 __all__ = ["Client", "Account", "Tns", "Users", "Cities", "RateCenters",
-    "RestError", "CoveredRateCenters"]
+    "RestError", "CoveredRateCenters", ]

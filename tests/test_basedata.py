@@ -53,5 +53,28 @@ class ClassBaseDataClearTest(TestCase):
         self.assertEquals(self._test_stub.items, 5)
         self.assertEquals(self._test_stub.xpath, 6)
 
+class ClassBaseDataDictTest(TestCase):
+
+    """Test BaseData's dict initialization"""
+
+    def setUp(self):
+        self._test_stub = TestStub()
+
+    def tearDown(self):
+        del self._test_stub
+
+    def test_basedata_clear(self):
+
+        self._test_stub.set_from_dict({
+            "_baz": "34", "bar": "2",
+            "eggs": {
+                "spam": "foo"
+            }
+        })
+
+        self.assertEquals(self._test_stub._baz, "34")
+        self.assertEquals(self._test_stub.bar, "2")
+        self.assertEquals(self._test_stub.eggs.spam, "foo")
+
 if __name__ == "__main__":
     main()
