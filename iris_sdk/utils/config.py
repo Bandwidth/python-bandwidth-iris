@@ -97,7 +97,7 @@ class Config(ConfigData):
       with open(filename, encoding="UTF-8") as fp:
           self._parser = ConfigParser(allow_no_value = True)
           if PY_VER_MAJOR == 3:
-              self._parser.readfp(fp)
+              self._parser.read_file(fp)
           else:
               self._parser.readfp(fp)
 

@@ -67,7 +67,7 @@ class ClassRestRequestTest(TestCase):
         self._rest_client.request("GET","foo","bar","baz","qux")
         self._request.assert_called_once_with("GET", "foo", auth="bar",
             headers=HEADERS, params="baz", data="qux")
-        self._stat.assert_called
+        self._stat.assert_any_call
 
         self.assertEqual(self._mock_req_res.status_code, HTTP_OK)
         self.assertEqual(self._mock_req_res.content,

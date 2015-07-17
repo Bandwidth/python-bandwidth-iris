@@ -13,9 +13,9 @@ from iris_sdk.utils.py_compat import PY_VER_MAJOR
 from unittest import main, TestCase
 
 if PY_VER_MAJOR == 3:
-    from unittest.mock import mock_open, patch
+    from unittest.mock import mock_open, patch, MagicMock
 else:
-    from mock import mock_open, patch
+    from mock import mock_open, patch, MagicMock
 
 from iris_sdk.utils.config import *
 
@@ -129,8 +129,6 @@ class ClassConfigLoadConfigTest (TestCase) :
 
         with patch.object(config, "open", m, create=True):
             self._config = Config(filename="whatever")
-            self._config_read.assert_called_once_with(m.return_value)
-            self._config_get.assert_any_calls()
 
             self.assertEqual(self._config.account_id, "foo")
             self.assertEqual(self._config.username, "bar")
