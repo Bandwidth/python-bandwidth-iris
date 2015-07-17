@@ -35,15 +35,10 @@ class Dlda(BaseResource, DldaData):
         self._history = History(self, client)
 
     def get(self, id=None, params=None):
-        order_response = DldaOrderResponse(self._parent)
-        self.clear()
-        order_response.dlda_order = self
-        return order_response.get(id, params=params)
+        return self._get_data(id)
 
     def save(self):
         str = self._save(True)
-        order_response = DldaOrderResponse(self._parent)
         self.clear()
-        order_response.dlda_order = self
-        order_response._from_xml(self._element_from_string(str))
+        self._from_xml(self._element_from_string(str))
         return True

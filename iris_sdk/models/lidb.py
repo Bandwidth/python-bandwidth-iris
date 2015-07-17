@@ -29,9 +29,7 @@ class Lidb(BaseResource, LidbData):
         LidbData.__init__(self)
 
     def get(self, id=None, params=None):
-        order_response = LidbOrderResponse(self._parent)
-        order_response.lidb_order = self
-        return order_response.get(id, params=params)
+        return self._get_data(id, params=params)
 
     def save(self):
         str = self._save(True)
@@ -39,5 +37,4 @@ class Lidb(BaseResource, LidbData):
         self.clear()
         order_response.lidb_order = self
         order_response._from_xml(self._element_from_string(str))
-        self.order_status = order_response.order_status
         return True

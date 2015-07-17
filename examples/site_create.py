@@ -11,7 +11,7 @@ acc = Account(client=Client(filename="config.cfg"))
 print("\n")
 
 try:
-    site = acc.sites.add({
+    site = acc.sites.create({
         "name": sys.argv[1],
         "address": {
             "city": "Raleigh",

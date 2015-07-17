@@ -28,9 +28,7 @@ class Tns(BaseResource, TnsData):
         self._telephone_numbers = TelephoneNumbers(self)
 
     def get(self, id):
-        tn = TelephoneNumber(self).get(id)
-        tn.full_number = id
-        return tn
+        return TelephoneNumber(self).get(id)
 
     def list(self, params):
         self._get_data(params=params)

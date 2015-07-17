@@ -21,8 +21,11 @@ class Notes(BaseResource, NotesData):
         super().__init__(parent, client)
         NotesData.__init__(self, self)
 
-    def add(self):
-        return Note(self)
+    def create(self, data=None, save=True):
+        note = Note(self).set_from_dict(data)
+        if save and (data is not None):
+            note.save()
+        return note
 
     def list(self):
         return self._get_data().note

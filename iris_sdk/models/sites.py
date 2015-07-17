@@ -19,14 +19,14 @@ class Sites(BaseResource, SitesData):
         super().__init__(parent, client)
         SitesData.__init__(self, self)
 
-    def add(self, data=None, save=True):
+    def create(self, data=None, save=True):
         site = Site(self).set_from_dict(data)
         if save and (data is not None):
             site.save()
         return site
 
     def get(self, id):
-        return self.add(save=False).get(id)
+        return Site(self).get(id)
 
     def list(self):
         return self._get_data().site

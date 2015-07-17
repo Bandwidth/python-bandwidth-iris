@@ -44,4 +44,4 @@ class Site(BaseResource, SiteData):
         self._totaltns = SiteTotaltns(self, client)
 
     def get(self, id=None):
-        return self._get_data(id or self.id)
+        return self._get_data(id)

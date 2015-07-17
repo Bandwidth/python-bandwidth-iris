@@ -103,7 +103,7 @@ XML_RESPONSE_DLDA_POST = (
 
 class ClassDldaTest(TestCase):
 
-    """Test phone disconnect orders"""
+    """Test DLDA orders"""
 
     @classmethod
     def setUpClass(cls):
@@ -130,7 +130,7 @@ class ClassDldaTest(TestCase):
 
             m.get(url, content=XML_RESPONSE_DLDA_GET)
 
-            dlda = self._account.dldas.get(dlda.id).dlda_order
+            dlda = self._account.dldas.get(dlda.id)
 
             self.assertEquals(m.request_history[0].method, "GET")
 

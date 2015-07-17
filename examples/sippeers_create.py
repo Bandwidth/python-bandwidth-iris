@@ -15,7 +15,7 @@ name = sys.argv[2]
 site = sys.argv[3]
 
 try:
-    sip_peer = acc.sites.get(site).sip_peers.add({
+    sip_peer = acc.sites.get(site).sip_peers.create({
         "peer_name": name,
         "is_default_peer": "true",
         "short_messaging_protocol": "SMPP",

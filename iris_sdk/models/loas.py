@@ -28,7 +28,7 @@ class Loas(BaseResource, LoasData):
         LoasData.__init__(self)
         self._metadata = FileMetaData(self, client)
 
-    def add(self, filename, headers):
+    def create(self, filename, headers):
         return self._send_file("", filename, headers)
 
     def delete(self, id):

@@ -11,7 +11,7 @@ acc = Account(client=Client(filename="config.cfg"))
 print("\n")
 
 try:
-    order = acc.orders.add({
+    order = acc.orders.create({
         "name": "Available telephone number order",
         "site_id": "2297",
         "customer_order_id": "123456789",

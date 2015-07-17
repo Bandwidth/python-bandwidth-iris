@@ -21,18 +21,14 @@ class PortIns(BaseResource, PortInsData):
         super().__init__(parent, client)
         PortInsData.__init__(self, self)
 
-    def add(self):
-        return PortIn(self)
+    def create(self, data=None, save=True):
+        portin = PortIn(self).set_from_dict(data)
+        if save and (data is not None):
+            portin.save()
+        return portin
 
     def get(self, id, params):
-        return self.add().get(id, params=params)
+        return PortIn(self).get(id, params=params)
 
     def list(self, params):
         return self._get_data(params=params).lnp_port_info_for_given_status
-
-    def create(self, initial_data, save=True):
-        portin = self.add()
-        portin.set_from_dict(initial_data)
-        if save:
-            portin.save()
-        return portin

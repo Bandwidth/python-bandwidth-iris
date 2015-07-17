@@ -49,7 +49,7 @@ except RestError as error:
 print("Order created: " + (portin.id or ""))
 
 try:
-    fname = portin.loas.add("loa.pdf", {'content-type': 'application/pdf'})
+    fname = portin.loas.create("loa.pdf", {'content-type': 'application/pdf'})
 except RestError as error:
     sys.exit(error)
 

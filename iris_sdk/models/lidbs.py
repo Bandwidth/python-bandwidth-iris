@@ -21,18 +21,14 @@ class Lidbs(BaseResource, LidbsData):
         super().__init__(parent, client)
         LidbsData.__init__(self, self)
 
-    def add(self):
-        return Lidb(self)
+    def create(self, data=None, save=True):
+        lidb = Lidb(self).set_from_dict(data)
+        if save and (data is not None):
+            lidb.save()
+        return lidb
 
     def get(self, id, params=None):
-        return self.add().get(id, params=params)
+        return Lidb(self).get(id, params=params)
 
     def list(self, params):
         return self._get_data(params=params).order_id_user_id_date
-
-    def create(self, initial_data, save=True):
-        lidb = self.add()
-        lidb.set_from_dict(initial_data)
-        if save:
-            lidb.save()
-        return lidb

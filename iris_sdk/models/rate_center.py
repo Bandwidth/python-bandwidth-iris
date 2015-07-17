@@ -21,7 +21,4 @@ class RateCenter(BaseResource, RateCenterData):
         RateCenterData.__init__(self)
 
     def get(self, id=None):
-        new_id = (id or self.id)
-        self._get_data(new_id)
-        self.id = new_id
-        return self
+        return self._get_data(id)

@@ -190,7 +190,7 @@ class BaseResource(BaseData):
         if (client is None) and (parent is not None):
             self._client = parent.client
 
-    def _delete_file(self):
+    def _delete_file(self, xpath, id):
         if id is None:
             raise ValueError("No id specified")
         path = ""
@@ -347,17 +347,20 @@ class BaseResource(BaseData):
 
         response = self._post(path, data, params)
 
-        if return_content:
-            return response.content.decode(encoding="UTF-8")
-
-        location = response.headers[HEADER_LOCATION]
+        location = None
+        if HEADER_LOCATION in response.headers:
+            location = response.headers[HEADER_LOCATION]
         res = ""
         if location is not None:
             pos = location.rfind("/")
             res = location[pos+1:]
 
         self.id = (res if res else self.id)
-        return True
+
+        if return_content:
+            return response.content.decode(encoding="UTF-8")
+        else:
+           return True
 
     def _send_file(self, xpath, filename, headers, id=None):
 

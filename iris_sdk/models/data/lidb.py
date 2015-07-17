@@ -6,6 +6,6 @@ from iris_sdk.models.data.lidb_tn_groups import LidbTnGroups
 from iris_sdk.models.data.error_list import ErrorList
 
 class LidbData(LidbMap, BaseData):
-    def __init__(self, parent=None):
-        self.lidb_tn_groups = LidbTnGroups(parent=parent)
+    def __init__(self):
+        self.lidb_tn_groups = LidbTnGroups()
         self.error_list = ErrorList()

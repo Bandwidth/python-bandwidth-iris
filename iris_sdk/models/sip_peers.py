@@ -19,14 +19,14 @@ class SipPeers(BaseResource, SipPeersData):
         super().__init__(parent, client)
         SipPeersData.__init__(self, self)
 
-    def add(self, data=None, save=True):
+    def create(self, data=None, save=True):
         sip_peer = SipPeer(self).set_from_dict(data)
         if save and (data is not None):
             sip_peer.save()
         return sip_peer
 
     def get(self, id):
-        return self.add(save=False).get(id)
+        return SipPeer(self).get(id)
 
     def list(self):
         return self._get_data().sip_peer
