@@ -28,5 +28,5 @@ class Subscriptions(BaseResource, SubscriptionsData):
     def get(self, id, params=None):
         return Subscription(self).get(id, params=params)
 
-    def list(self):
-        return self._get_data().subscription
+    def list(self, params=None):
+        return self._get_data(params=params).subscription

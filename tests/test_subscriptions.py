@@ -15,6 +15,16 @@ import requests_mock
 from iris_sdk.client import Client
 from iris_sdk.models.account import Account
 
+XML_RESPONSE_SUBSCRIPTIONS_LIST = (
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    "<SubscriptionsResponse><Subscriptions><Subscription>"
+    "<SubscriptionId>1</SubscriptionId><OrderType>orders</OrderType>"
+    "<OrderId>8684b1c8-7d41-4877-bfc2-6bd8ea4dc89f</OrderId>"
+    "<EmailSubscription><Email>test@test</Email>"
+    "<DigestRequested>NONE</DigestRequested></EmailSubscription>"
+    "</Subscription></Subscriptions></SubscriptionsResponse>"
+)
+
 class ClassSubscriptionsTest(TestCase):
 
     """Notification subscriptions tests"""
@@ -56,6 +66,58 @@ class ClassSubscriptionsTest(TestCase):
             subscription.save()
 
             self.assertEqual(subscription.id, "777")
+
+    def test_subscriptions_list(self):
+
+        with requests_mock.Mocker() as m:
+
+            url = self._client.config.url + \
+                self._account.subscriptions.get_xpath()
+            m.get(url, content=XML_RESPONSE_SUBSCRIPTIONS_LIST)
+
+            subs = self._account.subscriptions.list({"orderType": "portins"})
+            sub = subs.items[0]
+
+            self.assertEqual(len(subs.items), 1)
+            self.assertEqual(sub.order_id,
+                "8684b1c8-7d41-4877-bfc2-6bd8ea4dc89f")
+
+    def test_subscriptions_update(self):
+
+        subscription = self._account.subscriptions.create({
+            "subscription_id": "1c59e661-8c90-4cb5-aab1-00547ea45ecb",
+            "order_type": "portins",
+            "order_id": "98939562-90b0-40e9-8335-5526432d9741",
+            "email_subscription": {
+                "email": "foo@bar.baz",
+                "digest_requested": "DAILY"
+            }
+        }, False);
+
+        self.assertEqual(subscription.subscription_id,
+            "1c59e661-8c90-4cb5-aab1-00547ea45ecb")
+        self.assertEqual(subscription.order_type, "portins")
+        self.assertEqual(subscription.order_id,
+            "98939562-90b0-40e9-8335-5526432d9741")
+
+        with requests_mock.Mocker() as m:
+            url = self._client.config.url + subscription.get_xpath()
+            m.put(requests_mock.ANY)
+            subscription.save()
+
+            self.assertEqual(m.request_history[0].url, url)
+
+    def test_subscriptions_delete(self):
+
+        subscription = self._account.subscriptions.create(
+            {"subscription_id": "1c59e661"}, False);
+
+        with requests_mock.Mocker() as m:
+            url = self._client.config.url + subscription.get_xpath()
+            m.delete(requests_mock.ANY)
+            subscription.delete()
+
+            self.assertEqual(m.request_history[0].url, url)
 
 if __name__ == "__main__":
     main()
