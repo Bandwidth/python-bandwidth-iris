@@ -69,7 +69,7 @@ class BaseData(object):
             if not hasattr(self, key):
                 continue
 
-            if isinstance(initial_data[key], basestring):
+            if isinstance(initial_data[key], str):
                 setattr(self, key, initial_data[key])
             else:
 

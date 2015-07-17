@@ -16,11 +16,11 @@ from iris_sdk.client import Client
 from iris_sdk.models.rate_centers import RateCenters
 
 XML_RESPONSE_RC_LIST = (
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-    "<RateCenterResponse><ResultCount>652</ResultCount><RateCenters>"
-    "<RateCenter><Abbreviation>AGOURA</Abbreviation><Name>AGOURA</Name>"
-    "</RateCenter><RateCenter><Abbreviation>ALAMITOS</Abbreviation>"
-    "<Name>ALAMITOS</Name></RateCenter></RateCenters></RateCenterResponse>"
+    b"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    b"<RateCenterResponse><ResultCount>652</ResultCount><RateCenters>"
+    b"<RateCenter><Abbreviation>AGOURA</Abbreviation><Name>AGOURA</Name>"
+    b"</RateCenter><RateCenter><Abbreviation>ALAMITOS</Abbreviation>"
+    b"<Name>ALAMITOS</Name></RateCenter></RateCenters></RateCenterResponse>"
 )
 
 class ClassRcTest(TestCase):

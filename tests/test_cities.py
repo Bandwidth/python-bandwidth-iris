@@ -16,11 +16,11 @@ from iris_sdk.client import Client
 from iris_sdk.models.cities import Cities
 
 XML_RESPONSE_CITIES_LIST = (
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-    "<CityResponse><ResultCount>618</ResultCount><Cities><City>"
-    "<RcAbbreviation>PINEHURST</RcAbbreviation><Name>ABERDEEN</Name></City>"
-    "<City><RcAbbreviation>JULIAN</RcAbbreviation><Name>ADVANCE</Name>"
-    "</City></Cities></CityResponse>"
+    b"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    b"<CityResponse><ResultCount>618</ResultCount><Cities><City>"
+    b"<RcAbbreviation>PINEHURST</RcAbbreviation><Name>ABERDEEN</Name></City>"
+    b"<City><RcAbbreviation>JULIAN</RcAbbreviation><Name>ADVANCE</Name>"
+    b"</City></Cities></CityResponse>"
 )
 
 class ClassCitiesTest(TestCase):

@@ -16,13 +16,13 @@ from iris_sdk.client import Client
 from iris_sdk.models.account import Account
 
 XML_RESPONSE_SUBSCRIPTIONS_LIST = (
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-    "<SubscriptionsResponse><Subscriptions><Subscription>"
-    "<SubscriptionId>1</SubscriptionId><OrderType>orders</OrderType>"
-    "<OrderId>8684b1c8-7d41-4877-bfc2-6bd8ea4dc89f</OrderId>"
-    "<EmailSubscription><Email>test@test</Email>"
-    "<DigestRequested>NONE</DigestRequested></EmailSubscription>"
-    "</Subscription></Subscriptions></SubscriptionsResponse>"
+    b"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+    b"<SubscriptionsResponse><Subscriptions><Subscription>"
+    b"<SubscriptionId>1</SubscriptionId><OrderType>orders</OrderType>"
+    b"<OrderId>8684b1c8-7d41-4877-bfc2-6bd8ea4dc89f</OrderId>"
+    b"<EmailSubscription><Email>test@test</Email>"
+    b"<DigestRequested>NONE</DigestRequested></EmailSubscription>"
+    b"</Subscription></Subscriptions></SubscriptionsResponse>"
 )
 
 class ClassSubscriptionsTest(TestCase):

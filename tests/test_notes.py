@@ -16,22 +16,22 @@ from iris_sdk.client import Client
 from iris_sdk.models.account import Account
 
 XML_RESPONSE_NOTES_GET = (
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Notes>"
-    "<Note><Id>11425</Id><UserId>byo_dev</UserId>"
-    "<Description>Test Note</Description>"
-    "<LastDateModifier>2015-06-18T04:19:59.000Z</LastDateModifier></Note>"
-    "</Notes>"
+    b"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Notes>"
+    b"<Note><Id>11425</Id><UserId>byo_dev</UserId>"
+    b"<Description>Test Note</Description>"
+    b"<LastDateModifier>2015-06-18T04:19:59.000Z</LastDateModifier></Note>"
+    b"</Notes>"
 )
 
 XML_RESPONSE_NOTES_LIST = (
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Notes>"
-    "<Note><Id>11425</Id><UserId>byo_dev</UserId>"
-    "<Description>Test Note</Description>"
-    "<LastDateModifier>2015-06-18T04:19:59.000Z</LastDateModifier></Note>"
-    "<Note><Id>11425</Id><UserId>byo_dev</UserId>"
-    "<Description>Test Note</Description>"
-    "<LastDateModifier>2015-06-18T04:19:59.000Z</LastDateModifier></Note>"
-    "</Notes>"
+    b"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Notes>"
+    b"<Note><Id>11425</Id><UserId>byo_dev</UserId>"
+    b"<Description>Test Note</Description>"
+    b"<LastDateModifier>2015-06-18T04:19:59.000Z</LastDateModifier></Note>"
+    b"<Note><Id>11425</Id><UserId>byo_dev</UserId>"
+    b"<Description>Test Note</Description>"
+    b"<LastDateModifier>2015-06-18T04:19:59.000Z</LastDateModifier></Note>"
+    b"</Notes>"
 )
 
 class ClassNotesTest(TestCase):

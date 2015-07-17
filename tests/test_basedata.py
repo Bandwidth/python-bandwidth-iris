@@ -44,14 +44,14 @@ class ClassBaseDataClearTest(TestCase):
 
         self._test_stub.clear()
 
-        self.assertEquals(self._test_stub._baz, 3)
-        self.assertEquals(self._test_stub.bar, None)
-        self.assertEquals(self._test_stub.client, 4)
-        self.assertEquals(self._test_stub.eggs.spam, None)
-        self.assertEquals(self._test_stub.foo, None)
-        self.assertEquals(self._test_stub.fred.barney, None)
-        self.assertEquals(self._test_stub.items, 5)
-        self.assertEquals(self._test_stub.xpath, 6)
+        self.assertEqual(self._test_stub._baz, 3)
+        self.assertEqual(self._test_stub.bar, None)
+        self.assertEqual(self._test_stub.client, 4)
+        self.assertEqual(self._test_stub.eggs.spam, None)
+        self.assertEqual(self._test_stub.foo, None)
+        self.assertEqual(self._test_stub.fred.barney, None)
+        self.assertEqual(self._test_stub.items, 5)
+        self.assertEqual(self._test_stub.xpath, 6)
 
 class ClassBaseDataDictTest(TestCase):
 
@@ -72,9 +72,9 @@ class ClassBaseDataDictTest(TestCase):
             }
         })
 
-        self.assertEquals(self._test_stub._baz, "34")
-        self.assertEquals(self._test_stub.bar, "2")
-        self.assertEquals(self._test_stub.eggs.spam, "foo")
+        self.assertEqual(self._test_stub._baz, "34")
+        self.assertEqual(self._test_stub.bar, "2")
+        self.assertEqual(self._test_stub.eggs.spam, "foo")
 
 if __name__ == "__main__":
     main()

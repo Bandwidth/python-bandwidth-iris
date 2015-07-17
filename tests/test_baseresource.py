@@ -91,6 +91,9 @@ class ClassBaseResourceXmlTest(TestCase):
     def test_baseresource_to_xml(self):
 
         xml = self.foo._serialize()
+        xml = xml.decode("UTF-8")
+        xml = xml.replace("encoding='utf-8'", "encoding='UTF-8'")
+        xml.encode("UTF-8")
 
         self.assertEqual(self.str, xml)
 
