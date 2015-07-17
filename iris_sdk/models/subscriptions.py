@@ -19,18 +19,14 @@ class Subscriptions(BaseResource, SubscriptionsData):
         super().__init__(parent, client)
         SubscriptionsData.__init__(self, self)
 
-    def add(self):
-        return Subscription(self)
-
-    def get(self, id, params=None):
-        return self.add().get(id, params=params)
-
-    def list(self, params):
-        return self._get_data(params=params).subscription
-
-    def create(self, initial_data, save=True):
-        subscription = self.add()
-        subscription.set_from_dict(initial_data)
-        if save:
+    def create(self, data=None, save=True):
+        subscription = Subscription(self).set_from_dict(data)
+        if save and (data is not None):
             subscription.save()
         return subscription
+
+    def get(self, id, params=None):
+        return Subscription(self).get(id, params=params)
+
+    def list(self):
+        return self._get_data().subscription
