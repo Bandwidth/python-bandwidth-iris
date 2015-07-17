@@ -115,102 +115,85 @@ class ClassDldaTest(TestCase):
         del cls._client
         del cls._account
 
-    def test_dldas_get(self):
-
-        dlda = self._account.dldas.create()
-        dlda.id = "ea9e90c2-77a4-4f82-ac47-e1c5bb1311f4"
-
-        self.assertEquals(dlda.get_xpath(),
-            self._account.get_xpath() + self._account.dldas._xpath +
-            dlda._xpath.format(dlda.id))
-
-        url = self._client.config.url + dlda.get_xpath()
+    def test_dlda_get(self):
 
         with requests_mock.Mocker() as m:
 
+            dlda = self._account.dldas.create()
+            dlda.id = "ea9e90c2-77a4-4f82-ac47-e1c5bb1311f4"
+
+            url = self._client.config.url + dlda.get_xpath()
             m.get(url, content=XML_RESPONSE_DLDA_GET)
 
             dlda = self._account.dldas.get(dlda.id)
 
-            self.assertEquals(m.request_history[0].method, "GET")
-
-            self.assertEquals(dlda.id, "ea9e90c2-77a4-4f82-ac47-e1c5bb1311f4")
-            self.assertEquals(dlda.customer_order_id,
+            self.assertEqual(dlda.id, "ea9e90c2-77a4-4f82-ac47-e1c5bb1311f4")
+            self.assertEqual(dlda.customer_order_id,
                 "5a88d16d-f8a9-45c5-a5db-137d700c6a22")
-            self.assertEquals(dlda.order_create_date,
+            self.assertEqual(dlda.order_create_date,
                 "2014-07-10T12:38:11.833Z")
-            self.assertEquals(dlda.account_id, "14")
-            self.assertEquals(dlda.created_by_user, "jbm")
-            self.assertEquals(dlda.order_id,
+            self.assertEqual(dlda.account_id, "14")
+            self.assertEqual(dlda.created_by_user, "jbm")
+            self.assertEqual(dlda.order_id,
                 "ea9e90c2-77a4-4f82-ac47-e1c5bb1311f4")
-            self.assertEquals(dlda.last_modified_date,
+            self.assertEqual(dlda.last_modified_date,
                 "2014-07-10T12:38:11.833Z")
-            self.assertEquals(dlda.processing_status, "RECEIVED")
+            self.assertEqual(dlda.processing_status, "RECEIVED")
 
             grp = dlda.dlda_tn_groups.dlda_tn_group.items[0]
 
-            self.assertEquals(
+            self.assertEqual(
                 grp.telephone_numbers.telephone_number.items,
                 ["2053778335","2053865784"]
             )
 
-            self.assertEquals(grp.account_type, "BUSINESS")
-            self.assertEquals(grp.listing_type, "LISTED")
-            self.assertEquals(grp.list_address, "true")
+            self.assertEqual(grp.account_type, "BUSINESS")
+            self.assertEqual(grp.listing_type, "LISTED")
+            self.assertEqual(grp.list_address, "true")
 
             lname = grp.listing_name
 
-            self.assertEquals(lname.first_name, "Joe")
-            self.assertEquals(lname.last_name, "Smith")
+            self.assertEqual(lname.first_name, "Joe")
+            self.assertEqual(lname.last_name, "Smith")
 
             addr = grp.address
 
-            self.assertEquals(addr.city, "New York")
-            self.assertEquals(addr.house_number, "12")
-            self.assertEquals(addr.street_name, "ELM")
-            self.assertEquals(addr.state_code, "NY")
-            self.assertEquals(addr.zip, "10007")
-            self.assertEquals(addr.country, "United States")
-            self.assertEquals(addr.address_type, "Dlda")
+            self.assertEqual(addr.city, "New York")
+            self.assertEqual(addr.house_number, "12")
+            self.assertEqual(addr.street_name, "ELM")
+            self.assertEqual(addr.state_code, "NY")
+            self.assertEqual(addr.zip, "10007")
+            self.assertEqual(addr.country, "United States")
+            self.assertEqual(addr.address_type, "Dlda")
 
-    def test_dldas_list(self):
-
-        self.assertEquals(self._account.dldas.get_xpath(),
-            self._account.get_xpath() + self._account.dldas._xpath)
-
-        url = self._client.config.url + self._account.dldas.get_xpath()
+    def test_dlda_list(self):
 
         with requests_mock.Mocker() as m:
 
+            url = self._client.config.url + self._account.dldas.get_xpath()
             m.get(url, content=XML_RESPONSE_DLDA_LIST)
 
             dldas = self._account.dldas.list()
 
             dlda = dldas.items[0]
 
-            self.assertEquals(m.request_history[0].method, "GET")
-
-            self.assertEquals(len(dldas.items), 3)
-            self.assertEquals(dlda.id, "37a6447c-1a0b-4be9-ba89-3f5cb0aea142")
-            self.assertEquals(dlda.account_id, "14")
-            self.assertEquals(dlda.count_of_tns, "2")
-            self.assertEquals(dlda.user_id, "team_ua")
-            self.assertEquals(dlda.last_modified_date,
+            self.assertEqual(len(dldas.items), 3)
+            self.assertEqual(dlda.id, "37a6447c-1a0b-4be9-ba89-3f5cb0aea142")
+            self.assertEqual(dlda.account_id, "14")
+            self.assertEqual(dlda.count_of_tns, "2")
+            self.assertEqual(dlda.user_id, "team_ua")
+            self.assertEqual(dlda.last_modified_date,
                 "2014-07-07T10:06:43.427Z")
-            self.assertEquals(dlda.order_type, "dlda")
-            self.assertEquals(dlda.order_date, "2014-07-07T10:06:43.427Z")
-            self.assertEquals(dlda.order_id, "37a6447c-1a0b-4be9-ba89-3f5cb0aea142")
-            self.assertEquals(dlda.order_status, "FAILED")
+            self.assertEqual(dlda.order_type, "dlda")
+            self.assertEqual(dlda.order_date, "2014-07-07T10:06:43.427Z")
+            self.assertEqual(dlda.order_id, "37a6447c-1a0b-4be9-ba89-3f5cb0aea142")
+            self.assertEqual(dlda.order_status, "FAILED")
 
-    def test_dldas_post(self):
-
-        self.assertEquals(self._account.dldas.get_xpath(),
-            self._account.get_xpath() + self._account.dldas._xpath)
-
-        url = self._client.config.url + self._account.dldas.get_xpath()
+    def test_dlda_post(self):
 
         with requests_mock.Mocker() as m:
 
+            url = self._client.config.url + self._account.dldas.get_xpath()
             m.post(url, content=XML_RESPONSE_DLDA_POST)
 
             order_data = {
@@ -259,88 +242,86 @@ class ClassDldaTest(TestCase):
 
             dlda = self._account.dldas.create(order_data, False)
 
-            self.assertEquals(dlda.customer_order_id, "123")
+            self.assertEqual(dlda.customer_order_id, "123")
             grp = dlda.dlda_tn_groups.dlda_tn_group.items[0]
-            self.assertEquals(grp.telephone_numbers.telephone_number.items,
+            self.assertEqual(grp.telephone_numbers.telephone_number.items,
                 ["4352154856"])
-            self.assertEquals(grp.account_type, "RESIDENTIAL")
-            self.assertEquals(grp.listing_type, "LISTED")
-            self.assertEquals(grp.list_address, "true")
+            self.assertEqual(grp.account_type, "RESIDENTIAL")
+            self.assertEqual(grp.listing_type, "LISTED")
+            self.assertEqual(grp.list_address, "true")
 
             name = grp.listing_name
 
-            self.assertEquals(name.first_name, "first name")
-            self.assertEquals(name.first_name2, "first name2")
-            self.assertEquals(name.last_name, "last name")
-            self.assertEquals(name.designation, "designation")
-            self.assertEquals(name.title_of_lineage, "title of lineage")
-            self.assertEquals(name.title_of_address, "title of address")
-            self.assertEquals(name.title_of_address2, "title of address2")
-            self.assertEquals(name.title_of_lineage_name2,
+            self.assertEqual(name.first_name, "first name")
+            self.assertEqual(name.first_name2, "first name2")
+            self.assertEqual(name.last_name, "last name")
+            self.assertEqual(name.designation, "designation")
+            self.assertEqual(name.title_of_lineage, "title of lineage")
+            self.assertEqual(name.title_of_address, "title of address")
+            self.assertEqual(name.title_of_address2, "title of address2")
+            self.assertEqual(name.title_of_lineage_name2,
                 "title of lineage name2")
-            self.assertEquals(name.title_of_address_name2,
+            self.assertEqual(name.title_of_address_name2,
                 "title of address name2")
-            self.assertEquals(name.title_of_address2_name2,
+            self.assertEqual(name.title_of_address2_name2,
                 "title of address2 name2")
-            self.assertEquals(name.place_listing_as, "place listing as")
+            self.assertEqual(name.place_listing_as, "place listing as")
 
             addr = grp.address
 
-            self.assertEquals(addr.house_prefix, "house prefix")
-            self.assertEquals(addr.house_number, "915")
-            self.assertEquals(addr.house_suffix, "house suffix")
-            self.assertEquals(addr.pre_directional, "pre directional")
-            self.assertEquals(addr.street_name, "street name")
-            self.assertEquals(addr.street_suffix, "street suffix")
-            self.assertEquals(addr.post_directional, "post directional")
-            self.assertEquals(addr.address_line2, "address line2")
-            self.assertEquals(addr.city, "city")
-            self.assertEquals(addr.state_code, "state code")
-            self.assertEquals(addr.zip, "zip")
-            self.assertEquals(addr.plus_four, "plus four")
-            self.assertEquals(addr.country, "country")
-            self.assertEquals(addr.address_type, "address type")
+            self.assertEqual(addr.house_prefix, "house prefix")
+            self.assertEqual(addr.house_number, "915")
+            self.assertEqual(addr.house_suffix, "house suffix")
+            self.assertEqual(addr.pre_directional, "pre directional")
+            self.assertEqual(addr.street_name, "street name")
+            self.assertEqual(addr.street_suffix, "street suffix")
+            self.assertEqual(addr.post_directional, "post directional")
+            self.assertEqual(addr.address_line2, "address line2")
+            self.assertEqual(addr.city, "city")
+            self.assertEqual(addr.state_code, "state code")
+            self.assertEqual(addr.zip, "zip")
+            self.assertEqual(addr.plus_four, "plus four")
+            self.assertEqual(addr.country, "country")
+            self.assertEqual(addr.address_type, "address type")
 
             dlda = self._account.dldas.create(order_data)
 
-            self.assertEquals(m.request_history[0].method, "POST")
-
-            self.assertEquals(dlda.customer_order_id,
+            self.assertEqual(dlda.customer_order_id,
                 "5a88d16d-f8a9-45c5-a5db-137d700c6a22")
-            self.assertEquals(dlda.order_create_date,
+            self.assertEqual(dlda.order_create_date,
                 "2014-07-10T12:38:11.833Z")
-            self.assertEquals(dlda.account_id, "14")
-            self.assertEquals(dlda.created_by_user, "jbm")
-            self.assertEquals(dlda.order_id,
+            self.assertEqual(dlda.account_id, "14")
+            self.assertEqual(dlda.created_by_user, "jbm")
+            self.assertEqual(dlda.order_id,
                 "ea9e90c2-77a4-4f82-ac47-e1c5bb1311f4")
-            self.assertEquals(dlda.last_modified_date,
+            self.assertEqual(dlda.last_modified_date,
                 "2014-07-10T12:38:11.833Z")
-            self.assertEquals(dlda.processing_status, "RECEIVED")
+            self.assertEqual(dlda.processing_status, "RECEIVED")
 
             grp = dlda.dlda_tn_groups.dlda_tn_group.items[0]
 
-            self.assertEquals(grp.telephone_numbers.telephone_number.items,
+            self.assertEqual(grp.telephone_numbers.telephone_number.items,
                 ["2053778335","2053865784"])
-            self.assertEquals(grp.account_type, "BUSINESS")
-            self.assertEquals(grp.listing_type, "LISTED")
-            self.assertEquals(grp.list_address, "true")
+            self.assertEqual(grp.account_type, "BUSINESS")
+            self.assertEqual(grp.listing_type, "LISTED")
+            self.assertEqual(grp.list_address, "true")
 
             name = grp.listing_name
 
-            self.assertEquals(name.first_name, "Joe")
-            self.assertEquals(name.last_name, "Smith")
+            self.assertEqual(name.first_name, "Joe")
+            self.assertEqual(name.last_name, "Smith")
 
             addr = grp.address
 
-            self.assertEquals(addr.city, "New York")
-            self.assertEquals(addr.house_number, "12")
-            self.assertEquals(addr.street_name, "ELM")
-            self.assertEquals(addr.state_code, "NY")
-            self.assertEquals(addr.zip, "10007")
-            self.assertEquals(addr.country, "United States")
-            self.assertEquals(addr.address_type, "Dlda")
+            self.assertEqual(addr.city, "New York")
+            self.assertEqual(addr.house_number, "12")
+            self.assertEqual(addr.street_name, "ELM")
+            self.assertEqual(addr.state_code, "NY")
+            self.assertEqual(addr.zip, "10007")
+            self.assertEqual(addr.country, "United States")
+            self.assertEqual(addr.address_type, "Dlda")
 
-    def test_dldas_put(self):
+    def test_dlda_put(self):
 
         order_data = {
             "order_id": "7802373f-4f52-4387-bdd1-c5b74833d6e2",
@@ -388,64 +369,61 @@ class ClassDldaTest(TestCase):
 
         dlda = self._account.dldas.create(order_data, False)
 
-        self.assertEquals(dlda.customer_order_id, "123")
-        self.assertEquals(dlda.order_id,
+        self.assertEqual(dlda.customer_order_id, "123")
+        self.assertEqual(dlda.order_id,
             "7802373f-4f52-4387-bdd1-c5b74833d6e2")
 
         grp = dlda.dlda_tn_groups.dlda_tn_group.items[0]
-        self.assertEquals(grp.telephone_numbers.telephone_number.items,
+        self.assertEqual(grp.telephone_numbers.telephone_number.items,
             ["4352154856"])
-        self.assertEquals(grp.account_type, "RESIDENTIAL")
-        self.assertEquals(grp.listing_type, "LISTED")
-        self.assertEquals(grp.list_address, "true")
+        self.assertEqual(grp.account_type, "RESIDENTIAL")
+        self.assertEqual(grp.listing_type, "LISTED")
+        self.assertEqual(grp.list_address, "true")
 
         name = grp.listing_name
 
-        self.assertEquals(name.first_name, "first name")
-        self.assertEquals(name.first_name2, "first name2")
-        self.assertEquals(name.last_name, "last name")
-        self.assertEquals(name.designation, "designation")
-        self.assertEquals(name.title_of_lineage, "title of lineage")
-        self.assertEquals(name.title_of_address, "title of address")
-        self.assertEquals(name.title_of_address2, "title of address2")
-        self.assertEquals(name.title_of_lineage_name2,
+        self.assertEqual(name.first_name, "first name")
+        self.assertEqual(name.first_name2, "first name2")
+        self.assertEqual(name.last_name, "last name")
+        self.assertEqual(name.designation, "designation")
+        self.assertEqual(name.title_of_lineage, "title of lineage")
+        self.assertEqual(name.title_of_address, "title of address")
+        self.assertEqual(name.title_of_address2, "title of address2")
+        self.assertEqual(name.title_of_lineage_name2,
             "title of lineage name2")
-        self.assertEquals(name.title_of_address_name2,
+        self.assertEqual(name.title_of_address_name2,
             "title of address name2")
-        self.assertEquals(name.title_of_address2_name2,
+        self.assertEqual(name.title_of_address2_name2,
             "title of address2 name2")
-        self.assertEquals(name.place_listing_as, "place listing as")
+        self.assertEqual(name.place_listing_as, "place listing as")
 
         addr = grp.address
 
-        self.assertEquals(addr.house_prefix, "house prefix")
-        self.assertEquals(addr.house_number, "915")
-        self.assertEquals(addr.house_suffix, "house suffix")
-        self.assertEquals(addr.pre_directional, "pre directional")
-        self.assertEquals(addr.street_name, "street name")
-        self.assertEquals(addr.street_suffix, "street suffix")
-        self.assertEquals(addr.post_directional, "post directional")
-        self.assertEquals(addr.address_line2, "address line2")
-        self.assertEquals(addr.city, "city")
-        self.assertEquals(addr.state_code, "state code")
-        self.assertEquals(addr.zip, "zip")
-        self.assertEquals(addr.plus_four, "plus four")
-        self.assertEquals(addr.country, "country")
-        self.assertEquals(addr.address_type, "address type")
+        self.assertEqual(addr.house_prefix, "house prefix")
+        self.assertEqual(addr.house_number, "915")
+        self.assertEqual(addr.house_suffix, "house suffix")
+        self.assertEqual(addr.pre_directional, "pre directional")
+        self.assertEqual(addr.street_name, "street name")
+        self.assertEqual(addr.street_suffix, "street suffix")
+        self.assertEqual(addr.post_directional, "post directional")
+        self.assertEqual(addr.address_line2, "address line2")
+        self.assertEqual(addr.city, "city")
+        self.assertEqual(addr.state_code, "state code")
+        self.assertEqual(addr.zip, "zip")
+        self.assertEqual(addr.plus_four, "plus four")
+        self.assertEqual(addr.country, "country")
+        self.assertEqual(addr.address_type, "address type")
 
-        self.assertEquals(dlda.get_xpath(),
+        self.assertEqual(dlda.get_xpath(),
             self._account.get_xpath() + self._account.dldas._xpath +
             dlda._xpath.format(dlda.id))
 
-        url = self._client.config.url + dlda.get_xpath()
-
         with requests_mock.Mocker() as m:
 
-            m.put(url, status_code = 200, content = XML_RESPONSE_DLDA_GET)
+            url = self._client.config.url + dlda.get_xpath()
+            m.put(url, content = XML_RESPONSE_DLDA_GET)
 
             dlda.save()
-
-            self.assertEquals(m.request_history[0].method, "PUT")
 
 if __name__ == "__main__":
     main()

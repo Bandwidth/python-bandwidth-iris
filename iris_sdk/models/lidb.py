@@ -5,7 +5,6 @@ from future.builtins import super
 
 from iris_sdk.models.base_resource import BaseResource
 from iris_sdk.models.data.lidb import LidbData
-from iris_sdk.models.lidb_order_response import LidbOrderResponse
 
 XML_NAME_LIDB = "LidbOrder"
 XPATH_LIDB = "/{}"
@@ -32,9 +31,4 @@ class Lidb(BaseResource, LidbData):
         return self._get_data(id, params=params)
 
     def save(self):
-        str = self._save(True)
-        order_response = LidbOrderResponse(self._parent)
-        self.clear()
-        order_response.lidb_order = self
-        order_response._from_xml(self._element_from_string(str))
-        return True
+        return self._post_data()

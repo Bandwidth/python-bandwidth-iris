@@ -253,242 +253,241 @@ class ClassAccountTest(TestCase):
         del cls._account
 
     def test_account_get(self):
-        self.assertEquals(self._account.id, "bar")
-        self.assertEquals(self._account.get_xpath(),
-            self._account._xpath.format(self._account.id))
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url + self._account.get_xpath(),
-                content=XML_RESPONSE_ACCOUNT_GET)
+
+            url = self._account.client.config.url + self._account.get_xpath()
+            m.get(url, content=XML_RESPONSE_ACCOUNT_GET)
+
             self._account.get()
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(self._account.id, "123456")
-            self.assertEquals(self._account.company_name, "Spam")
-            self.assertEquals(self._account.account_type, "Ham")
-            self.assertEquals(self._account.tiers.tier.items, ["0"])
-            self.assertEquals(self._account.address.house_number, "900")
-            self.assertEquals(self._account.contact.first_name, "Eggs")
+
+            self.assertEqual(self._account.id, "123456")
+            self.assertEqual(self._account.company_name, "Spam")
+            self.assertEqual(self._account.account_type, "Ham")
+            self.assertEqual(self._account.tiers.tier.items, ["0"])
+            self.assertEqual(self._account.address.house_number, "900")
+            self.assertEqual(self._account.contact.first_name, "Eggs")
 
     def test_available_numbers(self):
-        self.assertEquals(self._account.available_numbers.get_xpath(),
-            self._account.get_xpath() +
-            self._account.available_numbers._xpath)
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url+
-                    self._account.available_numbers.get_xpath(),
-                content=XML_RESPONSE_AVAILABLE_NUMBERS_GET)
+
+            url = self._account.client.config.url +\
+                    self._account.available_numbers.get_xpath()
+            m.get(url, content=XML_RESPONSE_AVAILABLE_NUMBERS_GET)
+
             avail_numbers = self._account.available_numbers.list(
                 {"state": "NJ"})
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(avail_numbers.items,
+
+            self.assertEqual(avail_numbers.items,
                 ["6093252507", "6093570994", "6093574598"])
-            self.assertEquals(self._account.available_numbers.result_count,
+            self.assertEqual(self._account.available_numbers.result_count,
                 "3")
 
     def test_available_numbers_detail(self):
-        self.assertEquals(self._account.available_numbers.get_xpath(),
-            self._account.get_xpath() +
-            self._account.available_numbers._xpath)
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url+
-                    self._account.available_numbers.get_xpath(),
-                content=XML_RESPONSE_AVAILABLE_NUMBERS_DETAIL_GET)
+
+            url = self._account.client.config.url +\
+                self._account.available_numbers.get_xpath()
+            m.get(url, content=XML_RESPONSE_AVAILABLE_NUMBERS_DETAIL_GET)
+
             avail_numbers = self._account.available_numbers.list(
                 {"enableTNDetail": "true", "state": "NJ"})
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(avail_numbers.items[0].city, "ALLENTOWN")
-            self.assertEquals(avail_numbers.items[0].lata, "222")
-            self.assertEquals(avail_numbers.items[1].full_number,"6093570994")
-            self.assertEquals(avail_numbers.items[1].tier, "0")
-            self.assertEquals(avail_numbers.items[2].vendor_id, "49")
-            self.assertEquals(avail_numbers.items[2].vendor_name,
+
+            self.assertEqual(avail_numbers.items[0].city, "ALLENTOWN")
+            self.assertEqual(avail_numbers.items[0].lata, "222")
+            self.assertEqual(avail_numbers.items[1].full_number,"6093570994")
+            self.assertEqual(avail_numbers.items[1].tier, "0")
+            self.assertEqual(avail_numbers.items[2].vendor_id, "49")
+            self.assertEqual(avail_numbers.items[2].vendor_name,
                 "Bandwidth CLEC")
-            self.assertEquals(self._account.available_numbers.result_count,
-                "3")
+            self.assertEqual(self._account.available_numbers.result_count,"3")
 
     def test_available_numbers_error(self):
-        self.assertEquals(self._account.available_numbers.get_xpath(),
-            self._account.get_xpath() +
-            self._account.available_numbers._xpath)
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url+
-                    self._account.available_numbers.get_xpath(),
-                content=XML_RESPONSE_AVAILABLE_NUMBERS_ERROR, status_code=400)
+
+            url = self._account.client.config.url +\
+                self._account.available_numbers.get_xpath()
+            m.get(url, content=XML_RESPONSE_AVAILABLE_NUMBERS_ERROR,
+                status_code=400)
+
             with self.assertRaises(RestError):
                 self._account.available_numbers.list(None)
 
     def test_disc_numbers(self):
-        self.assertEquals(self._account.disconnected_numbers.get_xpath(),
-            self._account.get_xpath() +
-            self._account.disconnected_numbers._xpath)
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url+
-                    self._account.disconnected_numbers.get_xpath(),
-                content=XML_RESPONSE_DISCONNECTED_NUMBERS_GET)
+
+            url = self._account.client.config.url +\
+                self._account.disconnected_numbers.get_xpath()
+            m.get(url, content=XML_RESPONSE_DISCONNECTED_NUMBERS_GET)
+
             disc_numbers = self._account.disconnected_numbers.list(
                 {"page": 1, "type": "x"})
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(disc_numbers.items, ["4158714245","4352154439"])
+
+            self.assertEqual(disc_numbers.items, ["4158714245","4352154439"])
 
     def test_disc_numbers_totals(self):
-        self.assertEquals(
-            self._account.disconnected_numbers.totals.get_xpath(),
-                self._account.get_xpath() +
-                self._account.disconnected_numbers._xpath +
-                self._account.disconnected_numbers.totals._xpath
-        )
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url+
-                    self._account.disconnected_numbers.totals.get_xpath(),
-                content=XML_RESPONSE_TOTALS)
+
+            url = self._account.client.config.url +\
+                self._account.disconnected_numbers.totals.get_xpath()
+            m.get(url, content=XML_RESPONSE_TOTALS)
+
             count = self._account.disconnected_numbers.totals.get().count
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(count, "4")
+            self.assertEqual(count, "4")
 
     def test_in_service_numbers(self):
-        self.assertEquals(self._account.in_service_numbers.get_xpath(),
-            self._account.get_xpath() +
-            self._account.in_service_numbers._xpath)
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url+
-                    self._account.in_service_numbers.get_xpath(),
-                content=XML_RESPONSE_DISCONNECTED_NUMBERS_GET)
+
+            url = self._account.client.config.url +\
+                self._account.in_service_numbers.get_xpath()
+            m.get(url, content=XML_RESPONSE_DISCONNECTED_NUMBERS_GET)
+
             numbers = self._account.in_service_numbers.list({"state": "NJ"})
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(numbers.items,["4158714245","4352154439"])
-            self.assertEquals(self._account.in_service_numbers.total_count,
-                "4")
+
+            self.assertEqual(numbers.items,["4158714245","4352154439"])
+            self.assertEqual(self._account.in_service_numbers.total_count,"4")
 
     def test_in_service_numbers_totals(self):
-        self.assertEquals(
-            self._account.in_service_numbers.totals.get_xpath(),
-                self._account.get_xpath() +
-                self._account.in_service_numbers._xpath +
-                self._account.in_service_numbers.totals._xpath
-        )
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url+
-                    self._account.in_service_numbers.totals.get_xpath(),
-                content=XML_RESPONSE_TOTALS)
+
+            url = self._account.client.config.url +\
+                self._account.in_service_numbers.totals.get_xpath()
+            m.get(url, content=XML_RESPONSE_TOTALS)
+
             count = self._account.in_service_numbers.totals.get().count
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(count, "4")
+            self.assertEqual(count, "4")
 
     def test_line_option_orders(self):
-        self.assertEquals(self._account.line_option_orders.get_xpath(),
-            self._account.get_xpath()+self._account.line_option_orders._xpath)
+
         with requests_mock.Mocker() as m:
-            m.post(self._account.client.config.url+
-                    self._account.line_option_orders.get_xpath(),
-                    content = XML_RESPONSE_LINE_OPTION_ORDER)
+
+            url = self._account.client.config.url +\
+                self._account.line_option_orders.get_xpath()
+            m.post(url, content = XML_RESPONSE_LINE_OPTION_ORDER)
+
             self._account.line_option_orders.tn_line_options.add(
                 {"telephone_number":"5209072453","calling_name_display":"off"}
             )
+
             response = self._account.line_option_orders.save()
-            self.assertEquals(m.request_history[0].method, "POST")
-            self.assertEquals(response.line_options.items[0].errors.error.\
+
+            self.assertEqual(response.line_options.items[0].errors.error.\
                 items[0].telephone_number, "5209072452")
 
     def test_lnpchecker(self):
-        self.assertEquals(self._account.lnpchecker.get_xpath(True),
-            self._account.get_xpath()+self._account.lnpchecker._xpath)
+
         with requests_mock.Mocker() as m:
-            m.post(self._account.client.config.url+
-                    self._account.lnpchecker.get_xpath(True),
-                    content = XML_RESPONSE_LNP_CHECKER)
+
+            url = self._account.client.config.url +\
+                self._account.lnpchecker.get_xpath(True)
+            m.post(url, content = XML_RESPONSE_LNP_CHECKER)
+
             response = self._account.lnpchecker(["123456"])
-            self.assertEquals(m.request_history[0].method, "POST")
+
             grp = response.unsupported_rate_centers.rate_center_group.items[0]
-            self.assertEquals(grp.rate_center, "BALTIMORE")
-            self.assertEquals(grp.city, "BALTIMORE")
-            self.assertEquals(grp.state, "MD")
-            self.assertEquals(grp.lata, "238")
-            self.assertEquals(grp.tn_list.tn.items,
-                ["4109255199","4104685864"])
+
+            self.assertEqual(grp.rate_center, "BALTIMORE")
+            self.assertEqual(grp.city, "BALTIMORE")
+            self.assertEqual(grp.state, "MD")
+            self.assertEqual(grp.lata, "238")
+            self.assertEqual(grp.tn_list.tn.items,["4109255199","4104685864"])
+
             grp = response.unsupported_rate_centers.rate_center_group.items[1]
-            self.assertEquals(grp.rate_center, "SPARKSGLNC")
-            self.assertEquals(grp.city, "SPARKS GLENCOE")
-            self.assertEquals(grp.state, "MD")
-            self.assertEquals(grp.lata, "238")
-            self.assertEquals(grp.tn_list.tn.items,
-                ["4103431313","4103431561"])
+
+            self.assertEqual(grp.rate_center, "SPARKSGLNC")
+            self.assertEqual(grp.city, "SPARKS GLENCOE")
+            self.assertEqual(grp.state, "MD")
+            self.assertEqual(grp.lata, "238")
+            self.assertEqual(grp.tn_list.tn.items,["4103431313","4103431561"])
+
             grp = response.partner_supported_rate_centers.rate_center_group.\
                 items[0]
-            self.assertEquals(grp.rate_center, "FT COLLINS")
-            self.assertEquals(grp.city, "FORT COLLINS")
-            self.assertEquals(grp.state, "CO")
-            self.assertEquals(grp.lata, "656")
-            self.assertEquals(grp.tn_list.tn.items, ["4109235436"])
-            self.assertEquals(grp.tiers.tier.items, ["1"])
+
+            self.assertEqual(grp.rate_center, "FT COLLINS")
+            self.assertEqual(grp.city, "FORT COLLINS")
+            self.assertEqual(grp.state, "CO")
+            self.assertEqual(grp.lata, "656")
+            self.assertEqual(grp.tn_list.tn.items, ["4109235436"])
+            self.assertEqual(grp.tiers.tier.items, ["1"])
+
             grp = response.supported_losing_carriers.losing_carrier_tn_list
-            self.assertEquals(grp.losing_carrier_spid, "9998")
-            self.assertEquals(grp.losing_carrier_name, "Carrier L3")
-            self.assertEquals(grp.losing_carrier_is_wireless, "false")
-            self.assertEquals(grp.losing_carrier_account_number_required,
+
+            self.assertEqual(grp.losing_carrier_spid, "9998")
+            self.assertEqual(grp.losing_carrier_name, "Carrier L3")
+            self.assertEqual(grp.losing_carrier_is_wireless, "false")
+            self.assertEqual(grp.losing_carrier_account_number_required,
                 "false")
-            self.assertEquals(grp.losing_carrier_minimum_porting_interval,"5")
-            self.assertEquals(grp.tn_list.tn.items,
+            self.assertEqual(grp.losing_carrier_minimum_porting_interval,"5")
+            self.assertEqual(grp.tn_list.tn.items,
                 ["4109255199","4104685864","4103431313","4103431561"])
 
     def test_npa_nxx(self):
-        self.assertEquals(self._account.available_npa_nxx.get_xpath(),
-            self._account.get_xpath() +self._account.available_npa_nxx._xpath)
+
         with requests_mock.Mocker() as m:
-            m.get(self._account.client.config.url+
-                    self._account.available_npa_nxx.get_xpath(),
-                content=XML_RESPONSE_AVAILABLE_NPA_NXX_GET)
+
+            url = self._account.client.config.url +\
+                    self._account.available_npa_nxx.get_xpath()
+            m.get(url, content=XML_RESPONSE_AVAILABLE_NPA_NXX_GET)
+
             npa = self._account.available_npa_nxx.list({"state": "CA"})
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(len(npa.items), 2)
-            self.assertEquals(npa.items[0].city, "COMPTON:COMPTON DA")
-            self.assertEquals(npa.items[0].npa, "424")
-            self.assertEquals(npa.items[0].nxx, "242")
-            self.assertEquals(npa.items[1].quantity, "5")
-            self.assertEquals(npa.items[1].state, "CA")
+
+            self.assertEqual(len(npa.items), 2)
+            self.assertEqual(npa.items[0].city, "COMPTON:COMPTON DA")
+            self.assertEqual(npa.items[0].npa, "424")
+            self.assertEqual(npa.items[0].nxx, "242")
+            self.assertEqual(npa.items[1].quantity, "5")
+            self.assertEqual(npa.items[1].state, "CA")
 
     def test_tn_reservation_delete(self):
         res = self._account.tnreservation
         res.id = "123"
-        self.assertEquals(self._account.tnreservation.get_xpath(),
-            self._account.get_xpath()+
-            self._account.tnreservation._xpath.format("123"))
         url = self._account.client.config.url +\
             self._account.tnreservation.get_xpath()
+
         with requests_mock.Mocker() as m:
             m.delete(url, status_code = 200)
             res.delete()
-            self.assertEquals(m.request_history[0].method, "DELETE")
 
     def test_tn_reservation_get(self):
+
         res = self._account.tnreservation
         res.id = "123"
-        self.assertEquals(self._account.tnreservation.get_xpath(),
-            self._account.get_xpath()+
-            self._account.tnreservation._xpath.format("123"))
-        url = self._account.client.config.url +\
-            self._account.tnreservation.get_xpath()
+
         with requests_mock.Mocker() as m:
+
+            url = self._account.client.config.url +\
+                self._account.tnreservation.get_xpath()
             m.get(url, content = XML_RESPONSE_TN_RESERVATION_GET)
+
             res.get("123")
-            self.assertEquals(m.request_history[0].method, "GET")
-            self.assertEquals(res.id, "0099ff73-da96-4303")
-            self.assertEquals(res.reserved_tn, "2512027430")
-            self.assertEquals(res.account_id, "14")
-            self.assertEquals(res.reservation_expires, "0")
+
+            self.assertEqual(res.id, "0099ff73-da96-4303")
+            self.assertEqual(res.reserved_tn, "2512027430")
+            self.assertEqual(res.account_id, "14")
+            self.assertEqual(res.reservation_expires, "0")
 
     def test_tn_reservation_save(self):
-        self.assertEquals(self._account.tnreservation.get_xpath(True),
-            self._account.get_xpath()+self._account.tnreservation.\
-                _xpath_save)
-        url = self._account.client.config.url +\
-            self._account.tnreservation.get_xpath(True)
+
         with requests_mock.Mocker() as m:
+
+            url = self._account.client.config.url +\
+                self._account.tnreservation.get_xpath(True)
             m.post(url, headers={"location": url + "/1337"})
+
             res = self._account.tnreservation
             res.reserved_tn = "123456789"
             res.save()
-            self.assertEquals(m.request_history[0].method, "POST")
-            self.assertEquals(res.id, "1337")
-            self.assertEquals(res.reserved_tn, "123456789")
+
+            self.assertEqual(m.request_history[0].method, "POST")
+            self.assertEqual(res.id, "1337")
+            self.assertEqual(res.reserved_tn, "123456789")
 
 if __name__ == "__main__":
     main()

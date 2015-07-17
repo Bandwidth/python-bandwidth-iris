@@ -321,11 +321,10 @@ class BaseResource(BaseData):
         content = self._save(return_content=True, params=params)
         if content:
             root = self._element_from_string(content)
-            if response_instance is not None:
-                response_instance._from_xml(root)
-                return response_instance
-            else:
-                self._from_xml(root)
+            inst = (response_instance or self)
+            inst.clear()
+            inst._from_xml(root)
+            return inst
         return self
 
     def _put(self, xpath, data):
