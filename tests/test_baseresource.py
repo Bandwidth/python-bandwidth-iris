@@ -57,7 +57,7 @@ class ClassBaseResourceInitTest(TestCase):
 
         self._base_resource = BaseResource("foo", "bar")
 
-        self._converter.assert_called_once()
+        self._converter.assert_any_call()
         self.assertEqual(self._base_resource._parent, "foo")
         self.assertEqual(self._base_resource._client, "bar")
 

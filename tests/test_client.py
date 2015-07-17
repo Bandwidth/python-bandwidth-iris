@@ -50,7 +50,7 @@ class ClassClientConfigTest(TestCase):
     def test_client_init(self, mock1, mock2):
         self._client = Client("foo", "bar", "baz", "qux", "quux")
         mock1.assert_called_once_with("foo", "bar", "baz", "qux", "quux")
-        mock2.assert_called_once()
+        mock2.assert_any_call()
 
 class ClassClientStrings(TestCase):
 
