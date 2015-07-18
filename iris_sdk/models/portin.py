@@ -53,8 +53,8 @@ class PortIn(BaseResource, PortInData):
     def __init__(self, parent=None, client=None):
         super().__init__(parent, client)
         PortInData.__init__(self)
-        self._activation_status = ActivationStatus()
-        self._history = History()
+        self._activation_status = ActivationStatus(self)
+        self._history = History(self)
         self._loas = Loas(self, client)
         self._notes = Notes(self, client)
         self._totals = Totals(self, client)
