@@ -150,7 +150,7 @@ account.disconnected_numbers.list({"areaCode": 919})
 #### Creating disconnect orders
 
 ```python
-disconnect = account.disconnects.add({
+disconnect = account.disconnects.create({
     "name": "test disconnect order 4",
     "customer_order_id": "Disconnect1234",
     "disconnect_telephone_number_order_type": {
@@ -170,7 +170,7 @@ disconnect = account.disconnects.get("b902dee1-0585-4258-becd-5c7e51ccf5e1")
 #### Adding notes
 
 ```python
-disconnect.notes.add({"user_id": "spam", "description": "ham"})
+disconnect.notes.create({"user_id": "spam", "description": "ham"})
 ```
 
 #### Getting all order's notes
@@ -184,7 +184,7 @@ notes = disconnect.notes.list()
 #### Creating orders
 
 ```python
-dlda = account.dldas.add({
+dlda = account.dldas.create({
     "customer_order_id": "123",
     "dlda_tn_groups": {
         "dlda_tn_group": [{
@@ -257,7 +257,7 @@ account.in_service_numbers.list({"areaCode": "919"})
 #### Creating orders
 
 ```python
-lidb = account.lidbs.add({
+lidb = account.lidbs.create({
     "lidb_tn_groups": {
         "lidb_tn_group": [{
             "telephone_numbers": {
@@ -304,7 +304,7 @@ account.lnpChecker(["4109255199", "9196190594"], "true")
 #### Creating orders
 
 ```python
-order = account.orders.add({
+order = account.orders.create({
     "name": "Available Telephone Number order",
     "site_id": "2297",
     "customer_order_id": "123456789",
@@ -332,7 +332,7 @@ orders = account.orders.list()
 #### Adding notes
 
 ```python
-order.notes.add({"user_id": "spam", "description": "Test Note"})
+order.notes.create({"user_id": "spam", "description": "Test Note"})
 ```
 
 #### Getting order's telephone numbers
@@ -346,7 +346,7 @@ order.tns.list()
 #### Creating orders
 
 ```python
-portin = account.portins.add({
+portin = account.portins.create({
     "billing_telephone_number": "6882015002",
     "subscriber": {
         "subscriber_type": "BUSINESS",
@@ -401,7 +401,7 @@ portin.notes
 
 ```python
 portin.loas.list({"metadata": "true"})
-fname = portin.loas.add("loa.pdf", {'content-type': 'application/pdf'})
+fname = portin.loas.create("loa.pdf", {'content-type': 'application/pdf'})
 portin.loas.update(fname, "loa.pdf", {'content-type':'application/pdf'})
 portin.loas.delete(fname)
 portin.loas.metadata.get(fname)
@@ -424,7 +424,7 @@ centers = rc.list({"state": "CA", "available": "true"})
 #### Creating a SIP peer
 
 ```python
-sip_peer = account.sites.list().items[0].sip_peers.add({
+sip_peer = account.sites.list().items[0].sip_peers.create({
         "peer_name": name,
         "is_default_peer": "true",
         "short_messaging_protocol": "SMPP",
@@ -505,7 +505,7 @@ tn.save()
 #### Creating a site
 
 ```python
-site = acc.sites.add({
+site = acc.sites.create({
     "name": "test123456",
     "address": {
         "city": "Raleigh",
@@ -559,7 +559,7 @@ site.portins.list({"status": "disabled"})
 #### Creating subscriptions
 
 ```python
-subscription = account.subscriptions.add({
+subscription = account.subscriptions.create({
     "order_type": "portins",
     "order_id": "98939562-90b0-40e9-8335-5526432d9741",
     "email_subscription": {
