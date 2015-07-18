@@ -8,7 +8,6 @@
 ## Requires
 
     - future
-    - mock (for py2)
     - requests
 
 ## Install
@@ -17,6 +16,14 @@ pip install --user -e git+https://github.com/scottbarstow/iris-python#egg=iris_s
 ```
 
 ## Testing
+
+Tests require the *mock* and *requests_mock* packages. You can install them
+with
+
+```console
+pip install -r dev_requirements.txt
+```
+The tests can be run by issuing
 ```console
 python -m unittest discover
 ```
@@ -50,9 +57,9 @@ url = https://api.inetwork.com/v1.0
 ## Examples
 
 There is an 'examples' folder in the source tree that shows how each of the
-API objects work with simple example code. To run the examples edit
-'config.cfg' to match your IRIS credentials and run the examples individually,
-e.g.,
+API objects work with simple example code. To run these make a copy of
+'config.cfg.example', rename to 'config.cfg', edit it to match your IRIS
+credentials and run the examples individually, e.g.,
 
 ```console
 python available_numbers.py

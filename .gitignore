@@ -70,4 +70,4 @@ local_env.sh
 deprecated/
 
 # Config
-examples/config.cfg
+config.cfg
