@@ -12,7 +12,7 @@
 
 ## Install
 ```console
-pip install --user -e git+https://github.com/scottbarstow/iris-python#egg=iris_sdk
+pip install --user -e git+https://github.com/bandwidthcom/python-bandwidth-iris#egg=iris_sdk
 ```
 
 ## Testing
