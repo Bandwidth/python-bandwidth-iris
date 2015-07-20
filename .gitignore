@@ -71,3 +71,6 @@ deprecated/
 
 # Config
 config.cfg
+
+# Examples
+examples/src
