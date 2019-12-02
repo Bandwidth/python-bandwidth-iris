@@ -18,7 +18,8 @@ try:
             "address_type": "Service",
             "house_number": "1",
             "street_name": "Avenue",
-            "state_code": "NC"
+            "state_code": "NC",
+            "zip": "27606"
         }
     })
 except RestError as error:
