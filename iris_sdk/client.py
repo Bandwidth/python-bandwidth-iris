@@ -15,6 +15,9 @@ class Client(object):
             self, url=None, account_id=None, username=None, password=None,
             filename=None):
 
+        if url is None:
+            url = "https://dashboard.bandwidth.com/api"
+
         self._config = Config(url, account_id, username, password, filename)
         self._rest = RestClient()
 
