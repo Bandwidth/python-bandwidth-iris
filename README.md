@@ -12,7 +12,7 @@
 
 ## Install
 ```console
-pip install --user -e git+https://github.com/bandwidthcom/python-bandwidth-iris#egg=iris_sdk
+pip install -e git+https://github.com/bandwidthcom/python-bandwidth-iris#egg=iris_sdk
 ```
 
 ## Testing
@@ -21,7 +21,7 @@ Tests require the *mock* and *requests_mock* packages. You can install them
 with
 
 ```console
-pip install -r dev_requirements.txt
+pip install -r requirements.txt
 ```
 The tests can be run by issuing
 ```console
@@ -35,7 +35,7 @@ from iris_sdk import Account, Client
 ```
 
 ```python
-client = Client(url="http://foo.bar", account_id=123456, username="foo",
+client = Client(url="https://dashboard.bandwidth.com/api", account_id=123456, username="foo",
     password="bar")
 ```
 or
@@ -51,7 +51,7 @@ username   = spam
 password   = ham
 
 [rest]
-url = https://api.inetwork.com/v1.0
+url = https://dashboard.bandwidth.com/api 
 ```
 
 ## Examples
@@ -512,7 +512,8 @@ site = acc.sites.create({
         "address_type": "Service",
         "house_number": "1",
         "street_name": "Avenue",
-        "state_code": "NC"
+        "state_code": "NC",
+        "zip": "27606"
     }
 })
 ```
@@ -637,7 +638,7 @@ account.tnreservation.save()
 #### Getting reservation info
 
 ```python
-reservation =account.tnreservation.get("0099ff73-da96-4303-8a0a-00ff316c07aa")
+reservation = account.tnreservation.get("0099ff73-da96-4303-8a0a-00ff316c07aa")
 ```
 
 #### Deleting a reservation
