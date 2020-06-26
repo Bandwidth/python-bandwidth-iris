@@ -4,6 +4,7 @@ from iris_sdk.models.maps.base_map import BaseMap
 
 class TnOptionOrderMap(BaseMap):
 
+    customer_order_id = None
     account_id = None
     count_of_tns = None
     user_id = None
