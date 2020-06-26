@@ -22,6 +22,7 @@ from iris_sdk.models.portouts import PortOuts
 from iris_sdk.models.reservation import Reservation
 from iris_sdk.models.site_hosts import SiteHosts
 from iris_sdk.models.sites import Sites
+from iris_sdk.models.tn_option_orders import TnOptionOrders
 
 XPATH_ACCOUNT = "/accounts/{}"
 
@@ -106,6 +107,10 @@ class Account(BaseResource, AccountData):
     def users(self):
         return self._users
 
+    @property
+    def tn_option_orders(self):
+        return self._tn_option_orders
+
     def __init__(self, parent=None, client=None):
         if client is not None:
             self.id = client.config.account_id
@@ -128,6 +133,7 @@ class Account(BaseResource, AccountData):
         self._sites = Sites(self, client)
         self._tnreservation = Reservation(self, client)
         self._users = AccountUsers(self, client)
+        self._tn_option_orders = TnOptionOrders(self, client)
 
     def get(self, id=None):
         return self._get_data(id)
