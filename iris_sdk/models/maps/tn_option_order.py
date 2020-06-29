@@ -17,3 +17,6 @@ class TnOptionOrderMap(BaseMap):
     created_by_user = None
     last_modified_date = None
     processing_status = None
+    error_list = None
+    warnings = None
+    tn_option_groups = None

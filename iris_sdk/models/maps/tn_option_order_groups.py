@@ -3,4 +3,4 @@
 from iris_sdk.models.maps.base_map import BaseMap
 
 class TnOptionOrderGroupsMap(BaseMap):
-    pass
+    tn_option_group = None
