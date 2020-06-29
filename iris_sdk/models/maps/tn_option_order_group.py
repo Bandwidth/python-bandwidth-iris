@@ -13,3 +13,5 @@ class TnOptionOrderGroupMap(BaseMap):
     protected = None
     sms = None
     final_destination_uri = None
+    telephone_numbers = None
+    a2p_settings = None
