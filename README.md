@@ -646,3 +646,85 @@ reservation = account.tnreservation.get("0099ff73-da96-4303-8a0a-00ff316c07aa")
 ```python
 reservation.delete()
 ```
+
+### Get TN Option Orders
+```python
+orders = account.tn_option_orders.list()
+print(orders.total_count)
+print(orders.tn_option_order_summary.items[0].account_id)
+```
+
+### Get TN Option Order
+```python
+order = account.tn_option_orders.get("order_id")
+print(order.order_create_date)
+```
+
+### Get TN Option Order (error)
+```python
+order = account.tn_option_orders.get("order_id_with_error")
+print(order.error_list.error.items[0].description)
+```
+
+### Create PortOut Passcode
+```python
+order = account.tn_option_orders.create({
+    "customer_order_id": "custom order",
+    "tn_option_groups": {
+        "tn_option_group": [
+            {
+                "port_out_passcode": "12abd38",
+                "telephone_numbers": {
+                    "telephone_number": [
+                        "2018551020"
+                    ]
+                }
+            }
+        ]
+    }
+})
+
+print(order.order_create_date)
+```
+
+### Create Call Forward Number
+```python
+order = account.tn_option_orders.create({
+    "customer_order_id": "custom order",
+    "tn_option_groups": {
+        "tn_option_group": [
+            {
+                "call_forward": "2018551022",
+                "telephone_numbers": {
+                    "telephone_number": [
+                        "2018551020"
+                    ]
+                }
+            }
+        ]
+    }
+})
+
+print(order.order_create_date)
+```
+
+### Enable SMS
+```python
+order = account.tn_option_orders.create({
+    "customer_order_id": "custom order",
+    "tn_option_groups": {
+        "tn_option_group": [
+            {
+                "sms": "on",
+                "telephone_numbers": {
+                    "telephone_number": [
+                        "2018551020"
+                    ]
+                }
+            }
+        ]
+    }
+})
+
+print(order.order_create_date)
+```
