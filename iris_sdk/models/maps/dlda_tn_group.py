@@ -10,3 +10,4 @@ class DldaTnGroupMap(BaseMap):
     list_address = None
     listing_name = None
     address = None
+    subscriber_type = None
