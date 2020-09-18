@@ -19,3 +19,4 @@ class DldaMap(BaseMap):
     order_complete_date = None
     error_list = None
     dlda_tn_groups = None
+    subscriber_type = None
