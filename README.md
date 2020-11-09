@@ -51,7 +51,7 @@ username   = spam
 password   = ham
 
 [rest]
-url = https://dashboard.bandwidth.com/api 
+url = https://dashboard.bandwidth.com/api
 ```
 
 ## Examples
@@ -244,6 +244,13 @@ dlda.history.list()
 
 ```python
 account.dldas.list({"telephoneNumber": "9195551212"})
+```
+
+### Import TN Checker
+```python
+# returns an array of portable TN's
+result = account.import_tn_checker(numbers=["3032281000", "9195551234"])
+print(result)    # ['3032281000', '9195551234']
 ```
 
 ### In-service numbers
@@ -475,7 +482,7 @@ sip_peer.movetns()
 ```
 
 #### Getting peer telephone numbers
- 
+
 ```python
 tns = sip_peer.tns.list()
 ```

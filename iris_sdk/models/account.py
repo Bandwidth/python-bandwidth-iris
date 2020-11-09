@@ -12,6 +12,7 @@ from iris_sdk.models.disc_numbers import DiscNumbers
 from iris_sdk.models.disconnects import Disconnects
 from iris_sdk.models.in_service_numbers import InServiceNumbers
 from iris_sdk.models.line_option_orders import LineOptionOrder
+from iris_sdk.models.import_tn_checker import ImportTnChecker
 from iris_sdk.models.lnpchecker import LnpChecker
 from iris_sdk.models.orders import Orders
 from iris_sdk.models.lidbs import Lidbs
@@ -62,6 +63,10 @@ class Account(BaseResource, AccountData):
     @id.setter
     def id(self, id):
         self.account_id = id
+
+    @property
+    def import_tn_checker(self):
+        return self._import_tn_checker
 
     @property
     def in_service_numbers(self):
@@ -121,6 +126,7 @@ class Account(BaseResource, AccountData):
         self._disconnected_numbers = DiscNumbers(self, client)
         self._disconnects = Disconnects(self, client)
         self._hosts = SiteHosts(self, client)
+        self._import_tn_checker = ImportTnChecker(self, client)
         self._in_service_numbers = InServiceNumbers(self, client)
         self._line_option_orders = LineOptionOrder(self, client)
         self._lnpchecker = LnpChecker(self, client)
