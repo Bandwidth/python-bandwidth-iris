@@ -249,7 +249,8 @@ account.dldas.list({"telephoneNumber": "9195551212"})
 ### Import TN Checker
 ```python
 # returns an array of portable TN's
-account.import_tn_checker(numbers=["3032281000", "9195551234"])
+result = account.import_tn_checker(numbers=["3032281000", "9195551234"])
+print(result)    # ['3032281000', '9195551234']
 ```
 
 ### In-service numbers
