@@ -67,6 +67,30 @@ class ClassSubscriptionsTest(TestCase):
 
             self.assertEqual(subscription.id, "777")
 
+    def test_subscriptions_create_for_orders(self):
+
+        subscription = self._account.subscriptions.create({
+            "order_type": "orders",
+            "callback_subscription": {
+                "url": "https://someurl",
+                "expiry": "86400",
+            }
+        }, False)
+
+        self.assertEqual(subscription.order_type, "orders")
+        self.assertEqual(subscription.callback_subscription.url, "https://someurl")
+        self.assertEqual(subscription.callback_subscription.expiry, '86400')
+
+        with requests_mock.Mocker() as m:
+
+            url = self._client.config.url + \
+                self._account.subscriptions.get_xpath()
+            m.post(url, headers={"location": ".../777"})
+
+            subscription.save()
+
+            self.assertEqual(subscription.id, "777")
+
     def test_subscriptions_list(self):
 
         with requests_mock.Mocker() as m:
