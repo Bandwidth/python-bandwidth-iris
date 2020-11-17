@@ -28,7 +28,9 @@ class ClassStringsConverterTest(TestCase):
             ("foo_bar", "FooBar"),
             ("FooBar", "FooBar"),
             ("_foo_bar", "FooBar"),
-            ("_foo__bar", "Foo_Bar")]
+            ("_foo__bar", "Foo_Bar"),
+            # Url needs to be treated as special for XML serialization
+            ('url', 'URL')]
 
         for input, output in tests:
             self.assertEqual(self._converter.to_camelcase(input), output)
