@@ -8,3 +8,4 @@ class SubscriptionMap(BaseMap):
     order_id = None
     order_type = None
     email_subscription = None
+    callback_subscription = None

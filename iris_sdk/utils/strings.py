@@ -7,6 +7,8 @@ class Converter(object):
     """String case conversions"""
 
     def to_camelcase(self, string):
+        if string.upper() == 'URL':
+            return 'URL'
         str = sub(r'_([a-zA-Z])', lambda m: m.group(1).upper(), string)
         return str[0].upper() + str[1:]
 
