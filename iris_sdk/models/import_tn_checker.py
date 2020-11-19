@@ -18,7 +18,7 @@ class ImportTnChecker(BaseResource, ImportTnCheckerData):
     _xpath = XPATH_IMPORTTN_CHECKER
 
     def __call__(self, numbers):
-        # self.clear()
+        self.clear()
         self.telephone_numbers.items.extend(numbers)
         return self._post_data(ImportTnCheckerResponse())
 
