@@ -34,8 +34,8 @@ class Disconnect(BaseResource, DisconnectData):
         DisconnectData.__init__(self)
         self._notes = Notes(self, client)
 
-    def get(self, params=None):
-        _id = self.id
+    def get(self, id, params=None):
+        _id = id
         order_response = DisconnectOrderResponse(self._parent)
         self.clear()
         order_response.order_request = self
