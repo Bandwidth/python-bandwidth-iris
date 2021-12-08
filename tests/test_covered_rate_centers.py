@@ -36,7 +36,7 @@ XML_RESPONSE_CRC_LIST_GET = (
     b"npa=310&amp;size=10&amp;embed=Cities&amp;embed=ZipCodes&amp;embed="
     b"NpaNxxX&amp;page=1&gt;;rel=\"first\";</first><next>Link=&lt;"
     b"https://dashboard.bandwidth.com/api/coveredRateCenters?npa=310&amp;"
-    b"size=10&amp;e mbed=Cities&amp;embed=ZipCodes&amp;embed=NpaNxxX&amp; "
+    b"size=10&amp;embed=Cities&amp;embed=ZipCodes&amp;embed=NpaNxxX&amp; "
     b"page=5&gt;;rel=\"next\";</next></Links> <CoveredRateCenter>"
     b"<Name>AVALON</Name><Abbreviation>AVALON</Abbreviation>"
     b"<State>CA</State><Lata>730</Lata>"
