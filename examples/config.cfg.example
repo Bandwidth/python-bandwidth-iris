@@ -4,4 +4,4 @@ username   = spam
 password   = ham
 
 [rest]
-url = https://api.inetwork.com/v1.0
+url = https://dashboard.bandwidth.com/v1.0
