@@ -241,8 +241,7 @@ class BaseResource(BaseData):
 
         # The provided element is actually the one we're searching for
         if element.tag == search_name:
-            breakpoint()
-            element_children = element.getchildren()
+            element_children = [x for x in element]
         else:
             element_children = element.findall(search_name)
 
