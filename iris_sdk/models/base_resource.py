@@ -257,7 +257,7 @@ class BaseResource(BaseData):
             else:
                 property = getattr(inst, tag)
 
-            if len(el.getchildren()) == 0:
+            if len([x for x in el]) == 0:
                 if el.text is not None:
                     # Simple list - multiple "<tag></tag>" lines
                     if isinstance(property, BaseResourceSimpleList):
@@ -455,7 +455,7 @@ class BaseResource(BaseData):
 
             if isinstance(property, BaseMap):
                 self._to_xml(el, property)
-                if (len(el.getchildren()) == 0) and (el.text is None):
+                if (len([x for x in el]) == 0) and (el.text is None):
                     elem.remove(el)
             else:
                 el.text = str(property)

@@ -53,7 +53,7 @@ class RestClient(object):
                 # can be anywhere. Scan the first two levels and give up.
                 el = root.find(ERROR_TAG)
                 if el is None:
-                    children = root.getchildren()
+                    children = [x for x in root]
                     for elem in children:
                         el = elem.find(ERROR_TAG)
                         if el is not None:
