@@ -22,7 +22,6 @@ class Orders(BaseResource, OrdersData):
         OrdersData.__init__(self, self)
 
     def create(self, data=None, save=True):
-        breakpoint()
         order = Order(self).set_from_dict(data)
         if save and (data is not None):
             order.save()
