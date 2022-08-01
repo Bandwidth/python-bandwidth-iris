@@ -316,8 +316,8 @@ order = account.orders.create({
     "site_id": "2297",
     "customer_order_id": "123456789",
     "existing_telephone_number_order_type": {
-        "TelephoneNumberList": {
-            "TelephoneNumber": ["9193752369", "9193752720", "9193752648"]
+        "telephone_number_list": {
+            "telephone_number": ["9193752369", "9193752720", "9193752648"]
         }
     }
 })
