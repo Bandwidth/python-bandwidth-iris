@@ -128,7 +128,7 @@ class ClassDisconnectsTest(TestCase):
 
         with requests_mock.Mocker() as m:
 
-            url = self._client.config.url + disconnect.get_xpath()
+            url =self._client.config.url+self._account.disconnects.get_xpath()
             m.get(url, content=XML_RESPONSE_DISCONNECT_GET)
 
             resp = disconnect.get({"tndetail": "true"})
