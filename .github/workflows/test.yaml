@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+        python-version: [3.6]
+      fail-fast: false
+    env:
+      PYTHON_VERSION: ${{ matrix.python-version }}
+      OPERATING_SYSTEM: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Packages
+        run: |
+            pip install -e git+https://github.com/bandwidthcom/python-bandwidth-iris#egg=iris_sdk
+            pip install -r requirements.txt
+
+      - name: Test
+        run: |
+            python -m unittest discover
