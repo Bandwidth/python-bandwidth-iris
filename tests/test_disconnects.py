@@ -121,12 +121,12 @@ class ClassDisconnectsTest(TestCase):
             self.assertEqual(order_type.disconnect_mode, "normal")
             self.assertEqual(disconnect.order_status, "RECEIVED")
 
-    # def test_disconnect_get(self):
+    def test_disconnect_get(self):
 
-    #     with requests_mock.Mocker() as m:
+        with requests_mock.Mocker() as m:
 
-    #         url =self._client.config.url+self._account.disconnects.get_xpath()
-    #         m.get(url, content=XML_RESPONSE_DISCONNECT_GET)
+            url =self._client.config.url+self._account.disconnects.get_xpath()
+            m.get(url, content=XML_RESPONSE_DISCONNECT_GET)
 
     #         disconnect = self._account.disconnects.create({"order_id": "b902dee1-0585-4258-becd-5c7e51ccf5e1"}, False)
 
