@@ -130,7 +130,7 @@ class ClassDisconnectsTest(TestCase):
 
             disconnect = self._account.disconnects.create({"order_id": "b902dee1-0585-4258-becd-5c7e51ccf5e1"}, False)
             # resp = disconnect.get({"tndetail": "true"})
-            resp = disconnect.get(params={"tndetail": "true"})
+            resp = disconnect.get("b902dee1-0585-4258-becd-5c7e51ccf5e1", {"tndetail": "true"})
     #         req = resp.order_request
 
     #         self.assertEqual(req.id, "b902dee1-0585-4258-becd-5c7e51ccf5e1")
