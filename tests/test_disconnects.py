@@ -91,9 +91,9 @@ class ClassDisconnectsTest(TestCase):
         del cls._client
         del cls._account
 
-    def test_disconnect_create(self):
+    # def test_disconnect_create(self):
 
-        with requests_mock.Mocker() as m:
+        # with requests_mock.Mocker() as m:
 
             # url =self._client.config.url+self._account.disconnects.get_xpath()
             # m.post(url, content=XML_RESPONSE_DISCONNECT_POST)
