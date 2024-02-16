@@ -2,7 +2,7 @@
 
 ## Needed tools
 
-    - Python 2.7, or 3.3/3.4
+    - Python 3.5
     - pip
 
 ## Requires
