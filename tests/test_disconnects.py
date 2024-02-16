@@ -123,11 +123,14 @@ class ClassDisconnectsTest(TestCase):
 
     def test_disconnect_get(self):
         
-        disconnect = self._account.disconnects.create({"order_id": "b902dee1-0585-4258-becd-5c7e51ccf5e1"}, False)
-
+        # disconnect = self._account.disconnects.create({"order_id": "b902dee1-0585-4258-becd-5c7e51ccf5e1"}, False)
+        disconnect = self._account.disconnects.create({"order_id":
+            "b902dee1-0585-4258-becd-5c7e51ccf5e1"}, False)
         with requests_mock.Mocker() as m:
 
-            url =self._client.config.url+self._account.disconnects.get_xpath() + "b902dee1-0585-4258-becd-5c7e51ccf5e1"
+            # url =self._client.config.url+self._account.disconnects.get_xpath() + "b902dee1-0585-4258-becd-5c7e51ccf5e1"
+            url = self._client.config.url + disconnect.get_xpath()
+            print(url)
             m.get(url, content=XML_RESPONSE_DISCONNECT_GET)
             
             # resp = disconnect.get({"tndetail": "true"})
