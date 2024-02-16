@@ -123,46 +123,42 @@ class ClassDisconnectsTest(TestCase):
 
     def test_disconnect_get(self):
         
-        # disconnect = self._account.disconnects.create({"order_id": "b902dee1-0585-4258-becd-5c7e51ccf5e1"}, False)
         disconnect = self._account.disconnects.create({"order_id":
             "b902dee1-0585-4258-becd-5c7e51ccf5e1"}, False)
+        
         with requests_mock.Mocker() as m:
 
-            # url =self._client.config.url+self._account.disconnects.get_xpath() + "b902dee1-0585-4258-becd-5c7e51ccf5e1"
             url = self._client.config.url + disconnect.get_xpath()
-            print(url)
             m.get(url, content=XML_RESPONSE_DISCONNECT_GET)
             
-            # resp = disconnect.get({"tndetail": "true"})
-            # resp = disconnect.get("b902dee1-0585-4258-becd-5c7e51ccf5e1", {"tndetail": "true"})
             resp = disconnect.get("b902dee1-0585-4258-becd-5c7e51ccf5e1")
-    #         req = resp.order_request
+            req = resp.order_request
 
-    #         self.assertEqual(req.id, "b902dee1-0585-4258-becd-5c7e51ccf5e1")
-    #         self.assertEqual(req.customer_order_id, "Disconnect1234")
+            self.assertEqual(req.id, "b902dee1-0585-4258-becd-5c7e51ccf5e1")
+            self.assertEqual(req.customer_order_id, "Disconnect1234")
 
-    #         order_type = req.disconnect_telephone_number_order_type
+            order_type = req.disconnect_telephone_number_order_type
 
-    #         self.assertEqual(
-    #             order_type.telephone_number_list.telephone_number.items,
-    #             ["9192755378","9192755703"])
-    #         self.assertEqual(order_type.disconnect_mode, "normal")
-    #         self.assertEqual(req.order_create_date,
-    #             "2015-06-17T18:14:08.683Z")
+            self.assertEqual(
+                order_type.telephone_number_list.telephone_number.items,
+                ["9192755378","9192755703"])
+            self.assertEqual(order_type.disconnect_mode, "normal")
+            self.assertEqual(req.order_create_date,
+                "2015-06-17T18:14:08.683Z")
 
-    #         error = resp.error_list.error.items[0]
+            error = resp.error_list.error.items[0]
 
-    #         self.assertEqual(error.code, "5006")
-    #         self.assertEqual(error.telephone_number, "9192755703")
-    #         self.assertTrue(error.description.startswith(
-    #             "Telephone number could not be disconnected"))
+            self.assertEqual(error.code, "5006")
+            self.assertEqual(error.telephone_number, "9192755703")
+            self.assertTrue(error.description.startswith(
+                "Telephone number could not be disconnected"))
 
-    #         error = resp.error_list.error.items[1]
+            error = resp.error_list.error.items[1]
 
-    #         self.assertEqual(error.code, "5006")
-    #         self.assertEqual(error.telephone_number, "9192755378")
-    #         self.assertTrue(error.description.startswith(
-    #            "Telephone number could not be disconnected"))
+            self.assertEqual(error.code, "5006")
+            self.assertEqual(error.telephone_number, "9192755378")
+            self.assertTrue(error.description.startswith(
+               "Telephone number could not be disconnected"))
 
     def test_disconnects_get(self):
 
