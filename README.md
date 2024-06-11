@@ -1,5 +1,13 @@
 # Python client library for IRIS / BBS API
 
+⛔ DEPRECATED ⛔
+
+This repository has been deprecated - the package has been moved and renamed to [python-numbers-sdk](https://github.com/Bandwidth/python-numbers-sdk) to support newer versions of python. 
+
+It can now be installed via PyPi using `pip install bandwidth-numbers-sdk` and properly versioned. 
+
+Please see the new repo for more information. 
+
 ## Needed tools
 
     - Python 3.5
